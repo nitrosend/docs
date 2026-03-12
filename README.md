@@ -29,3 +29,17 @@ The **API Reference** tab is auto-generated from our [OpenAPI spec](https://api.
 ## Deployment
 
 Pushes to `main` auto-deploy via the Mintlify GitHub App.
+
+### First-time setup
+
+1. Sign up at [mintlify.com/start](https://mintlify.com/start)
+2. Install the [Mintlify GitHub App](https://github.com/apps/mintlify) on the `Nitrosend/docs` repo
+3. It auto-deploys to `nitrosend.mintlify.app` on every push to main
+
+### Custom domain (`docs.nitrosend.com`)
+
+Add a CNAME record in Cloudflare pointing `docs` to the target Mintlify provides during setup. Then configure the custom domain in the Mintlify dashboard.
+
+### API Reference
+
+Auto-generated from `api.nitrosend.com/openapi.yaml` — no manual pages needed. Any changes to the OpenAPI spec are reflected automatically.
