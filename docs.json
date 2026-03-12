@@ -64,10 +64,15 @@
   "navbar": {
     "links": [
       {
-        "label": "Dashboard",
-        "url": "https://app.nitrosend.com"
+        "type": "github",
+        "href": "https://github.com/Nitrosend"
       }
-    ]
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.nitrosend.com"
+    }
   },
   "footer": {
     "socials": {
