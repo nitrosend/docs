@@ -1,25 +1,75 @@
 ---
 title: Introduction
-description: Multi-channel marketing automation for modern teams
+description: The AI-native email marketing platform — manage your email from Claude, GPT, Gemini, Codex, or any AI tool
 ---
 
-# Welcome to Nitrosend
+# Nitrosend
 
-Nitrosend is a multi-channel marketing automation platform that lets you send emails, SMS, and build automated flows — all from one place.
+**The AI-native email marketing platform.** Built for builders and marketers who want to run their email marketing from the AI tools they already use.
+
+Every ESP on the market — Mailchimp, Klaviyo, Brevo, Loops — was designed for humans to operate manually. You log in, click through menus, drag blocks, write copy, schedule sends. Nitrosend is different. It's built from the ground up so that AI does the work.
+
+## How Nitrosend works
+
+Instead of logging into a dashboard, you stay in your AI tool — Claude, ChatGPT, Codex, Gemini, Cursor — and tell it what you want. Nitrosend connects via **MCP (Model Context Protocol)** and a REST API so your AI assistant has full access to your email marketing.
+
+```
+You: "Create a 5-email welcome series for new subscribers"
+Claude: Done. I've built the flow with a welcome email, 
+        a 3-day follow-up, a product highlight on day 7, 
+        a case study on day 10, and a special offer on day 14.
+        Want me to send a test?
+```
+
+No dashboard. No drag-and-drop. Just tell AI what you need and it happens.
 
 ## What you can do
 
 <CardGroup cols={2}>
-  <Card title="Send emails" icon="envelope" href="/guides/sending-emails">
-    Design and send beautiful emails with our visual editor.
+  <Card title="Send emails & campaigns" icon="envelope" href="/guides/sending-emails">
+    Compose, preview, test, and send — all through natural language prompts in your AI tool.
   </Card>
-  <Card title="Manage contacts" icon="address-book" href="/guides/managing-contacts">
-    Import, segment, and organize your audience.
+  <Card title="Build automation flows" icon="diagram-project" href="/guides/building-flows">
+    Welcome series, abandoned cart, re-engagement — describe the flow, AI builds it.
   </Card>
-  <Card title="Build flows" icon="diagram-project" href="/guides/building-flows">
-    Create automated workflows triggered by events.
+  <Card title="Manage your audience" icon="address-book" href="/guides/managing-contacts">
+    Import contacts, create segments, tag and organize — through conversation.
   </Card>
-  <Card title="AI & API Integrations" icon="robot" href="/integrations/overview">
-    Connect Claude, GPT, Gemini, Codex, or any API client.
+  <Card title="Connect via MCP" icon="plug" href="/integrations/overview">
+    One-click MCP connection to Claude, Cowork, Claude Code, and more. REST API for everything else.
   </Card>
 </CardGroup>
+
+## What makes Nitrosend different
+
+<AccordionGroup>
+  <Accordion title="AI-native, not AI-bolted-on">
+    Other ESPs added GPT wrappers for subject lines and called it "AI features." Nitrosend was built so AI is the primary interface. MCP integration means Claude, GPT, and Gemini can access every feature — campaigns, flows, templates, contacts, analytics — natively.
+  </Accordion>
+  <Accordion title="MCP-first architecture">
+    Nitrosend speaks MCP (Model Context Protocol), the open standard for connecting AI tools to external services. Connect once, and your AI assistant can manage your entire email operation. No coding, no middleware, no webhooks.
+  </Accordion>
+  <Accordion title="Intelligence that compounds">
+    Set up your [Brand Settings](/integrations/mcp-brand-memory#brand-settings) and [AI Memory](/integrations/mcp-brand-memory#ai-memory), and every email Nitrosend sends gets smarter. Your AI learns your tone, your audience, and your goals — then applies that context to every campaign, flow, and template it creates.
+  </Accordion>
+  <Accordion title="Works with every major AI tool">
+    Claude Desktop, Claude Code, Claude Cowork, ChatGPT, Gemini, Codex CLI, Cursor — whatever you use, Nitrosend connects. MCP for Claude-family tools, REST API for everything else.
+  </Accordion>
+</AccordionGroup>
+
+## Get started
+
+<Steps>
+  <Step title="Sign up">
+    Create your account at [app.nitrosend.com](https://app.nitrosend.com)
+  </Step>
+  <Step title="Get your API key">
+    Go to **Settings > API Keys** and copy your key (starts with `nskey_live_`)
+  </Step>
+  <Step title="Connect your AI tool">
+    Follow the guide for your tool: [Claude Desktop](/integrations/claude-desktop) · [Claude Cowork](/integrations/claude-cowork) · [Claude Code](/integrations/claude-code) · [ChatGPT](/integrations/chatgpt) · [Gemini](/integrations/gemini) · [Codex](/integrations/codex)
+  </Step>
+  <Step title="Start prompting">
+    Tell your AI to check your account status, create a campaign, or build a flow. It just works.
+  </Step>
+</Steps>

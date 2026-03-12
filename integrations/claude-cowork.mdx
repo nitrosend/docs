@@ -1,0 +1,93 @@
+---
+title: Claude Cowork
+description: Connect Nitrosend to Claude Cowork for team-based AI email marketing
+---
+
+# Claude Cowork + Nitrosend MCP
+
+[Claude Cowork](https://claude.ai/cowork) is Anthropic's collaborative AI workspace. Connect Nitrosend via MCP and your team can manage email marketing through conversation — create campaigns, build flows, check analytics, and more, all within Cowork.
+
+## What is MCP?
+
+**MCP (Model Context Protocol)** is an open standard that lets Claude connect directly to external services. When Nitrosend is connected, Claude gets native access to 16 email marketing tools plus live resources about your brand, account, and email best practices.
+
+## Setup: Add Nitrosend as a Connector
+
+The connection method is the same as Claude Desktop — Cowork uses the same Custom Connector system.
+
+<Steps>
+  <Step title="Get your API key">
+    Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key (starts with `nskey_live_`).
+  </Step>
+  <Step title="Open Settings">
+    In Claude Cowork, go to **Settings** > **Connections**.
+  </Step>
+  <Step title="Add Nitrosend">
+    Click **Add Custom Connector** and enter:
+    - **URL**: `https://api.nitrosend.com/mcp`
+    
+    Click **Connect**, then authenticate with your API key when prompted.
+  </Step>
+  <Step title="Start using Nitrosend">
+    Nitrosend MCP is now available as a Connector in your Cowork workspace. Open a new conversation and start prompting:
+    
+    ```
+    What's my Nitrosend account status?
+    ```
+  </Step>
+</Steps>
+
+## Why Cowork for email marketing?
+
+Cowork's collaborative workspace is particularly powerful for email marketing because:
+
+- **Team context** — share conversations about campaigns, flows, and strategy with your team
+- **Persistent projects** — keep email marketing as an ongoing project where Claude remembers your goals, brand, and past campaigns
+- **Multi-step workflows** — complex tasks like "plan our Q2 email strategy, then build the flows" work naturally in Cowork's project format
+
+## Example workflows in Cowork
+
+### Plan and execute a campaign
+
+```
+Let's plan our March newsletter. Check my recent campaign performance, 
+then create a new campaign targeting subscribers who opened the last 
+email. Include a section about our new features.
+```
+
+### Audit your email setup
+
+```
+Review my Nitrosend account setup. Check my brand settings, sending 
+domain health, and active flows. Are there any improvements you'd 
+recommend?
+```
+
+### Build a complete flow
+
+```
+I need a complete abandoned cart recovery flow. Build a 3-email 
+sequence: first email 1 hour after cart abandonment, second after 
+24 hours, third after 3 days with a discount offer.
+```
+
+## Supercharge with Brand & Memory
+
+For the best results in Cowork, make sure you've configured:
+
+1. **[Brand Settings](https://app.nitrosend.com/my/settings/brand)** — your brand colors, fonts, logo, and company description
+2. **[AI Memory](https://app.nitrosend.com/my/settings/memory)** — your marketing goals, target audience, and email strategy
+
+Claude reads these automatically through MCP, so every email it creates matches your brand and follows your strategy.
+
+<Card title="Brand Settings & AI Memory" icon="brain" href="/integrations/mcp-brand-memory">
+  Learn how to configure Brand Settings and AI Memory for smarter AI-generated emails.
+</Card>
+
+## All MCP tools available in Cowork
+
+The full set of 16 Nitrosend MCP tools is available in Cowork — the same tools available in Claude Desktop and Claude Code. See the [Claude Code](/integrations/claude-code#mcp-tools-available) page for the complete tool reference.
+
+<Info>
+  The Custom Connector method requires no local software installation. Everything runs server-side through the MCP endpoint at `api.nitrosend.com/mcp`.
+</Info>

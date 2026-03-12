@@ -1,57 +1,86 @@
 ---
-title: AI & API Integrations
-description: Connect Nitrosend to any AI assistant, coding tool, or automation platform
+title: Connect Your AI Tool
+description: Connect Nitrosend to Claude, GPT, Gemini, Codex, or any AI assistant via MCP or REST API
 ---
 
-# AI & API Integrations
+# Connect Your AI Tool
 
-Nitrosend is built to work with AI. Whether you're using a chat assistant, a coding tool, or building your own integration, Nitrosend provides two ways to connect:
+Nitrosend is designed to be controlled by AI. Instead of clicking through dashboards, you connect your AI tool and manage everything — campaigns, flows, contacts, templates, analytics — through natural language.
 
-<CardGroup cols={2}>
-  <Card title="MCP Server" icon="plug">
-    A native Model Context Protocol server that lets AI assistants manage your email marketing directly — no code required.
-  </Card>
-  <Card title="REST API" icon="square-terminal">
-    A standard REST API with Bearer token auth for any language, platform, or automation tool.
-  </Card>
-</CardGroup>
+## MCP: The Fastest Way to Connect
 
-## Which method should I use?
+**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, Cowork, and other MCP-compatible clients can access your full email marketing platform with zero coding.
 
-| Method | Best for | Setup time |
-|--------|----------|------------|
-| **MCP Server** | Claude, Claude Code, Claude Cowork, and any MCP-compatible client | 1 minute |
-| **REST API** | GPT, Gemini, Codex, custom apps, Zapier, n8n, or any HTTP client | 5 minutes |
+### What MCP gives your AI
+
+When you connect via MCP, your AI assistant gets:
+
+- **16 specialized tools** — compose emails, build flows, manage contacts, check analytics, control delivery, and more
+- **Live resources** — your brand identity, account state, platform guide, and email design schema
+- **Full context** — your AI knows your brand colors, tone of voice, and sending history before it writes a single email
+- **Two-way control** — create, preview, test, approve, send, pause, and analyze, all from conversation
+
+### MCP vs REST API
+
+| | MCP | REST API |
+|---|---|---|
+| **Best for** | Claude Desktop, Claude Cowork, Claude Code | ChatGPT, Gemini, Codex, custom apps |
+| **Setup** | 1 click (Custom Connector) or 1 command | Define function calls or use curl |
+| **AI context** | Full — brand, schema, guide, account state | You provide context manually |
+| **Tools** | 16 purpose-built tools with validation | Raw HTTP endpoints |
+| **Coding required** | No | Minimal to moderate |
+
+<Tip>
+  **Use MCP whenever possible.** It gives your AI far more context about your account, brand, and email best practices than the REST API alone. The result is better emails with less prompting.
+</Tip>
 
 ## Get your API key
 
-Both methods use the same API key. Generate one from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+Both MCP and REST API use the same API key. Generate one from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
 
-API keys are prefixed with `nskey_live_` for production and `nskey_test_` for test mode.
+API keys start with `nskey_live_` (production) or `nskey_test_` (test mode).
 
 <Warning>
   Keep your API key secret. Never expose it in client-side code, commit it to version control, or share it publicly.
 </Warning>
 
-## Platform guides
+## Choose your platform
+
+### MCP connections (recommended)
 
 <CardGroup cols={2}>
+  <Card title="Claude Desktop" icon="message-bot" href="/integrations/claude-desktop">
+    Add Nitrosend as a Custom Connector in Claude Desktop. One click, full access.
+  </Card>
+  <Card title="Claude Cowork" icon="users" href="/integrations/claude-cowork">
+    Connect Nitrosend to Claude Cowork for team-based AI email marketing.
+  </Card>
   <Card title="Claude Code" icon="terminal" href="/integrations/claude-code">
-    Use Nitrosend directly from your terminal with Claude Code's MCP integration.
-  </Card>
-  <Card title="Claude Desktop & Cowork" icon="message-bot" href="/integrations/claude-desktop">
-    Connect Nitrosend to Claude's desktop app or Cowork for conversational email marketing.
-  </Card>
-  <Card title="ChatGPT / GPT" icon="robot" href="/integrations/chatgpt">
-    Use Nitrosend as a custom GPT action or through the OpenAI Assistants API.
-  </Card>
-  <Card title="Google Gemini" icon="google" href="/integrations/gemini">
-    Connect Nitrosend to Gemini via function calling or Google AI Studio.
-  </Card>
-  <Card title="OpenAI Codex" icon="code" href="/integrations/codex">
-    Give Codex CLI access to Nitrosend for AI-powered email automation from your terminal.
-  </Card>
-  <Card title="REST API (Any Platform)" icon="globe" href="/integrations/rest-api">
-    Use the REST API from any language, tool, or automation platform.
+    Add the MCP server to Claude Code for terminal-based email automation.
   </Card>
 </CardGroup>
+
+### REST API connections
+
+<CardGroup cols={2}>
+  <Card title="ChatGPT / GPT" icon="robot" href="/integrations/chatgpt">
+    Build a custom GPT with Nitrosend actions, or use the Assistants API.
+  </Card>
+  <Card title="Google Gemini" icon="google" href="/integrations/gemini">
+    Connect via Gemini function calling or Google AI Studio.
+  </Card>
+  <Card title="OpenAI Codex" icon="code" href="/integrations/codex">
+    Give Codex CLI access to Nitrosend for terminal-based email automation.
+  </Card>
+  <Card title="REST API (Any Platform)" icon="globe" href="/integrations/rest-api">
+    Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code.
+  </Card>
+</CardGroup>
+
+## Supercharge your AI with Brand & Memory
+
+Once connected, set up [Brand Settings](/integrations/mcp-brand-memory#brand-settings) and [AI Memory](/integrations/mcp-brand-memory#ai-memory) to give your AI deep context about your business. This means every email it creates automatically matches your brand voice, follows your strategy, and improves over time.
+
+<Card title="Brand Settings & AI Memory" icon="brain" href="/integrations/mcp-brand-memory">
+  Teach your AI your brand voice, colors, goals, and strategy so every email it creates is on-brand and on-strategy.
+</Card>

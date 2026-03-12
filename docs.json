@@ -23,6 +23,25 @@
             "pages": ["introduction", "quickstart", "authentication"]
           },
           {
+            "group": "MCP Integrations",
+            "pages": [
+              "integrations/overview",
+              "integrations/claude-desktop",
+              "integrations/claude-cowork",
+              "integrations/claude-code",
+              "integrations/mcp-brand-memory"
+            ]
+          },
+          {
+            "group": "API Integrations",
+            "pages": [
+              "integrations/chatgpt",
+              "integrations/gemini",
+              "integrations/codex",
+              "integrations/rest-api"
+            ]
+          },
+          {
             "group": "Guides",
             "pages": [
               "guides/sending-emails",
@@ -39,18 +58,6 @@
               "concepts/flows",
               "concepts/campaigns",
               "concepts/segments"
-            ]
-          },
-          {
-            "group": "AI & API Integrations",
-            "pages": [
-              "integrations/overview",
-              "integrations/claude-code",
-              "integrations/claude-desktop",
-              "integrations/chatgpt",
-              "integrations/gemini",
-              "integrations/codex",
-              "integrations/rest-api"
             ]
           }
         ]

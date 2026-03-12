@@ -1,0 +1,160 @@
+---
+title: Brand Settings & AI Memory
+description: Teach your AI your brand voice, goals, and strategy so every email it creates is on-brand
+---
+
+# Brand Settings & AI Memory
+
+Nitrosend's two most powerful MCP features are **Brand Settings** and **AI Memory**. Together, they give your AI assistant deep context about your business — so every email it creates automatically matches your brand, follows your strategy, and improves over time.
+
+## Brand Settings
+
+**Brand Settings** define how your emails look and who they come from. When your AI creates an email via MCP, these settings are applied automatically — the right colors, fonts, logo, and tone, every time.
+
+### What Brand Settings include
+
+| Setting | What it controls |
+|---------|-----------------|
+| **Company name** | Used in email headers, footers, and subject lines |
+| **Company description** | Gives AI context about what you do |
+| **Brand color** | Primary color for buttons, links, and accents |
+| **Background color** | Email body background |
+| **Text color** | Default text color |
+| **Heading font** | Font family for headings |
+| **Body font** | Font family for body text |
+| **Logo** | Light and dark versions, applied to email headers |
+| **Physical address** | Required for CAN-SPAM compliance in email footers |
+
+### How to configure Brand Settings
+
+<Tabs>
+  <Tab title="Dashboard">
+    Go to [**Settings > Brand**](https://app.nitrosend.com/my/settings/brand) in the Nitrosend dashboard. Fill in your brand details and click save.
+  </Tab>
+  <Tab title="Via MCP (AI prompt)">
+    Ask your connected AI assistant:
+    ```
+    Set up my brand from https://mywebsite.com
+    ```
+    Claude will scrape your website for brand colors, fonts, and logo, then configure everything automatically. You can also set fields directly:
+    ```
+    Update my brand color to #6366F1 and company name to "Acme Inc"
+    ```
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # Auto-scrape from website
+    curl -X POST https://api.nitrosend.com/mcp \
+      -H "Authorization: Bearer $NITROSEND_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"method": "nitro_set_brand", "params": {"url": "https://mywebsite.com"}}'
+    ```
+  </Tab>
+</Tabs>
+
+### Why Brand Settings matter for AI
+
+Without Brand Settings, your AI has to guess your brand colors, tone, and style for every email. With Brand Settings configured:
+
+- Emails automatically use your brand colors, fonts, and logo
+- Subject lines and copy match your company's tone
+- Footer compliance (CAN-SPAM address) is handled automatically
+- Every email is consistent, whether created by you, your team, or AI
+
+## AI Memory
+
+**AI Memory** is a persistent document that your AI reads every time it interacts with your Nitrosend account via MCP. It's where you tell the AI about your business goals, target audience, email strategy, and anything else it should know.
+
+Think of it as giving your AI marketing assistant a briefing document that it reads before every task.
+
+### What to put in AI Memory
+
+AI Memory is free-form markdown. Here are the most impactful things to include:
+
+```markdown
+## Brand Voice
+We're friendly but professional. We write in second person ("you") 
+and keep sentences short. No corporate jargon. We use humor sparingly 
+but effectively.
+
+## Target Audience
+Small business owners and indie creators who are tech-savvy but 
+time-poor. They value efficiency and straight talk over flashy design.
+
+## Email Strategy
+- Weekly newsletter every Tuesday at 10am EST
+- Welcome series: 5 emails over 2 weeks
+- Re-engagement flow for contacts inactive 30+ days
+- Always include one clear CTA per email
+
+## Current Goals
+- Grow newsletter to 5,000 subscribers by Q2 2026
+- Improve open rate from 35% to 45%
+- Launch product announcement campaign in April
+
+## What NOT to do
+- Never use clickbait subject lines
+- Don't send more than 3 emails per week to any contact
+- Avoid discount-heavy messaging — we compete on value, not price
+```
+
+### How to configure AI Memory
+
+<Tabs>
+  <Tab title="Dashboard">
+    Go to [**Settings > Memory**](https://app.nitrosend.com/my/settings/memory) in the Nitrosend dashboard. Edit the markdown document and save.
+  </Tab>
+  <Tab title="Via MCP (AI prompt)">
+    Ask your connected AI assistant:
+    ```
+    Update my AI memory with our Q2 marketing goals: grow to 5000 
+    subscribers, improve open rate to 45%, launch product campaign in April
+    ```
+    Claude will read the current memory, add the new information, and save it. You can also ask Claude to read it:
+    ```
+    What's in my Nitrosend AI memory?
+    ```
+  </Tab>
+</Tabs>
+
+### How AI Memory works with MCP
+
+When your AI connects to Nitrosend via MCP, it receives your AI Memory as context. This means:
+
+1. **Every email** Claude creates reflects your stated brand voice and strategy
+2. **Flow design** follows your documented email cadence and rules
+3. **Campaign targeting** considers your audience description and goals
+4. **Recommendations** are aligned with your stated priorities
+
+The more context you put in AI Memory, the less you need to explain in each prompt.
+
+## Brand + Memory in action
+
+Here's the difference these settings make:
+
+### Without Brand Settings & Memory
+
+> **You**: Create a campaign about our new feature
+>
+> **Claude**: What's your brand color? What tone should I use? Who's the audience? What's the call to action? What's your company name for the footer?
+
+### With Brand Settings & Memory configured
+
+> **You**: Create a campaign about our new feature
+>
+> **Claude**: Done. I've created a campaign using your indigo brand theme, written in your friendly-but-professional tone, targeting your active subscribers. The CTA links to your product page. Here's a preview — want me to send a test?
+
+<Tip>
+  **Start with Brand Settings, then add AI Memory.** Brand Settings handle the visual and compliance basics. AI Memory adds the strategic layer that makes your AI truly effective.
+</Tip>
+
+## MCP tools for Brand & Memory
+
+| Tool | What it does |
+|------|-------------|
+| `nitro_set_brand` | Set brand identity from a website URL or direct fields |
+| `nitro_set_memory` | Read, update, patch, or append to AI Memory |
+
+| Resource | What it provides |
+|----------|-----------------|
+| `nitro://brand` | Current brand identity (read-only snapshot) |

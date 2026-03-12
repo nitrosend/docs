@@ -1,32 +1,25 @@
 ---
 title: Claude Code
-description: Connect Nitrosend to Claude Code via the MCP server for terminal-based email marketing
+description: Connect Nitrosend to Claude Code via MCP for terminal-based AI email marketing
 ---
 
-# Claude Code
+# Claude Code + Nitrosend MCP
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's CLI tool for working with Claude directly in your terminal. Nitrosend provides a native MCP (Model Context Protocol) server that gives Claude Code full access to your email marketing platform.
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's CLI tool for working with Claude in your terminal. Connect Nitrosend via MCP and Claude Code becomes a full email marketing command center.
 
-## What you can do
+## What is MCP?
 
-With Nitrosend connected to Claude Code, you can manage your entire email marketing operation from the terminal:
-
-- Create and send email campaigns
-- Build automation flows (welcome series, abandoned cart, etc.)
-- Import and manage contacts, lists, and segments
-- Design email templates with sections-based components
-- Check analytics and delivery insights
-- Manage sending domains and account settings
+**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to 16 email marketing tools — no API wrappers, no middleware, no boilerplate.
 
 ## Setup
 
-### 1. Get your API key
+### Step 1: Get your API key
 
 Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
 
-### 2. Add the MCP server
+### Step 2: Add the MCP server
 
-Run this command in your terminal:
+Run this single command in your terminal:
 
 ```bash
 claude mcp add nitro \
@@ -34,9 +27,9 @@ claude mcp add nitro \
   -- npx -y @nitrosend/mcp
 ```
 
-That's it. Claude Code will now have access to all Nitrosend tools.
+That's it. Claude Code now has full access to your email marketing.
 
-### 3. Verify the connection
+### Step 3: Verify the connection
 
 Start a Claude Code session and ask:
 
@@ -44,101 +37,113 @@ Start a Claude Code session and ask:
 What's my Nitrosend account status?
 ```
 
-Claude will call the `nitro_get_status` tool and show your account health, onboarding progress, and any recommended actions.
+Claude will call the `nitro_get_status` tool and show your account health, onboarding progress, and recommendations.
 
-## How it works
+## How MCP works
 
-The MCP server (`@nitrosend/mcp`) runs as a local process that bridges Claude Code to the Nitrosend API. It:
+The MCP server (`@nitrosend/mcp`) runs as a local bridge process:
 
-1. Receives tool calls from Claude via the MCP protocol (stdio)
-2. Forwards them as authenticated HTTP requests to `api.nitrosend.com/mcp`
-3. Returns structured results back to Claude
+1. Claude Code sends tool calls via MCP protocol (stdio)
+2. The bridge forwards them as authenticated HTTP requests to `api.nitrosend.com/mcp`
+3. Structured results come back to Claude with full context
 
 No data is stored locally. All state lives in your Nitrosend account.
 
-## Available tools
+## MCP tools available
 
-Once connected, Claude Code has access to these Nitrosend tools:
+Once connected, Claude Code has access to these tools:
 
 | Tool | What it does |
 |------|-------------|
-| `nitro_get_status` | Check account health, onboarding, and recommendations |
+| `nitro_get_status` | Account health, onboarding, and recommendations |
 | `nitro_compose_email` | Create, update, or clone email templates |
 | `nitro_compose_campaign` | Create email or SMS campaigns with audience targeting |
-| `nitro_compose_flow` | Build automation flows with triggers and steps |
+| `nitro_compose_flow` | Build automation flows with triggers, steps, and branches |
 | `nitro_send_message` | Send a single transactional email or SMS immediately |
 | `nitro_manage_audience` | Create contacts, manage lists, record events, tag contacts |
-| `nitro_import_contacts` | Bulk import contacts from inline records |
+| `nitro_import_contacts` | Bulk import contacts (up to 100 inline) |
 | `nitro_search_contacts` | Search contacts by email, name, or phone |
-| `nitro_query` | Query campaigns, flows, templates, segments, and more |
-| `nitro_define_segment` | Create dynamic contact segments with filters |
-| `nitro_set_brand` | Set up brand identity (colors, fonts, logo) |
+| `nitro_query` | Query campaigns, flows, templates, segments, messages |
+| `nitro_define_segment` | Create dynamic segments with filters |
+| `nitro_set_brand` | Set up brand identity — colors, fonts, logo, voice |
+| `nitro_set_memory` | Read and update your AI memory document |
 | `nitro_manage_domains` | Add, verify, and manage sending domains |
 | `nitro_control_delivery` | Approve, send, pause, or schedule campaigns and flows |
 | `nitro_preview_and_test` | Preview emails and send test emails |
-| `nitro_get_insights` | Get email analytics with trends and benchmarks |
-| `nitro_configure_account` | Set sender defaults and test email recipients |
+| `nitro_get_insights` | Email analytics with trends and benchmarks |
+
+## MCP resources
+
+Claude can also read live resources for deeper context:
+
+| Resource | What it provides |
+|----------|-----------------|
+| `nitro://guide` | Platform vocabulary, workflows, and tool descriptions |
+| `nitro://schema` | Email component types, flow step types, filter definitions |
+| `nitro://brand` | Your brand identity — colors, fonts, tone, logo |
+| `nitro://account/state` | Current account status, tier, and limits |
+| `nitro://account/config` | Sender defaults and verified domains |
 
 ## Example workflows
-
-### Send a quick email
-
-```
-Send a transactional email to jane@example.com welcoming her to Obooko
-```
 
 ### Create a welcome flow
 
 ```
-Create a welcome email flow that triggers when a new contact is added.
-Send a welcome email immediately, wait 3 days, then send a follow-up
-with our top book recommendations.
+Create a welcome email flow. When a new contact is added, send a welcome 
+email immediately, wait 3 days, then send a follow-up with our top 
+recommendations.
 ```
 
-### Check campaign performance
+### Send a campaign
 
 ```
-Show me insights for my last campaign
+Create a campaign called "March Newsletter" and send it to my subscriber list. 
+Use my brand colors and include a section about our new features.
 ```
 
-### Import contacts
+### Check performance
 
 ```
-Import these contacts with opt-in enabled:
-- jane@example.com (Jane Doe)
-- bob@example.com (Bob Smith)
+Show me insights for my last campaign. How did it compare to benchmarks?
+```
+
+### Set up brand and memory
+
+```
+Set up my brand from https://mysite.com and then update my AI memory with 
+our Q1 marketing goals.
 ```
 
 ## Scope-based configuration
 
-You can add the MCP server at different scopes:
+Add the MCP server at different scopes depending on your needs:
 
 ```bash
-# Project scope (only available in this directory)
-claude mcp add nitro -s project \
+# User scope — available in all Claude Code sessions (recommended)
+claude mcp add nitro -s user \
   -e NITROSEND_API_KEY=nskey_live_... \
   -- npx -y @nitrosend/mcp
 
-# User scope (available in all Claude Code sessions)
-claude mcp add nitro -s user \
+# Project scope — only available in this directory
+claude mcp add nitro -s project \
   -e NITROSEND_API_KEY=nskey_live_... \
   -- npx -y @nitrosend/mcp
 ```
 
 ## Troubleshooting
 
-### "MCP server not found"
-
-Make sure you have Node.js 18+ installed and `npx` is on your PATH.
-
-### "Authentication failed"
-
-Double-check your API key. It should start with `nskey_live_` for production or `nskey_test_` for test mode.
-
-### "Tool call timed out"
-
-The MCP server includes automatic retry logic for transient errors. If calls consistently time out, check your network connection and that `api.nitrosend.com` is reachable.
+<AccordionGroup>
+  <Accordion title="MCP server not found">
+    Make sure you have Node.js 18+ installed and `npx` is on your PATH.
+  </Accordion>
+  <Accordion title="Authentication failed">
+    Double-check your API key. It should start with `nskey_live_` for production or `nskey_test_` for test mode.
+  </Accordion>
+  <Accordion title="Tool call timed out">
+    The MCP server includes automatic retry logic for transient errors. If calls consistently time out, check your network connection and that `api.nitrosend.com` is reachable.
+  </Accordion>
+</AccordionGroup>
 
 <Info>
-  The MCP server package is `@nitrosend/mcp` on npm. It requires no global installation — `npx -y` handles everything.
+  The MCP package is `@nitrosend/mcp` on npm. No global install needed — `npx -y` handles everything.
 </Info>
