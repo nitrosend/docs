@@ -1,0 +1,36 @@
+---
+title: Sending Emails
+description: Design and send emails with Nitrosend
+---
+
+# Sending Emails
+
+Nitrosend supports two ways to send emails: **campaigns** for bulk sends to a list, and **transactional messages** for one-off sends triggered by your app.
+
+## Campaigns
+
+Campaigns let you send an email to a contact list or segment. Create one from the dashboard:
+
+1. Go to **Campaigns > New Campaign**
+2. Choose a template or start from scratch
+3. Select your audience (a contact list or segment)
+4. Preview, test, and send
+
+## Transactional messages
+
+For receipts, password resets, and other triggered emails, use the API:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/messages \
+  -H "Authorization: Bearer nskey_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "user@example.com",
+    "subject": "Your receipt",
+    "html": "<h1>Thanks for your purchase</h1>"
+  }'
+```
+
+## Email editor
+
+The drag-and-drop editor lets you build responsive emails visually. Your brand theme (colors, fonts, logo) is applied automatically. All emails are rendered as MJML under the hood for maximum inbox compatibility.

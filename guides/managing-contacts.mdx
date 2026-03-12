@@ -1,0 +1,33 @@
+---
+title: Managing Contacts
+description: Import, organize, and segment your audience
+---
+
+# Managing Contacts
+
+Contacts are the people you send messages to. Each contact can have an email address, phone number, or both.
+
+## Importing contacts
+
+Go to **Contacts > Import** to upload a CSV file. Map your columns to contact fields during import.
+
+You can also add contacts via the API:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/contacts \
+  -H "Authorization: Bearer nskey_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe"
+  }'
+```
+
+## Contact lists
+
+Organize contacts into lists for targeted sending. A contact can belong to multiple lists.
+
+## Segments
+
+Segments are dynamic groups defined by conditions (e.g., "subscribed in the last 30 days" or "opened an email this week"). Unlike lists, segments update automatically as contacts match or stop matching the criteria.

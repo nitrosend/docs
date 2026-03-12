@@ -1,0 +1,32 @@
+---
+title: Flows
+description: Automated multi-step workflows
+---
+
+# Flows
+
+Flows are event-driven automation sequences. When a trigger fires, the flow executes a series of steps for each qualifying contact.
+
+## Triggers
+
+- **Contact added to list** — fires when a contact joins a specific list
+- **Event received** — fires when a custom event is tracked for a contact
+- **Tag added** — fires when a tag is applied to a contact
+
+## Steps
+
+Flows support multiple step types that can be chained together:
+
+- **Send Email / SMS** — deliver a message
+- **Wait** — pause for a specified duration
+- **Condition** — branch the flow based on contact data or behavior
+- **Update Contact** — set fields or add tags
+
+## Flow states
+
+| State | Description |
+|-------|-------------|
+| Draft | Being designed |
+| Active | Running and processing contacts |
+| Paused | Temporarily stopped |
+| Archived | No longer in use |

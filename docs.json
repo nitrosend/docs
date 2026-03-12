@@ -1,0 +1,73 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Nitrosend",
+  "colors": {
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4F46E5"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://nitrosend.com"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["introduction", "quickstart", "authentication"]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/sending-emails",
+              "guides/managing-contacts",
+              "guides/building-flows",
+              "guides/creating-campaigns"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "concepts/contacts",
+              "concepts/templates",
+              "concepts/flows",
+              "concepts/campaigns",
+              "concepts/segments"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "https://api.nitrosend.com/openapi.yaml"
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Dashboard",
+        "url": "https://app.nitrosend.com"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Nitrosend"
+    }
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "search": {
+    "prompt": "Search docs..."
+  }
+}

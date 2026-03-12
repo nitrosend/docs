@@ -1,0 +1,43 @@
+---
+title: Quickstart
+description: Send your first email in under 5 minutes
+---
+
+# Quickstart
+
+Get up and running with Nitrosend in a few steps.
+
+## 1. Create your account
+
+Sign up at [app.nitrosend.com](https://app.nitrosend.com) and complete the onboarding wizard. This sets up your brand colors, logo, and sending domain.
+
+## 2. Verify your domain
+
+Add the DNS records shown in **Settings > Domains** to authenticate your sending domain. This ensures your emails land in the inbox, not spam.
+
+## 3. Import contacts
+
+Go to **Contacts > Import** and upload a CSV, or add contacts manually. Each contact needs at least an email address.
+
+## 4. Create a template
+
+Head to **Templates** and use the drag-and-drop editor to design your email. Your brand colors and logo are applied automatically.
+
+## 5. Send a campaign
+
+Go to **Campaigns > New**, select your template and audience, and hit send.
+
+## Using the API
+
+If you prefer to integrate programmatically, grab your API key from **Settings > API Keys** and check the [API Reference](/api-reference).
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/messages \
+  -H "Authorization: Bearer nskey_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "user@example.com",
+    "subject": "Hello from Nitrosend",
+    "html": "<h1>Welcome!</h1>"
+  }'
+```
