@@ -1,0 +1,106 @@
+---
+title: Claude Desktop & Cowork
+description: Connect Nitrosend to Claude's desktop app or Cowork for conversational email marketing
+---
+
+# Claude Desktop & Cowork
+
+Claude Desktop and Claude Cowork both support MCP servers, which means you can connect Nitrosend and manage your email marketing through natural conversation.
+
+## What you can do
+
+Talk to Claude naturally to manage your marketing:
+
+- *"Create a campaign for our spring book sale and send it to the newsletter list"*
+- *"Show me how my last email performed"*
+- *"Add these 5 contacts to my VIP list"*
+- *"Build a welcome flow that sends 3 emails over a week"*
+
+Claude handles all the API calls behind the scenes.
+
+## Setup for Claude Desktop
+
+### 1. Get your API key
+
+Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
+
+### 2. Edit your MCP config
+
+Open your Claude Desktop configuration file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add Nitrosend to the `mcpServers` section:
+
+```json
+{
+  "mcpServers": {
+    "nitro": {
+      "command": "npx",
+      "args": ["-y", "@nitrosend/mcp"],
+      "env": {
+        "NITROSEND_API_KEY": "nskey_live_your_key_here"
+      }
+    }
+  }
+}
+```
+
+### 3. Restart Claude Desktop
+
+Close and reopen Claude Desktop. You should see a hammer icon indicating MCP tools are available.
+
+### 4. Verify
+
+Ask Claude:
+
+```
+What's my Nitrosend account status?
+```
+
+## Setup for Claude Cowork
+
+Claude Cowork uses the same MCP configuration as Claude Desktop. Follow the same steps above — the config file location is the same.
+
+## Example conversations
+
+### First-time setup
+
+> **You**: I just signed up for Nitrosend. Help me get set up.
+>
+> **Claude**: Let me check your account status... You need to set up your brand and verify a sending domain. What's your company name and website?
+
+### Creating a campaign
+
+> **You**: Send a newsletter to my subscriber list about our new sci-fi collection.
+>
+> **Claude**: I'll create a campaign with a compelling email. Let me check your brand theme and compose it... Here's a preview. Want me to send a test first?
+
+### Checking performance
+
+> **You**: How did my last campaign do?
+>
+> **Claude**: Your "Spring Reading List" campaign had a 42% open rate and 8.3% click rate. That's above industry benchmarks. The top-clicked link was...
+
+## Available resources
+
+Claude can also read Nitrosend resources for context:
+
+| Resource | What it provides |
+|----------|-----------------|
+| `nitro://guide` | Platform vocabulary, workflow guidance, and tool descriptions |
+| `nitro://schema` | Email component types, flow step types, and filter definitions |
+| `nitro://brand` | Your brand identity — colors, fonts, tone, logo |
+| `nitro://account/state` | Current account status, tier, and limits |
+| `nitro://account/config` | Sender defaults and verified domains |
+
+## Tips
+
+- **Be specific about your audience.** Say "send to the newsletter list" rather than just "send an email" — Claude will ask clarifying questions if needed.
+- **Ask for previews.** Claude can send test emails before going live with a campaign.
+- **Use natural language for segments.** Say "contacts who signed up in the last month" and Claude will build the segment filters.
+
+<Info>
+  The MCP server requires Node.js 18 or later. Make sure `npx` is available on your system PATH.
+</Info>

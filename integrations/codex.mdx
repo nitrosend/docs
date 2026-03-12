@@ -1,0 +1,149 @@
+---
+title: OpenAI Codex CLI
+description: Give Codex CLI access to Nitrosend for AI-powered email automation from your terminal
+---
+
+# OpenAI Codex CLI
+
+[Codex CLI](https://github.com/openai/codex) is OpenAI's terminal-based coding agent. You can give Codex access to Nitrosend by providing it with the REST API and a wrapper script, letting it manage your email marketing from the command line.
+
+## How it works
+
+Codex CLI executes shell commands and reads files. By giving it a helper script and API documentation, Codex can call the Nitrosend REST API using `curl` to manage campaigns, contacts, templates, and more.
+
+## Setup
+
+### 1. Get your API key
+
+Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
+
+### 2. Set the environment variable
+
+Add your API key to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.):
+
+```bash
+export NITROSEND_API_KEY="nskey_live_your_key_here"
+```
+
+Reload your shell:
+
+```bash
+source ~/.zshrc
+```
+
+### 3. Create a helper script
+
+Save this as `nitrosend.sh` in your project or home directory:
+
+```bash
+#!/bin/bash
+# Nitrosend API helper for Codex CLI
+# Usage: ./nitrosend.sh <method> <endpoint> [json_body]
+
+METHOD="${1:-GET}"
+ENDPOINT="$2"
+BODY="$3"
+BASE_URL="https://api.nitrosend.com/v1/my"
+
+if [ -z "$NITROSEND_API_KEY" ]; then
+  echo "Error: NITROSEND_API_KEY not set"
+  exit 1
+fi
+
+CURL_ARGS=(
+  -s
+  -X "$METHOD"
+  -H "Authorization: Bearer $NITROSEND_API_KEY"
+  -H "Content-Type: application/json"
+)
+
+if [ -n "$BODY" ]; then
+  CURL_ARGS+=(-d "$BODY")
+fi
+
+curl "${CURL_ARGS[@]}" "${BASE_URL}${ENDPOINT}" | python3 -m json.tool
+```
+
+Make it executable:
+
+```bash
+chmod +x nitrosend.sh
+```
+
+### 4. Add a Codex instructions file
+
+Create a `codex.md` (or add to your existing one) so Codex knows how to use Nitrosend:
+
+```markdown
+## Nitrosend API Access
+
+You can manage email marketing via the Nitrosend REST API.
+
+Helper script: `./nitrosend.sh <METHOD> <endpoint> [json_body]`
+
+Common operations:
+- Check account: `./nitrosend.sh GET /account`
+- List campaigns: `./nitrosend.sh GET /campaigns`
+- List contacts: `./nitrosend.sh GET /contacts`
+- Send email: `./nitrosend.sh POST /messages '{"channel":"email","to":"user@example.com","subject":"Hello","body":"Hi there"}'`
+- Create campaign: `./nitrosend.sh POST /campaigns '{"name":"My Campaign","channel_type":"email"}'`
+- List templates: `./nitrosend.sh GET /templates`
+
+API base: https://api.nitrosend.com/v1/my
+Auth: Bearer token via $NITROSEND_API_KEY environment variable
+```
+
+### 5. Use with Codex
+
+Start Codex CLI and ask it to manage your email marketing:
+
+```bash
+codex "Check my Nitrosend account status and list my recent campaigns"
+```
+
+```bash
+codex "Send a test email to george@nitrosend.com with the subject 'Hello from Codex'"
+```
+
+```bash
+codex "Import these contacts: jane@example.com (Jane Doe), bob@example.com (Bob Smith)"
+```
+
+## Direct curl usage
+
+You can also use the API directly without the helper script:
+
+```bash
+# Check account status
+curl -s https://api.nitrosend.com/v1/my/account \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" | python3 -m json.tool
+
+# Send a transactional email
+curl -s -X POST https://api.nitrosend.com/v1/my/messages \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "channel": "email",
+    "to": "user@example.com",
+    "subject": "Hello",
+    "body": "<h1>Welcome!</h1>"
+  }' | python3 -m json.tool
+```
+
+## API reference
+
+| Action | Command |
+|--------|---------|
+| Account status | `./nitrosend.sh GET /account` |
+| List campaigns | `./nitrosend.sh GET /campaigns` |
+| Create campaign | `./nitrosend.sh POST /campaigns '{"name":"...","channel_type":"email"}'` |
+| List contacts | `./nitrosend.sh GET /contacts` |
+| Send email | `./nitrosend.sh POST /messages '{"channel":"email","to":"...","subject":"...","body":"..."}'` |
+| List templates | `./nitrosend.sh GET /templates` |
+| List segments | `./nitrosend.sh GET /segments` |
+
+See the full [API Reference](/api-reference) for all available endpoints.
+
+<Info>
+  Codex CLI runs in your terminal with access to your environment variables. Make sure `NITROSEND_API_KEY` is set in your shell before starting Codex.
+</Info>

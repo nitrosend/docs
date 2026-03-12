@@ -1,0 +1,171 @@
+---
+title: ChatGPT / GPT
+description: Use Nitrosend with ChatGPT custom GPTs or the OpenAI Assistants API
+---
+
+# ChatGPT / GPT
+
+You can connect Nitrosend to ChatGPT by creating a custom GPT with API actions, or by using the OpenAI Assistants API with function calling. Both methods use the Nitrosend REST API.
+
+## Option 1: Custom GPT with Actions
+
+Create a custom GPT in ChatGPT that can manage your email marketing.
+
+### 1. Get your API key
+
+Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
+
+### 2. Create a custom GPT
+
+Go to [ChatGPT](https://chat.openai.com) → **Explore GPTs** → **Create a GPT**.
+
+### 3. Add the Nitrosend action
+
+In the GPT editor, go to **Configure** → **Actions** → **Create new action**.
+
+Set the **Authentication** to:
+- Type: **API Key**
+- Auth Type: **Bearer**
+- Key: your `nskey_live_...` key
+
+Import the OpenAPI schema from:
+
+```
+https://api.nitrosend.com/openapi.yaml
+```
+
+This automatically imports all available Nitrosend endpoints as GPT actions.
+
+### 4. Add instructions
+
+In the GPT's **Instructions** field, add context about your use case:
+
+```
+You are an email marketing assistant connected to Nitrosend.
+You can create campaigns, manage contacts, build automation flows,
+and check analytics. Always confirm before sending campaigns.
+Ask for a preview or test send before going live.
+```
+
+### 5. Save and use
+
+Save your GPT. You can now ask it things like:
+
+- *"Create an email campaign about our summer sale"*
+- *"How many subscribers do I have?"*
+- *"Show me the performance of my last campaign"*
+
+## Option 2: OpenAI Assistants API with function calling
+
+For programmatic integration, define Nitrosend operations as functions in the Assistants API.
+
+### Define your tools
+
+```python
+import openai
+
+client = openai.OpenAI()
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "send_email",
+            "description": "Send a transactional email to a single recipient",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "to": {"type": "string", "description": "Recipient email address"},
+                    "subject": {"type": "string", "description": "Email subject line"},
+                    "body": {"type": "string", "description": "Email body (HTML or plain text)"}
+                },
+                "required": ["to", "subject", "body"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_campaigns",
+            "description": "List all email campaigns",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": ["draft", "active", "paused", "completed"],
+                        "description": "Filter by campaign status"
+                    }
+                }
+            }
+        }
+    }
+]
+
+assistant = client.beta.assistants.create(
+    name="Email Marketing Assistant",
+    instructions="You help manage email marketing via Nitrosend.",
+    model="gpt-4o",
+    tools=tools
+)
+```
+
+### Handle function calls
+
+When the assistant calls a function, execute the corresponding Nitrosend API request:
+
+```python
+import requests
+
+NITROSEND_API_KEY = "nskey_live_your_key_here"
+BASE_URL = "https://api.nitrosend.com/v1/my"
+HEADERS = {
+    "Authorization": f"Bearer {NITROSEND_API_KEY}",
+    "Content-Type": "application/json"
+}
+
+def handle_function_call(name, arguments):
+    if name == "send_email":
+        response = requests.post(
+            f"{BASE_URL}/messages",
+            headers=HEADERS,
+            json={
+                "channel": "email",
+                "to": arguments["to"],
+                "subject": arguments["subject"],
+                "body": arguments["body"]
+            }
+        )
+        return response.json()
+
+    elif name == "list_campaigns":
+        params = {}
+        if "status" in arguments:
+            params["status"] = arguments["status"]
+        response = requests.get(
+            f"{BASE_URL}/campaigns",
+            headers=HEADERS,
+            params=params
+        )
+        return response.json()
+```
+
+## Key API endpoints
+
+These are the most useful endpoints for GPT integrations:
+
+| Action | Method | Endpoint |
+|--------|--------|----------|
+| Send a message | `POST` | `/v1/my/messages` |
+| List campaigns | `GET` | `/v1/my/campaigns` |
+| Create a campaign | `POST` | `/v1/my/campaigns` |
+| List contacts | `GET` | `/v1/my/contacts` |
+| Import contacts | `POST` | `/v1/my/contacts/import` |
+| List templates | `GET` | `/v1/my/templates` |
+| Get account info | `GET` | `/v1/my/account` |
+
+See the full [API Reference](/api-reference) for all available endpoints.
+
+<Info>
+  The OpenAPI spec at `https://api.nitrosend.com/openapi.yaml` is always up to date and can be imported directly into any tool that supports OpenAPI 3.1.
+</Info>

@@ -40,6 +40,18 @@
               "concepts/campaigns",
               "concepts/segments"
             ]
+          },
+          {
+            "group": "AI & API Integrations",
+            "pages": [
+              "integrations/overview",
+              "integrations/claude-code",
+              "integrations/claude-desktop",
+              "integrations/chatgpt",
+              "integrations/gemini",
+              "integrations/codex",
+              "integrations/rest-api"
+            ]
           }
         ]
       },

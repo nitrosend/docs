@@ -1,0 +1,244 @@
+---
+title: REST API
+description: Use the Nitrosend REST API from any language, tool, or automation platform
+---
+
+# REST API
+
+The Nitrosend REST API works with any HTTP client. Use it to integrate email marketing into your app, connect to automation platforms like Zapier or n8n, or build custom tools in any programming language.
+
+## Base URL
+
+```
+https://api.nitrosend.com/v1/my
+```
+
+All endpoints are prefixed with `/v1/my` and scoped to your account.
+
+## Authentication
+
+Every request requires a Bearer token in the `Authorization` header:
+
+```bash
+Authorization: Bearer nskey_live_your_key_here
+```
+
+Get your API key from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+
+## Quick examples
+
+### Send an email
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/messages \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "channel": "email",
+    "to": "user@example.com",
+    "subject": "Welcome to our platform",
+    "body": "<h1>Welcome!</h1><p>Thanks for signing up.</p>"
+  }'
+```
+
+### List campaigns
+
+```bash
+curl https://api.nitrosend.com/v1/my/campaigns \
+  -H "Authorization: Bearer $NITROSEND_API_KEY"
+```
+
+### Create a contact
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/contacts \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "opt_in": true
+  }'
+```
+
+### Get account status
+
+```bash
+curl https://api.nitrosend.com/v1/my/account \
+  -H "Authorization: Bearer $NITROSEND_API_KEY"
+```
+
+## Language examples
+
+### Python
+
+```python
+import requests
+
+API_KEY = "nskey_live_your_key_here"
+BASE_URL = "https://api.nitrosend.com/v1/my"
+HEADERS = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Send an email
+response = requests.post(f"{BASE_URL}/messages", headers=HEADERS, json={
+    "channel": "email",
+    "to": "user@example.com",
+    "subject": "Hello from Python",
+    "body": "<h1>Hi!</h1>"
+})
+print(response.json())
+
+# List campaigns
+campaigns = requests.get(f"{BASE_URL}/campaigns", headers=HEADERS)
+print(campaigns.json())
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = "nskey_live_your_key_here";
+const BASE_URL = "https://api.nitrosend.com/v1/my";
+const headers = {
+  Authorization: `Bearer ${API_KEY}`,
+  "Content-Type": "application/json",
+};
+
+// Send an email
+const response = await fetch(`${BASE_URL}/messages`, {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    channel: "email",
+    to: "user@example.com",
+    subject: "Hello from Node.js",
+    body: "<h1>Hi!</h1>",
+  }),
+});
+console.log(await response.json());
+
+// List campaigns
+const campaigns = await fetch(`${BASE_URL}/campaigns`, { headers });
+console.log(await campaigns.json());
+```
+
+### Ruby
+
+```ruby
+require "net/http"
+require "json"
+
+API_KEY = "nskey_live_your_key_here"
+BASE_URL = "https://api.nitrosend.com/v1/my"
+
+def nitrosend_request(method, path, body = nil)
+  uri = URI("#{BASE_URL}#{path}")
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+
+  request = case method
+            when :get then Net::HTTP::Get.new(uri)
+            when :post then Net::HTTP::Post.new(uri)
+            end
+
+  request["Authorization"] = "Bearer #{API_KEY}"
+  request["Content-Type"] = "application/json"
+  request.body = body.to_json if body
+
+  JSON.parse(http.request(request).body)
+end
+
+# Send an email
+result = nitrosend_request(:post, "/messages", {
+  channel: "email",
+  to: "user@example.com",
+  subject: "Hello from Ruby",
+  body: "<h1>Hi!</h1>"
+})
+puts result
+```
+
+## Endpoint reference
+
+| Action | Method | Endpoint |
+|--------|--------|----------|
+| **Messages** | | |
+| Send a message | `POST` | `/messages` |
+| List messages | `GET` | `/messages` |
+| **Campaigns** | | |
+| List campaigns | `GET` | `/campaigns` |
+| Create campaign | `POST` | `/campaigns` |
+| Get campaign | `GET` | `/campaigns/{id}` |
+| Update campaign | `PATCH` | `/campaigns/{id}` |
+| Send campaign | `POST` | `/campaigns/{id}/send` |
+| **Contacts** | | |
+| List contacts | `GET` | `/contacts` |
+| Create contact | `POST` | `/contacts` |
+| Search contacts | `GET` | `/contacts/search?q=...` |
+| **Lists** | | |
+| List contact lists | `GET` | `/lists` |
+| Create list | `POST` | `/lists` |
+| **Templates** | | |
+| List templates | `GET` | `/templates` |
+| Create template | `POST` | `/templates` |
+| Get template | `GET` | `/templates/{id}` |
+| Update template | `PATCH` | `/templates/{id}` |
+| Send test email | `POST` | `/templates/{id}/send_test` |
+| **Flows** | | |
+| List flows | `GET` | `/flows` |
+| Create flow | `POST` | `/flows` |
+| **Segments** | | |
+| List segments | `GET` | `/segments` |
+| **Account** | | |
+| Get account info | `GET` | `/account` |
+
+See the full [API Reference](/api-reference) for detailed request/response schemas.
+
+## Pagination
+
+List endpoints return paginated results. Pagination headers are included in the response:
+
+| Header | Description |
+|--------|-------------|
+| `X-Total-Count` | Total number of records |
+| `X-Total-Pages` | Total number of pages |
+| `X-Page-Number` | Current page number |
+
+Use `?page=2&per_page=25` query parameters to navigate pages.
+
+## Error handling
+
+Errors return JSON with a consistent structure:
+
+```json
+{
+  "error": true,
+  "code": "validation_error",
+  "message": "Email is required",
+  "validation_errors": {
+    "email": ["can't be blank"]
+  }
+}
+```
+
+| Status code | Meaning |
+|-------------|---------|
+| `200` | Success |
+| `201` | Created |
+| `401` | Invalid or missing API key |
+| `404` | Resource not found |
+| `422` | Validation error |
+| `429` | Rate limited |
+
+## OpenAPI spec
+
+The full API specification is available as OpenAPI 3.1 YAML:
+
+```
+https://api.nitrosend.com/openapi.yaml
+```
+
+Import this into any tool that supports OpenAPI — Postman, Insomnia, Swagger UI, or API clients in any language.
