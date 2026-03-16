@@ -16,21 +16,21 @@ description: Connect Nitrosend to Claude Cowork for team-based AI email marketin
 The connection method is the same as Claude Desktop — Cowork uses the same Custom Connector system.
 
 <Steps>
-  <Step title="Get your API key">
-    Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key (starts with `nskey_live_`).
-  </Step>
   <Step title="Open Settings">
     In Claude Cowork, go to **Settings** > **Connections**.
   </Step>
   <Step title="Add Nitrosend">
     Click **Add Custom Connector** and enter:
     - **URL**: `https://api.nitrosend.com/mcp`
-    
-    Click **Connect**, then authenticate with your API key when prompted.
+
+    Click **Connect**.
+  </Step>
+  <Step title="Sign in">
+    Claude will open a Nitrosend sign-in window. Log in or create a free account — no API key needed.
   </Step>
   <Step title="Start using Nitrosend">
     Nitrosend MCP is now available as a Connector in your Cowork workspace. Open a new conversation and start prompting:
-    
+
     ```
     What's my Nitrosend account status?
     ```

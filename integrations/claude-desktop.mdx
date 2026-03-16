@@ -14,31 +14,31 @@ Connect Nitrosend to Claude Desktop as a Custom Connector and manage your email 
 ## Setup: Add Nitrosend as a Custom Connector
 
 <Steps>
-  <Step title="Get your API key">
-    Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key (starts with `nskey_live_`).
-  </Step>
   <Step title="Open Claude Desktop Settings">
     In Claude Desktop, go to **Settings** (gear icon) > **Connections**.
   </Step>
   <Step title="Add Nitrosend">
     Click **Add Custom Connector** and enter:
     - **URL**: `https://api.nitrosend.com/mcp`
-    
-    Click **Connect**, then authenticate with your API key when prompted.
+
+    Click **Connect**.
+  </Step>
+  <Step title="Sign in">
+    Claude will open a Nitrosend sign-in window. Log in or create a free account — no API key needed.
   </Step>
   <Step title="Start using Nitrosend">
     Open a new conversation and ask Claude anything about your email marketing:
-    
+
     ```
     What's my Nitrosend account status?
     ```
-    
+
     Claude will use the Nitrosend MCP tools to check your account and respond with your status, recommendations, and next steps.
   </Step>
 </Steps>
 
 <Tip>
-  The Custom Connector method is the recommended way to connect. It's simpler than editing config files and keeps your API key secure.
+  No API key required. The Custom Connector handles authentication through a secure sign-in flow — just log in when prompted and you're connected.
 </Tip>
 
 ## What Claude can do with Nitrosend connected
@@ -94,7 +94,7 @@ Beyond tools, Claude can read live resources for deeper context:
 
 ## Alternative: Manual MCP configuration
 
-If you prefer to configure MCP manually (or if the Custom Connector method isn't available in your version), edit your Claude Desktop config file:
+If the Custom Connector method isn't available in your version of Claude Desktop, you can configure MCP manually using an API key:
 
 <Expandable title="Manual config file setup">
 

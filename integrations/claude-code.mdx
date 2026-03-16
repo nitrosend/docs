@@ -13,25 +13,23 @@ description: Connect Nitrosend to Claude Code via MCP for terminal-based AI emai
 
 ## Setup
 
-### Step 1: Get your API key
-
-Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
-
-### Step 2: Add the MCP server
+### Step 1: Add the MCP server
 
 Run this single command in your terminal:
 
 ```bash
-claude mcp add nitro \
-  -e NITROSEND_API_KEY=nskey_live_your_key_here \
-  -- npx -y @nitrosend/mcp
+claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
 ```
 
-That's it. Claude Code now has full access to your email marketing.
+That's it — no API key needed.
+
+### Step 2: Sign in
+
+Start a Claude Code session and use any Nitrosend tool. Claude will open a sign-in window automatically. Log in or create a free account.
 
 ### Step 3: Verify the connection
 
-Start a Claude Code session and ask:
+Ask Claude:
 
 ```
 What's my Nitrosend account status?
@@ -41,10 +39,10 @@ Claude will call the `nitro_get_status` tool and show your account health, onboa
 
 ## How MCP works
 
-The MCP server (`@nitrosend/mcp`) runs as a local bridge process:
+Claude Code connects directly to the Nitrosend MCP endpoint over HTTP:
 
-1. Claude Code sends tool calls via MCP protocol (stdio)
-2. The bridge forwards them as authenticated HTTP requests to `api.nitrosend.com/mcp`
+1. Claude Code sends tool calls via MCP protocol to `api.nitrosend.com/mcp`
+2. Authentication is handled via OAuth — you sign in once and the token is managed automatically
 3. Structured results come back to Claude with full context
 
 No data is stored locally. All state lives in your Nitrosend account.
@@ -120,14 +118,10 @@ Add the MCP server at different scopes depending on your needs:
 
 ```bash
 # User scope — available in all Claude Code sessions (recommended)
-claude mcp add nitro -s user \
-  -e NITROSEND_API_KEY=nskey_live_... \
-  -- npx -y @nitrosend/mcp
+claude mcp add --transport http -s user nitrosend https://api.nitrosend.com/mcp
 
 # Project scope — only available in this directory
-claude mcp add nitro -s project \
-  -e NITROSEND_API_KEY=nskey_live_... \
-  -- npx -y @nitrosend/mcp
+claude mcp add --transport http -s project nitrosend https://api.nitrosend.com/mcp
 ```
 
 ## Troubleshooting
@@ -145,5 +139,5 @@ claude mcp add nitro -s project \
 </AccordionGroup>
 
 <Info>
-  The MCP package is `@nitrosend/mcp` on npm. No global install needed — `npx -y` handles everything.
+  No API key or local dependencies required. Authentication is handled via OAuth sign-in when you first connect.
 </Info>
