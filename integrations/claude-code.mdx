@@ -127,14 +127,14 @@ claude mcp add --transport http -s project nitrosend https://api.nitrosend.com/m
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="MCP server not found">
-    Make sure you have Node.js 18+ installed and `npx` is on your PATH.
+  <Accordion title="Connection failed">
+    Make sure `api.nitrosend.com` is reachable from your network. Run `curl -I https://api.nitrosend.com/mcp` to check connectivity.
   </Accordion>
   <Accordion title="Authentication failed">
-    Double-check your API key. It should start with `nskey_live_` for production or `nskey_test_` for test mode.
+    The sign-in window should open automatically on first use. If it doesn't, try removing and re-adding the server: `claude mcp remove nitrosend` then re-run the add command.
   </Accordion>
   <Accordion title="Tool call timed out">
-    The MCP server includes automatic retry logic for transient errors. If calls consistently time out, check your network connection and that `api.nitrosend.com` is reachable.
+    If calls consistently time out, check your network connection. You can also try removing and re-adding the MCP server to refresh the session.
   </Accordion>
 </AccordionGroup>
 
