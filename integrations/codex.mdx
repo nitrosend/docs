@@ -1,17 +1,13 @@
 ---
 title: OpenAI Codex CLI
-description: Give Codex CLI access to Nitrosend for AI-powered email automation from your terminal
+description: Connect Codex CLI to Nitrosend via MCP for AI-powered email automation from your terminal
 ---
 
 # OpenAI Codex CLI
 
-[Codex CLI](https://github.com/openai/codex) is OpenAI's terminal-based coding agent. You can give Codex access to Nitrosend by providing it with the REST API and a wrapper script, letting it manage your email marketing from the command line.
+[Codex CLI](https://github.com/openai/codex) is OpenAI's terminal-based coding agent. Codex has native MCP support, so you get the full Nitrosend toolkit — 16 tools, live brand context, and account state — with a single config entry.
 
-## How it works
-
-Codex CLI executes shell commands and reads files. By giving it a helper script and API documentation, Codex can call the Nitrosend REST API using `curl` to manage campaigns, contacts, templates, and more.
-
-## Setup
+## MCP Setup (Recommended)
 
 ### 1. Get your API key
 
@@ -31,7 +27,49 @@ Reload your shell:
 source ~/.zshrc
 ```
 
-### 3. Create a helper script
+### 3. Add the MCP server
+
+Add to `~/.codex/config.toml` (global) or `.codex/config.toml` (project-scoped, trusted projects only):
+
+```toml
+[mcp_servers.nitrosend]
+url = "https://api.nitrosend.com/mcp"
+bearer_token_env_var = "NITROSEND_API_KEY"
+```
+
+Or use the CLI:
+
+```bash
+codex mcp add nitrosend --transport http --url https://api.nitrosend.com/mcp
+```
+
+### 4. Use it
+
+Start Codex and ask it to manage your email marketing:
+
+```bash
+codex "Check my Nitrosend account status and draft a welcome email"
+```
+
+```bash
+codex "Create a campaign for our summer sale and add a 10% discount code"
+```
+
+```bash
+codex "Show me the performance of my last campaign"
+```
+
+Codex now has access to all 16 Nitrosend MCP tools — composing emails, managing contacts, building flows, checking analytics, and more.
+
+<Tip>
+  MCP gives Codex your full brand context — colors, fonts, tone of voice — so emails it creates are on-brand without extra prompting.
+</Tip>
+
+## REST API (Alternative)
+
+If you prefer direct API calls, you can use Nitrosend via `curl` and a helper script.
+
+### Create a helper script
 
 Save this as `nitrosend.sh` in your project or home directory:
 
@@ -70,7 +108,7 @@ Make it executable:
 chmod +x nitrosend.sh
 ```
 
-### 4. Add a Codex instructions file
+### Add a Codex instructions file
 
 Create a `codex.md` (or add to your existing one) so Codex knows how to use Nitrosend:
 
@@ -93,54 +131,17 @@ API base: https://api.nitrosend.com/v1/my
 Auth: Bearer token via $NITROSEND_API_KEY environment variable
 ```
 
-### 5. Use with Codex
-
-Start Codex CLI and ask it to manage your email marketing:
-
-```bash
-codex "Check my Nitrosend account status and list my recent campaigns"
-```
-
-```bash
-codex "Send a test email to george@nitrosend.com with the subject 'Hello from Codex'"
-```
-
-```bash
-codex "Import these contacts: jane@example.com (Jane Doe), bob@example.com (Bob Smith)"
-```
-
-## Direct curl usage
-
-You can also use the API directly without the helper script:
-
-```bash
-# Check account status
-curl -s https://api.nitrosend.com/v1/my/account \
-  -H "Authorization: Bearer $NITROSEND_API_KEY" | python3 -m json.tool
-
-# Send a transactional email
-curl -s -X POST https://api.nitrosend.com/v1/my/messages \
-  -H "Authorization: Bearer $NITROSEND_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "channel": "email",
-    "to": "user@example.com",
-    "subject": "Hello",
-    "body": "<h1>Welcome!</h1>"
-  }' | python3 -m json.tool
-```
-
 ## API reference
 
-| Action | Command |
-|--------|---------|
-| Account status | `./nitrosend.sh GET /account` |
-| List campaigns | `./nitrosend.sh GET /campaigns` |
-| Create campaign | `./nitrosend.sh POST /campaigns '{"name":"...","channel_type":"email"}'` |
-| List contacts | `./nitrosend.sh GET /contacts` |
-| Send email | `./nitrosend.sh POST /messages '{"channel":"email","to":"...","subject":"...","body":"..."}'` |
-| List templates | `./nitrosend.sh GET /templates` |
-| List segments | `./nitrosend.sh GET /segments` |
+| Action | Method | Endpoint |
+|--------|--------|----------|
+| Account status | `GET` | `/v1/my/account` |
+| List campaigns | `GET` | `/v1/my/campaigns` |
+| Create campaign | `POST` | `/v1/my/campaigns` |
+| List contacts | `GET` | `/v1/my/contacts` |
+| Send email | `POST` | `/v1/my/messages` |
+| List templates | `GET` | `/v1/my/templates` |
+| List segments | `GET` | `/v1/my/segments` |
 
 See the full [API Reference](/api-reference) for all available endpoints.
 

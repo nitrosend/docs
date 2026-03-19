@@ -9,7 +9,7 @@ Nitrosend is designed to be controlled by AI. Instead of clicking through dashbo
 
 ## MCP: The Fastest Way to Connect
 
-**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, Cowork, and other MCP-compatible clients can access your full email marketing platform with zero coding.
+**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Codex, Gemini, and other MCP-compatible clients can access your full email marketing platform with zero coding.
 
 ### What MCP gives your AI
 
@@ -24,8 +24,8 @@ When you connect via MCP, your AI assistant gets:
 
 | | MCP | REST API |
 |---|---|---|
-| **Best for** | Claude Desktop, Claude Cowork, Claude Code | ChatGPT, Gemini, Codex, custom apps |
-| **Setup** | 1 click (Custom Connector) or 1 command | Define function calls or use curl |
+| **Best for** | Claude, ChatGPT, Codex, Gemini, and any MCP client | Custom apps, webhooks, automation platforms |
+| **Setup** | 1 click or 1 config entry | Define function calls or use curl |
 | **AI context** | Full — brand, schema, guide, account state | You provide context manually |
 | **Tools** | 16 purpose-built tools with validation | Raw HTTP endpoints |
 | **Coding required** | No | Minimal to moderate |
@@ -48,7 +48,7 @@ API keys start with `nskey_live_` (production) or `nskey_test_` (test mode).
 
 ### MCP connections (recommended)
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="Claude Desktop" icon="message-bot" href="/integrations/claude-desktop">
     Add Nitrosend as a Custom Connector in Claude Desktop. One click, full access.
   </Card>
@@ -58,20 +58,20 @@ API keys start with `nskey_live_` (production) or `nskey_test_` (test mode).
   <Card title="Claude Code" icon="terminal" href="/integrations/claude-code">
     Add the MCP server to Claude Code for terminal-based email automation.
   </Card>
-</CardGroup>
-
-### REST API connections
-
-<CardGroup cols={2}>
   <Card title="ChatGPT / GPT" icon="robot" href="/integrations/chatgpt">
-    Build a custom GPT with Nitrosend actions, or use the Assistants API.
-  </Card>
-  <Card title="Google Gemini" icon="google" href="/integrations/gemini">
-    Connect via Gemini function calling or Google AI Studio.
+    Connect via MCP in Developer Mode, or build a custom GPT with API actions.
   </Card>
   <Card title="OpenAI Codex" icon="code" href="/integrations/codex">
-    Give Codex CLI access to Nitrosend for terminal-based email automation.
+    Native MCP support via config.toml. Full toolkit in your terminal.
   </Card>
+  <Card title="Google Gemini" icon="google" href="/integrations/gemini">
+    Connect via Gemini CLI MCP, or use function calling with the AI SDK.
+  </Card>
+</CardGroup>
+
+### REST API (alternative)
+
+<CardGroup cols={2}>
   <Card title="REST API (Any Platform)" icon="globe" href="/integrations/rest-api">
     Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code.
   </Card>

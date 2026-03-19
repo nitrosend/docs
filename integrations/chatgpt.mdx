@@ -1,25 +1,53 @@
 ---
 title: ChatGPT / GPT
-description: Use Nitrosend with ChatGPT custom GPTs or the OpenAI Assistants API
+description: Connect Nitrosend to ChatGPT via MCP Developer Mode or custom GPT actions
 ---
 
 # ChatGPT / GPT
 
-You can connect Nitrosend to ChatGPT by creating a custom GPT with API actions, or by using the OpenAI Assistants API with function calling. Both methods use the Nitrosend REST API.
+ChatGPT has native MCP support in Developer Mode, giving you the full Nitrosend toolkit — 16 tools, live brand context, and account state — directly in your chat.
 
-## Option 1: Custom GPT with Actions
-
-Create a custom GPT in ChatGPT that can manage your email marketing.
+## MCP via Developer Mode (Recommended)
 
 ### 1. Get your API key
 
 Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
 
-### 2. Create a custom GPT
+### 2. Enable Developer Mode
+
+In ChatGPT, go to **Settings** → **Developer Mode** (beta).
+
+### 3. Add the Nitrosend MCP server
+
+Click **Add MCP Server** and configure:
+
+- **Name:** Nitrosend
+- **Transport:** Streamable HTTP
+- **URL:** `https://api.nitrosend.com/mcp`
+- **Authentication:** Bearer token → paste your `nskey_live_...` key
+
+### 4. Use it
+
+ChatGPT now has access to all 16 Nitrosend MCP tools. Ask it things like:
+
+- *"Check my Nitrosend account status"*
+- *"Create an email campaign about our summer sale"*
+- *"Show me the performance of my last campaign"*
+- *"Draft a welcome flow for new subscribers"*
+
+<Tip>
+  MCP gives ChatGPT your full brand context — colors, fonts, tone of voice — so emails it creates are on-brand without extra prompting.
+</Tip>
+
+## Custom GPT with Actions (Alternative)
+
+You can also create a custom GPT that uses the Nitrosend REST API directly.
+
+### 1. Create a custom GPT
 
 Go to [ChatGPT](https://chat.openai.com) → **Explore GPTs** → **Create a GPT**.
 
-### 3. Add the Nitrosend action
+### 2. Add the Nitrosend action
 
 In the GPT editor, go to **Configure** → **Actions** → **Create new action**.
 
@@ -36,7 +64,7 @@ https://api.nitrosend.com/openapi.yaml
 
 This automatically imports all available Nitrosend endpoints as GPT actions.
 
-### 4. Add instructions
+### 3. Add instructions
 
 In the GPT's **Instructions** field, add context about your use case:
 
@@ -47,7 +75,7 @@ and check analytics. Always confirm before sending campaigns.
 Ask for a preview or test send before going live.
 ```
 
-### 5. Save and use
+### 4. Save and use
 
 Save your GPT. You can now ask it things like:
 
@@ -55,7 +83,7 @@ Save your GPT. You can now ask it things like:
 - *"How many subscribers do I have?"*
 - *"Show me the performance of my last campaign"*
 
-## Option 2: OpenAI Assistants API with function calling
+## Assistants API with function calling (Alternative)
 
 For programmatic integration, define Nitrosend operations as functions in the Assistants API.
 
@@ -151,8 +179,6 @@ def handle_function_call(name, arguments):
 ```
 
 ## Key API endpoints
-
-These are the most useful endpoints for GPT integrations:
 
 | Action | Method | Endpoint |
 |--------|--------|----------|
