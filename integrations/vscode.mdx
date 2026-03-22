@@ -1,0 +1,85 @@
+---
+title: VS Code (Copilot)
+description: Connect Nitrosend to VS Code via MCP for AI-powered email marketing with GitHub Copilot
+---
+
+# VS Code + Nitrosend MCP
+
+[VS Code](https://code.visualstudio.com) with GitHub Copilot supports MCP servers natively. Connect Nitrosend and Copilot becomes your email marketing assistant — compose campaigns, manage contacts, and check analytics from your editor.
+
+## Setup
+
+### Step 1: Add the MCP server
+
+Add to `.vscode/mcp.json` in your workspace:
+
+```json
+{
+  "servers": {
+    "nitrosend": {
+      "type": "http",
+      "url": "https://api.nitrosend.com/mcp"
+    }
+  }
+}
+```
+
+Or use the command palette: **MCP: Add Server** → select HTTP type → enter `https://api.nitrosend.com/mcp`.
+
+For global access across all workspaces, use the **MCP: Open User Configuration** command instead.
+
+### Step 2: Sign in
+
+VS Code handles OAuth automatically. On first tool call, your browser opens for Nitrosend sign-in. Log in or create a free account — no API key needed.
+
+### Step 3: Verify
+
+In Copilot chat, ask:
+
+```
+What's my Nitrosend account status?
+```
+
+Copilot calls `nitro_get_status` and shows your account health.
+
+## Managing tools
+
+Click the **Configure Tools** button in the Copilot chat input to see all 16 Nitrosend tools. You can toggle specific tools on or off.
+
+## Example workflows
+
+### Brand setup + first email
+
+```
+Set up my brand from https://mysite.com and draft a welcome email for new subscribers.
+```
+
+### Campaign creation
+
+```
+Create a campaign called "Weekly Update" for my newsletter list with a text section and a CTA button linking to our blog.
+```
+
+### Performance check
+
+```
+Show me insights for my most recent campaign.
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="OAuth window doesn't open">
+    Make sure you're running VS Code 1.99 or later — MCP support was added in this version. Check that GitHub Copilot extension is installed and active.
+  </Accordion>
+  <Accordion title="Server not detected">
+    Verify the `mcp.json` file is valid JSON. Use the command palette **MCP: List Servers** to check if Nitrosend appears.
+  </Accordion>
+  <Accordion title="Tool calls time out">
+    Brand scraping can take 20-30 seconds. If other calls time out, check connectivity to `api.nitrosend.com`.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  VS Code supports OAuth 2.1 natively for MCP servers — no API keys or middleware needed.
+</Info>

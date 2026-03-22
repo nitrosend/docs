@@ -1,0 +1,97 @@
+---
+title: Cursor
+description: Connect Nitrosend to Cursor via MCP for AI-powered email marketing from your editor
+---
+
+# Cursor + Nitrosend MCP
+
+[Cursor](https://cursor.com) is the AI-first code editor. Connect Nitrosend via MCP and Cursor's AI becomes a full email marketing assistant — compose emails, manage contacts, and launch campaigns without leaving your editor.
+
+## Setup
+
+### Option A: OAuth via mcp-remote (Recommended)
+
+No API key needed. Sign in via your browser on first use.
+
+Add to `.cursor/mcp.json` in your project (or global config):
+
+```json
+{
+  "mcpServers": {
+    "nitrosend": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://api.nitrosend.com/mcp"]
+    }
+  }
+}
+```
+
+Restart Cursor. On first tool call, your browser opens for Nitrosend sign-in.
+
+### Option B: API Key via stdio bridge
+
+For environments where browser-based auth isn't available.
+
+```json
+{
+  "mcpServers": {
+    "nitrosend": {
+      "command": "npx",
+      "args": ["-y", "@nitrosend/mcp"],
+      "env": {
+        "NITROSEND_API_KEY": "nskey_live_your_key_here"
+      }
+    }
+  }
+}
+```
+
+Get your API key from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+
+### Verify
+
+Open Cursor's chat and ask:
+
+```
+What's my Nitrosend account status?
+```
+
+Cursor calls `nitro_get_status` and shows your account health.
+
+## Example workflows
+
+### Set up your brand
+
+```
+Scrape my brand from https://mysite.com and set up Nitrosend with my brand colors and fonts.
+```
+
+### Compose a campaign
+
+```
+Create a campaign called "Product Launch" targeting my subscriber list. Include a hero section, feature highlights, and a CTA button.
+```
+
+### Check analytics
+
+```
+Show me open and click rates for my last 5 campaigns.
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="MCP tools don't appear">
+    Restart Cursor after adding the config. Check that `npx` is available in your PATH.
+  </Accordion>
+  <Accordion title="mcp-remote auth fails">
+    Delete the cached token and retry. The token cache is stored by mcp-remote in your system's temp directory.
+  </Accordion>
+  <Accordion title="Tool calls are slow">
+    Brand scraping takes 20-30 seconds (one-time operation). Other tool calls should complete in 1-3 seconds.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  OAuth via mcp-remote is recommended — no API keys to manage, tokens refresh automatically.
+</Info>

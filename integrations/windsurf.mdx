@@ -1,0 +1,76 @@
+---
+title: Windsurf
+description: Connect Nitrosend to Windsurf via MCP for AI-powered email marketing with Cascade
+---
+
+# Windsurf + Nitrosend MCP
+
+[Windsurf](https://windsurf.com) is the AI-powered editor by Codeium. Windsurf supports MCP servers natively with OAuth across all transport types. Connect Nitrosend and Cascade becomes your email marketing assistant.
+
+## Setup
+
+### Step 1: Add the MCP server
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "nitrosend": {
+      "serverUrl": "https://api.nitrosend.com/mcp"
+    }
+  }
+}
+```
+
+### Step 2: Sign in
+
+Restart Windsurf. On first tool call, Windsurf opens your browser for Nitrosend sign-in. Log in or create a free account — no API key needed.
+
+### Step 3: Verify
+
+In Cascade, ask:
+
+```
+What's my Nitrosend account status?
+```
+
+Cascade calls `nitro_get_status` and shows your account health.
+
+## Example workflows
+
+### Brand + email in one prompt
+
+```
+Scrape my brand from https://mysite.com and compose a launch announcement email.
+```
+
+### Build a flow
+
+```
+Create a welcome flow: when a contact is added, send a welcome email, wait 3 days, then send a follow-up.
+```
+
+### Check performance
+
+```
+Show me open rates and click rates for my last campaign.
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Server doesn't connect">
+    Make sure the config file is valid JSON and located at `~/.codeium/windsurf/mcp_config.json`. Restart Windsurf after editing.
+  </Accordion>
+  <Accordion title="OAuth sign-in fails">
+    Check that your browser can reach `api.nitrosend.com`. If sign-in keeps failing, try clearing Windsurf's MCP auth cache.
+  </Accordion>
+  <Accordion title="Tool calls time out">
+    Brand scraping takes 20-30 seconds (one-time). Other calls should complete in 1-3 seconds. Check your network if timeouts persist.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  Windsurf supports OAuth natively for all MCP transport types — no API keys or bridge tools needed.
+</Info>

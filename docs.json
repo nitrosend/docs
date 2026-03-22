@@ -23,22 +23,21 @@
             "pages": ["introduction", "quickstart", "authentication"]
           },
           {
-            "group": "MCP Integrations",
+            "group": "Integrations",
             "pages": [
               "integrations/overview",
+              "integrations/claude-code",
               "integrations/claude-desktop",
               "integrations/claude-cowork",
-              "integrations/claude-code",
-              "integrations/mcp-brand-memory"
-            ]
-          },
-          {
-            "group": "API Integrations",
-            "pages": [
               "integrations/chatgpt",
-              "integrations/gemini",
               "integrations/codex",
-              "integrations/rest-api"
+              "integrations/gemini",
+              "integrations/cursor",
+              "integrations/vscode",
+              "integrations/windsurf",
+              "integrations/zed",
+              "integrations/rest-api",
+              "integrations/mcp-brand-memory"
             ]
           },
           {

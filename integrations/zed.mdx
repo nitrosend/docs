@@ -1,0 +1,86 @@
+---
+title: Zed
+description: Connect Nitrosend to Zed via MCP for AI-powered email marketing
+---
+
+# Zed + Nitrosend MCP
+
+[Zed](https://zed.dev) is a high-performance code editor with AI assistant support. Zed currently supports MCP servers via stdio transport — use `mcp-remote` to bridge the connection to Nitrosend's HTTP server.
+
+## Setup
+
+### Step 1: Add the MCP server
+
+Add to your Zed settings (Settings → Open Settings):
+
+```json
+{
+  "context_servers": {
+    "nitrosend": {
+      "command": {
+        "path": "npx",
+        "args": ["-y", "mcp-remote", "https://api.nitrosend.com/mcp"]
+      }
+    }
+  }
+}
+```
+
+### Step 2: Sign in
+
+On first tool call, `mcp-remote` opens your browser for Nitrosend sign-in. Log in or create a free account — no API key needed.
+
+### Step 3: Verify
+
+In Zed's AI assistant, ask:
+
+```
+What's my Nitrosend account status?
+```
+
+## Alternative: API Key
+
+If browser-based OAuth doesn't work in your environment, use the stdio bridge with an API key:
+
+```json
+{
+  "context_servers": {
+    "nitrosend": {
+      "command": {
+        "path": "npx",
+        "args": ["-y", "@nitrosend/mcp"],
+        "env": {
+          "NITROSEND_API_KEY": "nskey_live_your_key_here"
+        }
+      }
+    }
+  }
+}
+```
+
+Get your API key from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+
+## Example workflows
+
+```
+Set up my brand from https://mysite.com and draft a welcome email.
+```
+
+```
+Create a campaign called "Product Update" targeting my main list.
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="mcp-remote not found">
+    Make sure `npx` is available in your PATH. You may need Node.js 18+ installed.
+  </Accordion>
+  <Accordion title="OAuth window doesn't open">
+    `mcp-remote` launches a browser for auth. If your environment doesn't support this, use the API key method instead.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  Zed's native HTTP transport and OAuth support is in development. Once available, you'll be able to connect directly without `mcp-remote`.
+</Info>
