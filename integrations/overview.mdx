@@ -34,38 +34,52 @@ When you connect via MCP, your AI assistant gets:
   **Use MCP whenever possible.** It gives your AI far more context about your account, brand, and email best practices than the REST API alone. The result is better emails with less prompting.
 </Tip>
 
-## Get your API key
+## Authentication
 
-Both MCP and REST API use the same API key. Generate one from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+**MCP connections use OAuth** — your AI tool opens a browser for sign-in. No API key needed. This is the recommended setup for all platforms.
 
-API keys start with `nskey_live_` (production) or `nskey_test_` (test mode).
+**REST API** uses API keys (`nskey_live_...`) for programmatic access. Generate one from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
 
 <Warning>
-  Keep your API key secret. Never expose it in client-side code, commit it to version control, or share it publicly.
+  Keep API keys secret. Never expose them in client-side code, commit them to version control, or share them publicly. For interactive AI tools, use MCP with OAuth instead.
 </Warning>
 
 ## Choose your platform
 
 ### MCP connections (recommended)
 
+All MCP connections use OAuth sign-in — no API keys to manage.
+
 <CardGroup cols={3}>
+  <Card title="Claude Code" icon="terminal" href="/integrations/claude-code">
+    One CLI command. OAuth sign-in on first use.
+  </Card>
   <Card title="Claude Desktop" icon="message-bot" href="/integrations/claude-desktop">
-    Add Nitrosend as a Custom Connector in Claude Desktop. One click, full access.
+    Add as a Custom Connector. One click, full access.
   </Card>
   <Card title="Claude Cowork" icon="users" href="/integrations/claude-cowork">
-    Connect Nitrosend to Claude Cowork for team-based AI email marketing.
+    Connect for team-based AI email marketing.
   </Card>
-  <Card title="Claude Code" icon="terminal" href="/integrations/claude-code">
-    Add the MCP server to Claude Code for terminal-based email automation.
-  </Card>
-  <Card title="ChatGPT / GPT" icon="robot" href="/integrations/chatgpt">
-    Connect via MCP in Developer Mode, or build a custom GPT with API actions.
+  <Card title="ChatGPT" icon="robot" href="/integrations/chatgpt">
+    Add as an MCP Connector. OAuth sign-in.
   </Card>
   <Card title="OpenAI Codex" icon="code" href="/integrations/codex">
-    Native MCP support via config.toml. Full toolkit in your terminal.
+    Native MCP + OAuth via config.toml.
   </Card>
   <Card title="Google Gemini" icon="google" href="/integrations/gemini">
-    Connect via Gemini CLI MCP, or use function calling with the AI SDK.
+    Gemini CLI with httpUrl config. OAuth sign-in.
+  </Card>
+  <Card title="Cursor" icon="cursor" href="/integrations/cursor">
+    OAuth via mcp-remote in .cursor/mcp.json.
+  </Card>
+  <Card title="VS Code" icon="vscode" href="/integrations/vscode">
+    Native HTTP MCP + OAuth in .vscode/mcp.json.
+  </Card>
+  <Card title="Windsurf" icon="wind" href="/integrations/windsurf">
+    Native serverUrl config with OAuth.
+  </Card>
+  <Card title="Zed" icon="zap" href="/integrations/zed">
+    OAuth via mcp-remote bridge.
   </Card>
 </CardGroup>
 
@@ -73,7 +87,7 @@ API keys start with `nskey_live_` (production) or `nskey_test_` (test mode).
 
 <CardGroup cols={2}>
   <Card title="REST API (Any Platform)" icon="globe" href="/integrations/rest-api">
-    Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code.
+    Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code. Requires API key.
   </Card>
 </CardGroup>
 

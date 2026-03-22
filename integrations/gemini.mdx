@@ -1,27 +1,15 @@
 ---
 title: Google Gemini
-description: Connect Nitrosend to Gemini CLI via MCP or Google AI Studio via function calling
+description: Connect Nitrosend to Gemini CLI via MCP for AI-powered email marketing
 ---
 
-# Google Gemini
+# Google Gemini + Nitrosend MCP
 
 Gemini CLI has native MCP support, giving you the full Nitrosend toolkit — 16 tools, live brand context, and account state — directly in your terminal.
 
-## MCP via Gemini CLI (Recommended)
+## Setup
 
-### 1. Get your API key
-
-Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
-
-### 2. Set the environment variable
-
-Add your API key to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.):
-
-```bash
-export NITROSEND_API_KEY="nskey_live_your_key_here"
-```
-
-### 3. Add the MCP server
+### Step 1: Add the MCP server
 
 Add to your Gemini CLI settings (`~/.gemini/settings.json`):
 
@@ -29,16 +17,17 @@ Add to your Gemini CLI settings (`~/.gemini/settings.json`):
 {
   "mcpServers": {
     "nitrosend": {
-      "uri": "https://api.nitrosend.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${NITROSEND_API_KEY}"
-      }
+      "httpUrl": "https://api.nitrosend.com/mcp"
     }
   }
 }
 ```
 
-### 4. Use it
+### Step 2: Sign in
+
+On first use, Gemini opens your browser for Nitrosend sign-in. Log in or create a free account — no API key needed.
+
+### Step 3: Use it
 
 ```bash
 gemini "Check my Nitrosend account status and draft a welcome email"
@@ -54,9 +43,29 @@ Gemini now has access to all 16 Nitrosend MCP tools — composing emails, managi
   MCP gives Gemini your full brand context — colors, fonts, tone of voice — so emails it creates are on-brand without extra prompting.
 </Tip>
 
+## Example workflows
+
+### Set up brand + compose
+
+```bash
+gemini "Scrape my brand from https://mysite.com and draft a product announcement email"
+```
+
+### Build a flow
+
+```bash
+gemini "Create a welcome flow that sends 3 emails over a week when someone subscribes"
+```
+
+### Check performance
+
+```bash
+gemini "Show me insights for my last campaign compared to benchmarks"
+```
+
 ## Function Calling via Google AI SDK (Alternative)
 
-For programmatic integration or Google AI Studio, define Nitrosend operations as function declarations.
+For programmatic integration or Google AI Studio, you can define Nitrosend operations as function declarations and call the REST API directly. This requires an API key.
 
 ### Define function declarations
 
@@ -66,7 +75,6 @@ from google.genai import types
 
 client = genai.Client()
 
-# Define Nitrosend tools as function declarations
 nitrosend_tools = types.Tool(
     function_declarations=[
         types.FunctionDeclaration(
@@ -94,25 +102,6 @@ nitrosend_tools = types.Tool(
                     )
                 }
             )
-        ),
-        types.FunctionDeclaration(
-            name="create_contact",
-            description="Add a new contact to the audience",
-            parameters=types.Schema(
-                type=types.Type.OBJECT,
-                properties={
-                    "email": types.Schema(type=types.Type.STRING, description="Contact email"),
-                    "first_name": types.Schema(type=types.Type.STRING, description="First name"),
-                    "last_name": types.Schema(type=types.Type.STRING, description="Last name"),
-                    "opt_in": types.Schema(type=types.Type.BOOLEAN, description="Subscribe for email delivery")
-                },
-                required=["email"]
-            )
-        ),
-        types.FunctionDeclaration(
-            name="get_account_status",
-            description="Get account health, onboarding status, and sending limits",
-            parameters=types.Schema(type=types.Type.OBJECT, properties={})
         )
     ]
 )
@@ -123,7 +112,7 @@ nitrosend_tools = types.Tool(
 ```python
 import requests
 
-NITROSEND_API_KEY = "nskey_live_your_key_here"
+NITROSEND_API_KEY = "nskey_live_your_key_here"  # From Settings > API Keys
 BASE_URL = "https://api.nitrosend.com/v1/my"
 HEADERS = {
     "Authorization": f"Bearer {NITROSEND_API_KEY}",
@@ -131,73 +120,17 @@ HEADERS = {
 }
 
 def execute_nitrosend_function(name, args):
-    """Route Gemini function calls to Nitrosend API endpoints."""
-
     if name == "send_email":
         resp = requests.post(f"{BASE_URL}/messages", headers=HEADERS, json={
-            "channel": "email",
-            "to": args["to"],
-            "subject": args["subject"],
-            "body": args["body"]
+            "channel": "email", "to": args["to"],
+            "subject": args["subject"], "body": args["body"]
         })
         return resp.json()
-
     elif name == "list_campaigns":
         params = {"status": args["status"]} if "status" in args else {}
         resp = requests.get(f"{BASE_URL}/campaigns", headers=HEADERS, params=params)
         return resp.json()
-
-    elif name == "create_contact":
-        resp = requests.post(f"{BASE_URL}/contacts", headers=HEADERS, json=args)
-        return resp.json()
-
-    elif name == "get_account_status":
-        resp = requests.get(f"{BASE_URL}/account", headers=HEADERS)
-        return resp.json()
 ```
-
-### Run the conversation
-
-```python
-import json
-
-response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents="How many campaigns do I have?",
-    config=types.GenerateContentConfig(tools=[nitrosend_tools])
-)
-
-# Check if Gemini wants to call a function
-for part in response.candidates[0].content.parts:
-    if part.function_call:
-        call = part.function_call
-        result = execute_nitrosend_function(call.name, dict(call.args))
-
-        # Send the result back to Gemini
-        followup = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=[
-                types.Content(parts=[part]),
-                types.Content(parts=[
-                    types.Part(function_response=types.FunctionResponse(
-                        name=call.name,
-                        response={"result": json.dumps(result)}
-                    ))
-                ])
-            ],
-            config=types.GenerateContentConfig(tools=[nitrosend_tools])
-        )
-        print(followup.text)
-```
-
-## Using with Google AI Studio (no code)
-
-You can also test Nitrosend integration in [Google AI Studio](https://aistudio.google.com):
-
-1. Open AI Studio and start a new prompt
-2. Click **Tools** → **Function Calling**
-3. Add function declarations matching the Nitrosend API endpoints you want to use
-4. The model will generate function calls you can execute manually or wire up to your backend
 
 ## Key API endpoints
 
@@ -207,11 +140,10 @@ You can also test Nitrosend integration in [Google AI Studio](https://aistudio.g
 | `list_campaigns` | `GET /v1/my/campaigns` | List all campaigns |
 | `create_campaign` | `POST /v1/my/campaigns` | Create a new campaign |
 | `list_contacts` | `GET /v1/my/contacts` | List contacts in your audience |
-| `create_contact` | `POST /v1/my/contacts` | Add a new contact |
 | `get_account` | `GET /v1/my/account` | Check account status and limits |
 
 See the full [API Reference](/api-reference) for all available endpoints.
 
 <Info>
-  Gemini's function calling works with both `gemini-2.0-flash` and `gemini-2.5-pro`. Use flash for speed, pro for complex multi-step marketing tasks.
+  MCP via Gemini CLI is the recommended setup — OAuth sign-in, no API keys to manage. The function calling method is for programmatic use where you need direct API access.
 </Info>
