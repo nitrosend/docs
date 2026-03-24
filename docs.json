@@ -43,6 +43,7 @@
           {
             "group": "Guides",
             "pages": [
+              "guides/mcp-examples",
               "guides/sending-emails",
               "guides/managing-contacts",
               "guides/building-flows",

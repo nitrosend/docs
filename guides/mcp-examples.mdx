@@ -1,0 +1,246 @@
+---
+title: Example Workflows
+description: Complete prompt-to-result examples showing how AI tools use Nitrosend via MCP
+---
+
+# Example Workflows
+
+These examples show the full loop: what you say, what your AI calls, and what comes back. Every tool call uses real parameter names and realistic response data.
+
+<Tip>
+  These examples work with any MCP-connected AI tool — Claude, ChatGPT, Codex, Gemini, Cursor, and more. The tool calls are identical across all clients.
+</Tip>
+
+---
+
+## Example 1: Check account health
+
+**You say:**
+
+> What's my Nitrosend account status? Is anything blocking me from sending?
+
+**AI calls `nitro_get_status`** (no parameters):
+
+```json
+{}
+```
+
+**Response:**
+
+```json
+{
+  "result": {
+    "status": "needs_attention",
+    "account": {
+      "tier": "free",
+      "can_send": true,
+      "domain_verified": false,
+      "using_sandbox": true,
+      "contact_count": 45,
+      "flow_count": 1,
+      "campaign_count": 2
+    },
+    "brand": {
+      "setup_complete": false,
+      "company_name": "Acme Co"
+    },
+    "billing": {
+      "tier": "free",
+      "resources": {
+        "email": { "used": 12, "allowance": 500, "mode": "monthly" },
+        "sms": { "used": 0, "allowance": 50, "mode": "lifetime" },
+        "ai": { "used": 3, "allowance": 20, "mode": "monthly" }
+      }
+    },
+    "warmup": {
+      "active": true,
+      "domain_age_days": 0,
+      "daily_limit": 50,
+      "sends_today": 0,
+      "remaining_today": 50
+    },
+    "issues": [
+      {
+        "area": "brand",
+        "severity": "warning",
+        "message": "Physical address not set — required for campaign approval (CAN-SPAM)",
+        "how_to_fix": "Use nitro_set_brand to set physical_address"
+      }
+    ],
+    "recommendations": [
+      { "action": "Set physical address", "tool": "nitro_set_brand" },
+      { "action": "Verify a sending domain", "tool": "nitro_manage_domains" }
+    ]
+  },
+  "meta": { "tool": "nitro_get_status" }
+}
+```
+
+**What happens next:** The AI reads the issues and recommendations, then calls `nitro_set_brand` to fix the physical address — no extra prompting needed.
+
+---
+
+## Example 2: Create and send an email campaign
+
+**You say:**
+
+> Create a spring sale campaign for my Newsletter list with a hero banner, sale announcement, and a Shop Now button.
+
+**Step 1 — AI calls `nitro_compose_campaign`:**
+
+```json
+{
+  "name": "Spring Sale 2026",
+  "subject": "Spring Sale — 30% off everything",
+  "sections": [
+    { "type": "header", "props": {} },
+    {
+      "type": "hero",
+      "props": {
+        "image_url": "https://images.unsplash.com/photo-spring-flowers",
+        "title": "Spring Sale",
+        "subtitle": "30% off everything this week",
+        "cta_text": "Shop Now",
+        "cta_url": "https://store.example.com/sale"
+      }
+    },
+    {
+      "type": "text",
+      "props": {
+        "content": "<p>Hi {{ contact.first_name }},</p><p>Our biggest sale of the season is here. Everything in the store is 30% off through Sunday.</p>"
+      }
+    },
+    {
+      "type": "button",
+      "props": {
+        "text": "Shop the Sale",
+        "href": "https://store.example.com/sale"
+      }
+    },
+    { "type": "footer", "props": {} }
+  ],
+  "audience": { "contact_list_id": 42 }
+}
+```
+
+**Response:**
+
+```json
+{
+  "result": {
+    "campaign_id": 7,
+    "template_id": 15,
+    "flow_id": 22,
+    "status": "draft",
+    "audience_count": 1250
+  }
+}
+```
+
+<Steps>
+  <Step title="Preview">
+    AI calls `nitro_preview_and_test` with `{"target": "campaign", "target_id": 7, "operation": "preview"}` and shares the preview URL so you can review the email visually.
+  </Step>
+  <Step title="You confirm">
+    You say "Looks good, send it."
+  </Step>
+  <Step title="Approve and send">
+    AI calls `nitro_control_delivery` twice:
+    ```json
+    {"target_type": "campaign", "target_id": 7, "operation": "approve"}
+    ```
+    Then:
+    ```json
+    {"target_type": "campaign", "target_id": 7, "operation": "live"}
+    ```
+    Campaign goes live and starts sending to 1,250 contacts.
+  </Step>
+</Steps>
+
+---
+
+## Example 3: Build a welcome automation flow
+
+**You say:**
+
+> Set up a welcome series: when someone joins my Subscribers list, send a welcome email immediately, wait 3 days, then send a follow-up with tips.
+
+**AI calls `nitro_compose_flow`:**
+
+```json
+{
+  "name": "Welcome Series",
+  "trigger": {
+    "event": "list_add",
+    "contact_list_id": 5
+  },
+  "steps": [
+    {
+      "type": "email",
+      "subject": "Welcome aboard!",
+      "design": {
+        "sections": [
+          { "type": "header", "props": {} },
+          {
+            "type": "text",
+            "props": {
+              "content": "<h1>Welcome, {{ contact.first_name }}!</h1><p>We're excited to have you. Here's what to expect from us.</p>"
+            }
+          },
+          {
+            "type": "button",
+            "props": {
+              "text": "Get Started",
+              "href": "https://example.com/start"
+            }
+          },
+          { "type": "footer", "props": {} }
+        ]
+      }
+    },
+    {
+      "type": "wait",
+      "duration": 259200
+    },
+    {
+      "type": "email",
+      "subject": "3 tips to get the most out of Example",
+      "design": {
+        "sections": [
+          { "type": "header", "props": {} },
+          {
+            "type": "text",
+            "props": {
+              "content": "<h1>Quick tips</h1><p>Here are 3 things our most successful users do in their first week:</p><ol><li>Complete your profile</li><li>Invite a teammate</li><li>Set up your first project</li></ol>"
+            }
+          },
+          { "type": "footer", "props": {} }
+        ]
+      }
+    }
+  ]
+}
+```
+
+**Response:**
+
+```json
+{
+  "result": {
+    "flow_id": 12,
+    "steps_created": 3,
+    "status": "draft",
+    "trigger": { "event": "list_add", "contact_list_id": 5 }
+  }
+}
+```
+
+**What happens next:** The flow is in draft. AI calls `nitro_control_delivery` with `{"target_type": "flow", "target_id": 12, "operation": "approve"}` then `"live"` to activate it. From now on, every contact added to the Subscribers list automatically receives the welcome series.
+
+---
+
+## What's next
+
+- [Connect your AI tool](/integrations/overview) — setup guides for Claude, ChatGPT, Gemini, Cursor, and more
+- [Brand Settings & AI Memory](/integrations/mcp-brand-memory) — teach your AI your brand voice and strategy
+- [API Reference](/api-reference) — full REST API documentation
