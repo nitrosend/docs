@@ -23,27 +23,28 @@
             "pages": ["introduction", "quickstart", "authentication"]
           },
           {
-            "group": "Integrations",
+            "group": "MCP Integrations",
             "pages": [
               "integrations/overview",
-              "integrations/claude-code",
               "integrations/claude-desktop",
               "integrations/claude-cowork",
+              "integrations/claude-code",
+              "integrations/cursor",
               "integrations/chatgpt",
               "integrations/codex",
-              "integrations/gemini",
-              "integrations/cursor",
-              "integrations/vscode",
-              "integrations/windsurf",
-              "integrations/zed",
-              "integrations/rest-api",
               "integrations/mcp-brand-memory"
+            ]
+          },
+          {
+            "group": "API Integrations",
+            "pages": [
+              "integrations/gemini",
+              "integrations/rest-api"
             ]
           },
           {
             "group": "Guides",
             "pages": [
-              "guides/mcp-examples",
               "guides/sending-emails",
               "guides/managing-contacts",
               "guides/building-flows",
@@ -93,5 +94,10 @@
   },
   "search": {
     "prompt": "Search docs..."
-  }
+  },
+  "redirects": [
+    { "source": "/api", "destination": "/api-reference" },
+    { "source": "/mcp", "destination": "/integrations/overview" },
+    { "source": "/sdk", "destination": "/integrations/rest-api" }
+  ]
 }

@@ -43,7 +43,7 @@ Connect Nitrosend to Claude Desktop as a Custom Connector and manage your email 
 
 ## What Claude can do with Nitrosend connected
 
-Once connected via MCP, Claude has access to **19 specialized tools** and **live resources** about your account. Here's what that means in practice:
+Once connected via MCP, Claude has access to **20 specialized tools** and **live resources** about your account. Here's what that means in practice:
 
 ### Compose and send emails
 
@@ -78,8 +78,8 @@ Beyond tools, Claude can read live resources for deeper context:
 | `nitro://guide` | Platform vocabulary, workflows, and tool usage guidance |
 | `nitro://schema` | Email component types, flow steps, and filter definitions |
 | `nitro://brand` | Your brand identity — colors, fonts, tone, logo |
-| `nitro://account/state` | Account status, tier, and sending limits |
-| `nitro://account/config` | Sender defaults and verified domains |
+| `nitro://account` | Account status, tier, and sending limits |
+| `nitro://config` | Sender defaults and verified domains |
 
 ## Tips for best results
 
@@ -92,13 +92,9 @@ Beyond tools, Claude can read live resources for deeper context:
   Learn how to configure Brand Settings and AI Memory to make every email smarter.
 </Card>
 
-<Card title="More examples" icon="book-open" href="/guides/mcp-examples">
-  Complete AI workflow examples with tool call details.
-</Card>
+## Alternative: Manual MCP configuration
 
-## Alternative: Manual config file (older versions)
-
-If the Custom Connector method isn't available in your version of Claude Desktop, you can configure MCP manually using the stdio bridge and an API key:
+If the Custom Connector method isn't available in your version of Claude Desktop, you can configure MCP manually using an API key:
 
 <Expandable title="Manual config file setup">
 

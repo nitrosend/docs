@@ -1,97 +1,108 @@
 ---
 title: Cursor
-description: Connect Nitrosend to Cursor via MCP for AI-powered email marketing from your editor
+description: Connect Nitrosend to Cursor via MCP for AI-powered email marketing inside your editor
 ---
 
 # Cursor + Nitrosend MCP
 
-[Cursor](https://cursor.com) is the AI-first code editor. Connect Nitrosend via MCP and Cursor's AI becomes a full email marketing assistant — compose emails, manage contacts, and launch campaigns without leaving your editor.
+Connect Nitrosend to Cursor and manage your email marketing directly from your editor. Compose emails, build automation flows, send campaigns, and check analytics — all through conversation.
 
 ## Setup
 
-### Option A: OAuth via mcp-remote (Recommended)
+### One-click install
 
-No API key needed. Sign in via your browser on first use.
+[Install Nitrosend in Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=nitrosend&config=eyJ1cmwiOiJodHRwczovL2FwaS5uaXRyb3NlbmQuY29tL21jcCJ9)
 
-Add to `.cursor/mcp.json` in your project (or global config):
+Cursor will open a Nitrosend sign-in window. Log in or create a free account — no API key needed.
 
-```json
-{
-  "mcpServers": {
-    "nitrosend": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://api.nitrosend.com/mcp"]
-    }
-  }
-}
-```
+### Manual install
 
-Restart Cursor. On first tool call, your browser opens for Nitrosend sign-in.
-
-### Option B: API Key (fallback)
-
-If browser-based OAuth isn't available in your environment, use the stdio bridge with an API key.
+Add to `~/.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "nitrosend": {
-      "command": "npx",
-      "args": ["-y", "@nitrosend/mcp"],
-      "env": {
-        "NITROSEND_API_KEY": "nskey_live_your_key_here"
-      }
+      "url": "https://api.nitrosend.com/mcp"
     }
   }
 }
 ```
 
-Get your API key from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+Restart Cursor. On first use, Cursor will prompt you to sign in via OAuth.
 
-### Verify
+### Verify the connection
 
-Open Cursor's chat and ask:
+Open Cursor Chat and ask:
 
 ```
 What's my Nitrosend account status?
 ```
 
-Cursor calls `nitro_get_status` and shows your account health.
-
 ## Example workflows
-
-### Set up your brand
-
-```
-Scrape my brand from https://mysite.com and set up Nitrosend with my brand colors and fonts.
-```
 
 ### Compose a campaign
 
 ```
-Create a campaign called "Product Launch" targeting my subscriber list. Include a hero section, feature highlights, and a CTA button.
+Create a campaign called "April Newsletter" using my brand theme.
+Target the active subscribers segment and schedule it for Tuesday at 10am.
 ```
 
-### Check analytics
+### Build an automation flow
 
 ```
-Show me open and click rates for my last 5 campaigns.
+Build a cart abandonment flow: email at 1 hour, 24 hours, then 72 hours
+with a 10% discount code.
 ```
+
+### Check performance
+
+```
+Show me insights for my last 3 campaigns. How are they tracking against benchmarks?
+```
+
+### Send a transactional email
+
+```
+Send a password reset email to user@example.com using the reset template
+```
+
+## MCP tools available (20)
+
+| Tool | Description |
+|------|-------------|
+| `nitro_get_status` | Account health and onboarding state |
+| `nitro_set_brand` | Brand identity from URL or manual fields |
+| `nitro_manage_domains` | Add and verify sending domains |
+| `nitro_configure_account` | Sender defaults and test recipients |
+| `nitro_compose_email` | Create, update, or clone email templates |
+| `nitro_compose_campaign` | Create email or SMS campaigns |
+| `nitro_compose_flow` | Build automation flows |
+| `nitro_control_delivery` | Approve, schedule, pause, or cancel delivery |
+| `nitro_review_and_test` | Review email content and send test emails |
+| `nitro_send_message` | Send transactional email or SMS immediately |
+| `nitro_manage_audience` | Create contacts, manage lists, tags, events |
+| `nitro_import_contacts` | Bulk import contact records |
+| `nitro_define_segment` | Build segments with filters and preview |
+| `nitro_search_contacts` | Find contacts by email, name, or phone |
+| `nitro_query` | Query campaigns, flows, templates, segments |
+| `nitro_get_insights` | Analytics with trends and benchmarks |
+| `nitro_manage_billing` | Plan status and upgrades |
+| `nitro_configure_providers` | BYO email provider (Mailgun, SES) |
+| `nitro_set_memory` | Persistent AI memory across sessions |
+| `nitro_request_support` | Submit a support request |
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="MCP tools don't appear">
-    Restart Cursor after adding the config. Check that `npx` is available in your PATH.
+  <Accordion title="Sign-in window didn't open">
+    Remove and re-add the server by deleting the `nitrosend` entry from `~/.cursor/mcp.json`, saving, then adding it back. Restart Cursor.
   </Accordion>
-  <Accordion title="mcp-remote auth fails">
-    Delete the cached token and retry. The token cache is stored by mcp-remote in your system's temp directory.
-  </Accordion>
-  <Accordion title="Tool calls are slow">
-    Brand scraping takes 20-30 seconds (one-time operation). Other tool calls should complete in 1-3 seconds.
+  <Accordion title="Tools not appearing in Cursor Chat">
+    Make sure you restarted Cursor after editing `mcp.json`. Check that `api.nitrosend.com` is reachable: `curl -I https://api.nitrosend.com/mcp`
   </Accordion>
 </AccordionGroup>
 
 <Info>
-  OAuth via mcp-remote is recommended — no API keys to manage, tokens refresh automatically.
+  No API key or local dependencies required. Authentication is handled via OAuth sign-in when you first connect.
 </Info>

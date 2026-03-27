@@ -9,13 +9,13 @@ Nitrosend is designed to be controlled by AI. Instead of clicking through dashbo
 
 ## MCP: The Fastest Way to Connect
 
-**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Codex, Gemini, and other MCP-compatible clients can access your full email marketing platform with zero coding.
+**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, Cowork, and other MCP-compatible clients can access your full email marketing platform with zero coding.
 
 ### What MCP gives your AI
 
 When you connect via MCP, your AI assistant gets:
 
-- **19 specialized tools** — compose emails, build flows, manage contacts, check analytics, control delivery, and more
+- **20 specialized tools** — compose emails, build flows, manage contacts, check analytics, control delivery, and more
 - **Live resources** — your brand identity, account state, platform guide, and email design schema
 - **Full context** — your AI knows your brand colors, tone of voice, and sending history before it writes a single email
 - **Two-way control** — create, preview, test, approve, send, pause, and analyze, all from conversation
@@ -24,74 +24,49 @@ When you connect via MCP, your AI assistant gets:
 
 | | MCP | REST API |
 |---|---|---|
-| **Best for** | Claude, ChatGPT, Codex, Gemini, and any MCP client | Custom apps, webhooks, automation platforms |
-| **Setup** | 1 click or 1 config entry | Define function calls or use curl |
+| **Best for** | Claude, ChatGPT, Cursor, Codex | Custom apps, Gemini, Zapier, n8n |
+| **Setup** | 1 click or 1 command, OAuth sign-in | API key + define function calls or curl |
 | **AI context** | Full — brand, schema, guide, account state | You provide context manually |
-| **Tools** | 19 purpose-built tools with validation | Raw HTTP endpoints |
+| **Tools** | 20 purpose-built tools with validation | Raw HTTP endpoints |
 | **Coding required** | No | Minimal to moderate |
 
 <Tip>
   **Use MCP whenever possible.** It gives your AI far more context about your account, brand, and email best practices than the REST API alone. The result is better emails with less prompting.
 </Tip>
 
-## Authentication
-
-**MCP connections use OAuth** — your AI tool opens a browser for sign-in. No API key needed. This is the recommended setup for all platforms.
-
-**REST API** uses API keys (`nskey_live_...`) for programmatic access. Generate one from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
-
-<Warning>
-  Keep API keys secret. Never expose them in client-side code, commit them to version control, or share them publicly. For interactive AI tools, use MCP with OAuth instead.
-</Warning>
-
 ## Choose your platform
 
 ### MCP connections (recommended)
 
-All MCP connections use OAuth sign-in — no API keys to manage.
-
-<CardGroup cols={3}>
-  <Card title="Claude Code" icon="terminal" href="/integrations/claude-code">
-    One CLI command. OAuth sign-in on first use.
-  </Card>
+<CardGroup cols={2}>
   <Card title="Claude Desktop" icon="message-bot" href="/integrations/claude-desktop">
-    Add as a Custom Connector. One click, full access.
+    Add Nitrosend as a Custom Connector in Claude Desktop. One click, full access.
   </Card>
-  <Card title="Claude Cowork" icon="users" href="/integrations/claude-cowork">
-    Connect for team-based AI email marketing.
+  <Card title="Claude Cowork / Chat" icon="users" href="/integrations/claude-cowork">
+    Connect Nitrosend to Claude for team-based AI email marketing.
+  </Card>
+  <Card title="Claude Code" icon="terminal" href="/integrations/claude-code">
+    Add the MCP server to Claude Code for terminal-based email automation.
+  </Card>
+  <Card title="Cursor" icon="code" href="/integrations/cursor">
+    Connect Nitrosend to Cursor for email marketing inside your editor.
   </Card>
   <Card title="ChatGPT" icon="robot" href="/integrations/chatgpt">
-    Add as an MCP Connector. OAuth sign-in.
+    Add Nitrosend as an MCP server in ChatGPT for full tool access.
   </Card>
-  <Card title="OpenAI Codex" icon="code" href="/integrations/codex">
-    Native MCP + OAuth via config.toml.
-  </Card>
-  <Card title="Google Gemini" icon="google" href="/integrations/gemini">
-    Gemini CLI with httpUrl config. OAuth sign-in.
-  </Card>
-  <Card title="Cursor" icon="cursor" href="/integrations/cursor">
-    OAuth via mcp-remote in .cursor/mcp.json.
-  </Card>
-  <Card title="VS Code" icon="vscode" href="/integrations/vscode">
-    Native HTTP MCP + OAuth in .vscode/mcp.json.
-  </Card>
-  <Card title="Windsurf" icon="wind" href="/integrations/windsurf">
-    Native serverUrl config with OAuth.
-  </Card>
-  <Card title="Zed" icon="zap" href="/integrations/zed">
-    OAuth via mcp-remote bridge.
+  <Card title="OpenAI Codex CLI" icon="terminal" href="/integrations/codex">
+    Give Codex CLI access to Nitrosend via MCP config.
   </Card>
 </CardGroup>
 
-<Card title="Example Workflows" icon="play" href="/guides/mcp-examples">
-  See complete prompt-to-result examples: campaigns, flows, and more.
-</Card>
-
-### REST API (alternative)
+### REST API connections
 
 <CardGroup cols={2}>
+  <Card title="Google Gemini" icon="google" href="/integrations/gemini">
+    Connect via Gemini function calling or Google AI Studio.
+  </Card>
   <Card title="REST API (Any Platform)" icon="globe" href="/integrations/rest-api">
-    Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code. Requires API key.
+    Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code.
   </Card>
 </CardGroup>
 

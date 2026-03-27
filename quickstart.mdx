@@ -1,33 +1,88 @@
 ---
 title: Quickstart
-description: Send your first email in under 5 minutes
+description: Send your first email in under 5 minutes — connect your AI tool via MCP and start prompting
 ---
 
 # Quickstart
 
-Get up and running with Nitrosend in a few steps.
+Get up and running with Nitrosend in under 5 minutes. Choose your path:
 
-## 1. Create your account
+## Quickstart with AI (recommended)
+
+The fastest way to get started. Connect your AI tool and let it handle the setup.
+
+### 1. Create your account
+
+Sign up at [app.nitrosend.com](https://app.nitrosend.com).
+
+### 2. Connect your AI tool
+
+Add Nitrosend as an MCP server. Pick your tool:
+
+<CodeGroup>
+```bash Claude Code
+claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
+```
+
+```bash Codex CLI
+codex mcp add nitrosend --url https://api.nitrosend.com/mcp
+```
+</CodeGroup>
+
+For **Claude Desktop**, **ChatGPT**, **Cursor**, **Gemini**, or **other tools** — see the [full integration guides](/integrations/overview).
+
+### 3. Sign in when prompted
+
+Your AI tool will open a Nitrosend sign-in window. Log in with your account — authentication is handled automatically.
+
+### 4. Start prompting
+
+Try this to get a full setup in one go:
+
+```
+Connect into Nitrosend and based on my brand, give me a suggested email
+flow to set up and guide me through set up. Make the email design modern
+and on brand against my website.
+```
+
+Your AI will scrape your brand, suggest a flow, build it, and walk you through sending a test.
+
+<Tip>
+  Other great first prompts:
+  - "Check my account status and tell me what I need to set up"
+  - "Create a 5-email welcome series for new subscribers"
+  - "Send a test email to me@example.com"
+</Tip>
+
+---
+
+## Quickstart with the dashboard
+
+Prefer to set things up manually? Here's the traditional path.
+
+### 1. Create your account
 
 Sign up at [app.nitrosend.com](https://app.nitrosend.com) and complete the onboarding wizard. This sets up your brand colors, logo, and sending domain.
 
-## 2. Verify your domain
+### 2. Verify your domain
 
 Add the DNS records shown in **Settings > Domains** to authenticate your sending domain. This ensures your emails land in the inbox, not spam.
 
-## 3. Import contacts
+### 3. Import contacts
 
 Go to **Contacts > Import** and upload a CSV, or add contacts manually. Each contact needs at least an email address.
 
-## 4. Create a template
+### 4. Create a template
 
 Head to **Templates** and use the drag-and-drop editor to design your email. Your brand colors and logo are applied automatically.
 
-## 5. Send a campaign
+### 5. Send a campaign
 
 Go to **Campaigns > New**, select your template and audience, and hit send.
 
-## Using the API
+---
+
+## Using the REST API
 
 If you prefer to integrate programmatically, grab your API key from **Settings > API Keys** and check the [API Reference](/api-reference).
 

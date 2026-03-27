@@ -9,7 +9,7 @@ description: Connect Nitrosend to Claude Code via MCP for terminal-based AI emai
 
 ## What is MCP?
 
-**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to 19 email marketing tools — no API wrappers, no middleware, no boilerplate.
+**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to 20 email marketing tools — no API wrappers, no middleware, no boilerplate.
 
 ## Setup
 
@@ -67,8 +67,12 @@ Once connected, Claude Code has access to these tools:
 | `nitro_set_memory` | Read and update your AI memory document |
 | `nitro_manage_domains` | Add, verify, and manage sending domains |
 | `nitro_control_delivery` | Approve, send, pause, or schedule campaigns and flows |
-| `nitro_preview_and_test` | Preview emails and send test emails |
+| `nitro_review_and_test` | Review emails (validation, spam scoring) and send test emails |
+| `nitro_configure_account` | Sender defaults and test email recipients |
 | `nitro_get_insights` | Email analytics with trends and benchmarks |
+| `nitro_manage_billing` | Plan status and upgrades |
+| `nitro_configure_providers` | BYO email provider (Mailgun, SES) |
+| `nitro_request_support` | Submit a support request to the Nitrosend team |
 
 ## MCP resources
 
@@ -79,8 +83,8 @@ Claude can also read live resources for deeper context:
 | `nitro://guide` | Platform vocabulary, workflows, and tool descriptions |
 | `nitro://schema` | Email component types, flow step types, filter definitions |
 | `nitro://brand` | Your brand identity — colors, fonts, tone, logo |
-| `nitro://account/state` | Current account status, tier, and limits |
-| `nitro://account/config` | Sender defaults and verified domains |
+| `nitro://account` | Current account status, tier, and limits |
+| `nitro://config` | Sender defaults and verified domains |
 
 ## Example workflows
 
@@ -111,10 +115,6 @@ Show me insights for my last campaign. How did it compare to benchmarks?
 Set up my brand from https://mysite.com and then update my AI memory with 
 our Q1 marketing goals.
 ```
-
-<Card title="Full examples with tool calls" icon="book-open" href="/guides/mcp-examples">
-  Complete prompt, tool call JSON, and response walkthroughs.
-</Card>
 
 ## Scope-based configuration
 
