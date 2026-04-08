@@ -76,7 +76,7 @@ export default defineConfig({
       {
         tab: "API Reference",
         slug: "api",
-        openapi: "./openapi.yaml",
+        openapi: "https://api.nitrosend.com/openapi.yaml",
       },
     ],
   },
