@@ -9,8 +9,11 @@ export default defineConfig({
       dark: "#4F46E5",
     },
   },
-  logo: "./logo/light.svg",
-  darkLogo: "./logo/dark.svg",
+  logo: {
+    light: "./logo/light.svg",
+    dark: "./logo/dark.svg",
+    href: "https://nitrosend.com",
+  },
   favicon: "./favicon.svg",
   repo: "https://github.com/Nitrosend/docs",
   editBranch: "main",
