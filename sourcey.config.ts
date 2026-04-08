@@ -4,9 +4,9 @@ export default defineConfig({
   name: "Nitrosend",
   theme: {
     colors: {
-      primary: "#6366F1",
-      light: "#818CF8",
-      dark: "#4F46E5",
+      primary: "#FF4D00",
+      light: "#FF6B2C",
+      dark: "#CC3D00",
     },
   },
   logo: {
@@ -15,7 +15,7 @@ export default defineConfig({
     href: "https://nitrosend.com",
   },
   favicon: "./favicon.svg",
-  repo: "https://github.com/Nitrosend/docs",
+  repo: "https://github.com/nitrosend/docs",
   editBranch: "main",
   search: {
     featured: ["introduction", "quickstart", "authentication"],
@@ -76,9 +76,7 @@ export default defineConfig({
     ],
   },
   navbar: {
-    links: [
-      { type: "github", href: "https://github.com/Nitrosend" },
-    ],
+    links: [],
     primary: {
       type: "button",
       label: "Dashboard",
@@ -87,7 +85,7 @@ export default defineConfig({
   },
   footer: {
     links: [
-      { type: "github", href: "https://github.com/Nitrosend" },
+      { type: "github", href: "https://github.com/nitrosend" },
     ],
   },
   redirects: [
