@@ -69,6 +69,11 @@ export default defineConfig({
         ],
       },
       {
+        tab: "MCP Tools",
+        slug: "mcp",
+        mcp: "./nitrosend.mcp.json",
+      },
+      {
         tab: "API Reference",
         slug: "api",
         openapi: "./openapi.yaml",

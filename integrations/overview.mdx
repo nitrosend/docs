@@ -9,7 +9,7 @@ Nitrosend is designed to be controlled by AI. Instead of clicking through dashbo
 
 ## MCP: The Fastest Way to Connect
 
-**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, Cowork, and other MCP-compatible clients can access your full email marketing platform with zero coding.
+**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Zed, and other MCP-compatible clients can access your full email marketing platform with zero middleware.
 
 ### What MCP gives your AI
 
@@ -24,8 +24,8 @@ When you connect via MCP, your AI assistant gets:
 
 | | MCP | REST API |
 |---|---|---|
-| **Best for** | Claude, ChatGPT, Cursor, Codex | Custom apps, Gemini, Zapier, n8n |
-| **Setup** | 1 click or 1 command, OAuth sign-in | API key + define function calls or curl |
+| **Best for** | Claude, ChatGPT, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Zed | Custom apps, Zapier, n8n, Make, server-side integrations |
+| **Setup** | 1 click, 1 command, or a short JSON config + OAuth sign-in | API key + define function calls or curl |
 | **AI context** | Full — brand, schema, guide, account state | You provide context manually |
 | **Tools** | 20 purpose-built tools with validation | Raw HTTP endpoints |
 | **Coding required** | No | Minimal to moderate |
@@ -40,31 +40,40 @@ When you connect via MCP, your AI assistant gets:
 
 <CardGroup cols={2}>
   <Card title="Claude Desktop" icon="chat-bubble-left" href="/integrations/claude-desktop">
-    Add Nitrosend as a Custom Connector in Claude Desktop. One click, full access.
+    Add Nitrosend as a custom connector in Claude Desktop.
   </Card>
   <Card title="Claude Cowork / Chat" icon="user-group" href="/integrations/claude-cowork">
-    Connect Nitrosend to Claude for team-based AI email marketing.
+    Connect Nitrosend to Claude for collaborative email operations.
   </Card>
   <Card title="Claude Code" icon="command-line" href="/integrations/claude-code">
-    Add the MCP server to Claude Code for terminal-based email automation.
+    Add Nitrosend in one command for terminal-based email work.
   </Card>
   <Card title="Cursor" icon="code-bracket" href="/integrations/cursor">
-    Connect Nitrosend to Cursor for email marketing inside your editor.
+    Stay inside Cursor while you build, test, and send emails.
   </Card>
   <Card title="ChatGPT" icon="cpu-chip" href="/integrations/chatgpt">
-    Add Nitrosend as an MCP server in ChatGPT for full tool access.
+    Use ChatGPT Developer mode with Nitrosend over remote MCP.
   </Card>
   <Card title="OpenAI Codex CLI" icon="command-line" href="/integrations/codex">
-    Give Codex CLI access to Nitrosend via MCP config.
+    Connect Codex CLI with `codex mcp add` and OAuth login.
+  </Card>
+  <Card title="Gemini CLI" icon="sparkles" href="/integrations/gemini">
+    Add Nitrosend to Gemini CLI with a short `settings.json` entry.
+  </Card>
+  <Card title="VS Code" icon="code-bracket-square" href="/integrations/vscode">
+    Use Nitrosend from GitHub Copilot via VS Code's MCP support.
+  </Card>
+  <Card title="Windsurf" icon="bolt" href="/integrations/windsurf">
+    Connect Cascade directly to Nitrosend over remote HTTP MCP.
+  </Card>
+  <Card title="Zed" icon="rectangle-stack" href="/integrations/zed">
+    Add Nitrosend as a remote custom server in Zed with OAuth.
   </Card>
 </CardGroup>
 
 ### REST API connections
 
 <CardGroup cols={2}>
-  <Card title="Google Gemini" icon="globe-alt" href="/integrations/gemini">
-    Connect via Gemini function calling or Google AI Studio.
-  </Card>
   <Card title="REST API (Any Platform)" icon="globe-alt" href="/integrations/rest-api">
     Use from any language, tool, or automation platform — Zapier, n8n, Make, custom code.
   </Card>

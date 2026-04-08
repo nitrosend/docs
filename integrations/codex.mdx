@@ -9,29 +9,23 @@ description: Give Codex CLI access to Nitrosend via MCP for AI-powered email aut
 
 ## Option 1: MCP Server (Recommended)
 
-Codex CLI supports MCP natively via a config file.
+Codex CLI supports Nitrosend as a remote HTTP MCP server.
 
-### 1. Get your API key
-
-Go to **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com) and copy your key.
-
-### 2. Add Nitrosend to your Codex config
-
-Add to `~/.codex/config.toml` (global) or `.codex/config.toml` (project):
-
-```toml
-[mcp_servers.nitrosend]
-url = "https://api.nitrosend.com/mcp"
-bearer_token_env_var = "NITROSEND_API_KEY"
-```
-
-### 3. Set your API key
+### 1. Add the MCP server
 
 ```bash
-export NITROSEND_API_KEY=nskey_live_your_key_here
+codex mcp add nitrosend --url https://api.nitrosend.com/mcp
 ```
 
-### 4. Use with Codex
+### 2. Sign in with OAuth
+
+```bash
+codex mcp login nitrosend
+```
+
+Codex opens the Nitrosend sign-in flow in your browser. Log in or create a free account.
+
+### 3. Use Nitrosend from Codex
 
 ```bash
 codex "Check my Nitrosend account status"
@@ -40,7 +34,7 @@ codex "Send our newsletter to the active subscribers list"
 ```
 
 <Info>
-  Codex CLI uses your API key for authentication. Get yours from **Settings > API Keys** in the Nitrosend dashboard.
+  No API key is required for the standard Codex MCP setup. If you prefer a non-OAuth flow for automation, Codex also supports `--bearer-token-env-var` with a Nitrosend API key.
 </Info>
 
 ---

@@ -25,7 +25,7 @@ That's it — no API key needed.
 
 ### Step 2: Sign in
 
-Start a Claude Code session and use any Nitrosend tool. Claude will open a sign-in window automatically. Log in or create a free account.
+Start a Claude Code session and either ask Claude to use Nitrosend or run `/mcp`. Claude Code will open a Nitrosend sign-in flow or show you the login URL. Log in or create a free account.
 
 ### Step 3: Verify the connection
 
@@ -42,7 +42,7 @@ Claude will call the `nitro_get_status` tool and show your account health, onboa
 Claude Code connects directly to the Nitrosend MCP endpoint over HTTP:
 
 1. Claude Code sends tool calls via MCP protocol to `api.nitrosend.com/mcp`
-2. Authentication is handled via OAuth — you sign in once and the token is managed automatically
+2. Authentication is handled via OAuth — you sign in once and Claude Code stores the token for you
 3. Structured results come back to Claude with full context
 
 No data is stored locally. All state lives in your Nitrosend account.
@@ -124,7 +124,10 @@ Add the MCP server at different scopes depending on your needs:
 # User scope — available in all Claude Code sessions (recommended)
 claude mcp add --transport http -s user nitrosend https://api.nitrosend.com/mcp
 
-# Project scope — only available in this directory
+# Local scope — private to your current project on this machine
+claude mcp add --transport http -s local nitrosend https://api.nitrosend.com/mcp
+
+# Project scope — shared with the project via .mcp.json
 claude mcp add --transport http -s project nitrosend https://api.nitrosend.com/mcp
 ```
 
@@ -135,7 +138,7 @@ claude mcp add --transport http -s project nitrosend https://api.nitrosend.com/m
     Make sure `api.nitrosend.com` is reachable from your network. Run `curl -I https://api.nitrosend.com/mcp` to check connectivity.
   </Accordion>
   <Accordion title="Authentication failed">
-    The sign-in window should open automatically on first use. If it doesn't, try removing and re-adding the server: `claude mcp remove nitrosend` then re-run the add command.
+    Run `/mcp` inside Claude Code to trigger the OAuth flow explicitly. If that still fails, remove and re-add the server: `claude mcp remove nitrosend` then re-run the add command.
   </Accordion>
   <Accordion title="Tool call timed out">
     If calls consistently time out, check your network connection. You can also try removing and re-adding the MCP server to refresh the session.
