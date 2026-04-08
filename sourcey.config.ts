@@ -40,12 +40,16 @@ export default defineConfig({
               "integrations/cursor",
               "integrations/chatgpt",
               "integrations/codex",
+              "integrations/gemini",
+              "integrations/vscode",
+              "integrations/windsurf",
+              "integrations/zed",
               "integrations/mcp-brand-memory",
             ],
           },
           {
             group: "API Integrations",
-            pages: ["integrations/gemini", "integrations/rest-api"],
+            pages: ["integrations/rest-api"],
           },
           {
             group: "Guides",
