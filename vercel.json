@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npx sourcey build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
+}
