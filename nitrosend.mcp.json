@@ -927,56 +927,112 @@
       }
     },
     {
-      "name": "nitro_review_and_test",
-      "description": "Review email content with validation, spam scoring, and preflight checks (review), or send a real test email (send_test). review is read-only analysis; send_test delivers a real email to the specified recipients. For flow targets, review covers every email step. Use template_id with send_test to target a specific email template.",
+      "name": "nitro_review_delivery",
+      "description": "Read-only review of email/SMS content and delivery readiness for templates, flows, and campaigns. Returns validation, spam score for email, SMS segment info, preflight checks, and editor/preview URLs. This never approves delivery and never sends test messages.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "target": {
+          "target_type": {
             "type": "string",
             "enum": [
               "template",
               "flow",
               "campaign"
             ],
-            "description": "Entity type. Required for review. Optional for send_test when template_id is provided directly."
+            "description": "Entity type to review"
           },
           "target_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Entity ID. Required with target for review. Optional for send_test when template_id is provided directly."
-          },
-          "operation": {
-            "type": "string",
-            "enum": [
-              "review",
-              "send_test"
-            ],
-            "description": "review (read-only analysis of the target) or send_test (send a real test email for one template)"
-          },
-          "template_id": {
-            "type": "integer",
-            "minimum": 1,
-            "description": "Template ID to send a test for directly, or to choose a specific email step in a multi-email flow"
+            "description": "Entity ID to review"
           },
           "contact_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Contact ID — uses their email as recipient and their data for merge-tag personalization"
-          },
-          "send_test_to": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "email"
-            },
-            "maxItems": 5,
-            "description": "Explicit email recipients (max 5). Omit to use saved recipients or account owner."
+            "description": "Optional contact ID for merge-tag personalization during review"
           }
         },
         "required": [
-          "operation"
+          "target_type",
+          "target_id"
         ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "nitro_send_test_message",
+      "description": "Send a real test message for an existing template, campaign, or flow step. Supports email and SMS targets. This never sends to a campaign audience, never approves delivery, and never schedules or launches a campaign. For the common \"send a test of the last campaign\" workflow, pass latest_campaign: true. If a flow has multiple message steps, pass action_id or template_id from nitro_review_delivery review_steps. Retry safety: pass the same idempotency_key on retry to avoid duplicate test messages.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target_type": {
+            "type": "string",
+            "enum": [
+              "template",
+              "flow",
+              "campaign"
+            ],
+            "description": "Target entity type. Use with target_id unless latest_campaign or template_id is used."
+          },
+          "target_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Target entity ID. Use with target_type."
+          },
+          "latest_campaign": {
+            "type": "boolean",
+            "default": false,
+            "description": "Use the most recently created campaign in this brand."
+          },
+          "template_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Template to test directly, or the specific flow/campaign template to choose."
+          },
+          "action_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Flow action ID to test when a flow has multiple message steps."
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "email",
+              "sms"
+            ],
+            "default": "auto",
+            "description": "Channel to test. Use auto unless a standalone template is ambiguous."
+          },
+          "contact_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Contact ID for recipient and merge-tag personalization. If present, this contact supplies the recipient address/phone."
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "description": "Explicit test recipients. Use email addresses for email targets and E.164 phone numbers for SMS targets."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": false,
+            "description": "Validate target and recipients without sending."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional deduplication key for retry safety."
+          }
+        },
         "additionalProperties": false
       },
       "annotations": {
