@@ -141,6 +141,9 @@ These examples show the full loop: what you say, what your AI calls, and what co
   <Step title="Preview">
     AI calls `nitro_review_delivery` with `{"target_type": "campaign", "target_id": 7}` and shares the preview URL so you can review the email visually.
   </Step>
+  <Step title="Test">
+    If you want an inbox check first, AI calls `nitro_send_test_message` with `{"target_type": "campaign", "target_id": 7, "to": ["you@example.com"]}`. This sends only to the test recipient, not the campaign audience.
+  </Step>
   <Step title="You confirm">
     You say "Looks good, send it."
   </Step>
