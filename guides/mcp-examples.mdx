@@ -242,6 +242,46 @@ These examples show the full loop: what you say, what your AI calls, and what co
 
 ---
 
+## Example 4: Bulk-tag contacts
+
+**You say:**
+
+> Tag contacts 101, 102, and 103 as `vip` and `newsletter`.
+
+**AI calls `nitro_manage_audience`:**
+
+```json
+{
+  "operation": "bulk_tag",
+  "params": {
+    "contact_ids": [101, 102, 103],
+    "tags": ["vip", "newsletter"],
+    "tag_action": "add"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "result": {
+    "dry_run": false,
+    "updated": 3,
+    "tags": ["vip", "newsletter"],
+    "action": "add"
+  }
+}
+```
+
+**What happens next:** Each contact's existing tags are merged with `vip` and `newsletter` (no duplicates). Use `tag_action: "remove"` to strip tags, or `tag_action: "set"` to replace each contact's tag list entirely. Pass `dry_run: true` to preview — the response then returns `contact_count` (how many would be affected) instead of `updated`, and persists nothing.
+
+<Tip>
+  To tag by email instead of ID, first call `nitro_search_contacts` to resolve emails → contact IDs, then pass the IDs into `bulk_tag`. The tool intentionally requires `contact_ids` so an empty filter can't accidentally tag every contact in the brand.
+</Tip>
+
+---
+
 ## What's next
 
 - [Connect your AI tool](/integrations/overview) — setup guides for Claude, ChatGPT, Gemini, Cursor, and more

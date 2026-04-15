@@ -17,6 +17,12 @@ Each contact can have multiple communication channels:
 
 Store additional data on contacts using custom fields. These can be used in template personalization and segment conditions.
 
+## Tags
+
+Tags are free-form labels you can attach to contacts (for example `vip`, `newsletter`, `free-trial`). Tags are a special reserved key on each contact's `data` object — stored as an array of strings — and are used for segmentation and targeting alongside lists and custom fields.
+
+Unlike lists, tags are lightweight: a contact can have any number of tags. You can set the tags on an individual contact via the [REST API](/guides/managing-contacts#tags), or add, remove, and replace tags across many contacts at once via the `nitro_manage_audience` MCP tool.
+
 ## Subscription status
 
 Contacts can be subscribed, unsubscribed, or bounced per channel. Unsubscribed contacts are automatically excluded from campaigns.

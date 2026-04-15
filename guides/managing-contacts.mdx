@@ -28,6 +28,63 @@ curl -X POST https://api.nitrosend.com/v1/my/contacts \
 
 Organize contacts into lists for targeted sending. A contact can belong to multiple lists.
 
+## Tags
+
+Tags are free-form string labels (e.g. `vip`, `newsletter`, `trial`) you attach to contacts for segmentation and targeting. A contact can have any number of tags. Tags are stored as an array of strings under the reserved `tags` key on each contact's `data` object.
+
+Any tag string you use with a contact — via the REST API, the MCP tool, or the dashboard — is created automatically on first use. You can manage tags programmatically in two ways:
+
+### Via the REST API
+
+Set the full list of tags on a contact by writing to `data.tags`. You can do this at creation time in the `POST /v1/my/contacts` body, or on an existing contact with `PATCH`:
+
+```bash
+curl -X PATCH https://api.nitrosend.com/v1/my/contacts/42 \
+  -H "Authorization: Bearer nskey_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": { "tags": ["vip", "newsletter"] }
+  }'
+```
+
+Filter contacts by a single tag with the `tag` query parameter:
+
+```bash
+curl -H "Authorization: Bearer nskey_live_..." \
+  "https://api.nitrosend.com/v1/my/contacts?tag=vip"
+```
+
+<Warning>
+  PATCHing the `data` field **replaces the entire `data` object**, not just the keys you send. If the contact has other custom fields (e.g. `data.plan`, `data.apollo`), sending `{ "data": { "tags": [...] } }` will wipe them.
+
+  To add or remove tags safely via REST, `GET /v1/my/contacts/{id}` first, merge your changes into the existing `data` hash, then `PATCH` the full merged object back. For add/remove semantics across many contacts in one call — without the read-modify-write dance — use the MCP tool below.
+</Warning>
+
+### Via the MCP tool (agents)
+
+When an AI agent is managing contacts on a user's behalf, use the `nitro_manage_audience` tool with the `bulk_tag` operation. It supports `add`, `remove`, and `set` semantics across many contacts in one call — no read-modify-write dance.
+
+```json
+{
+  "operation": "bulk_tag",
+  "params": {
+    "contact_ids": [1, 2, 3],
+    "tags": ["vip", "newsletter"],
+    "tag_action": "add"
+  }
+}
+```
+
+- **`tag_action: "add"`** (default) — merges the given tags into each contact's existing tags, deduplicated.
+- **`tag_action: "remove"`** — removes the given tags from each contact; leaves other tags untouched.
+- **`tag_action: "set"`** — replaces the entire tag list on each contact with the given tags.
+
+`contact_ids` is required — omit it and the call fails rather than silently tagging every contact in the brand. Pass `dry_run: true` alongside to preview the affected `contact_count` without persisting.
+
+See [Example Workflows](/guides/mcp-examples#example-4-bulk-tag-contacts) for a full prompt-to-result walkthrough.
+
 ## Segments
 
 Segments are dynamic groups defined by conditions (e.g., "subscribed in the last 30 days" or "opened an email this week"). Unlike lists, segments update automatically as contacts match or stop matching the criteria.
+
+Tags are one of the available segment filters — use the `contact_tag` filter name with the `cont` (contains) predicate to build tag-based segments, e.g. `{ name: "contact_tag", predicate: "cont", value: "vip" }`.
