@@ -119,7 +119,10 @@ These examples show the full loop: what you say, what your AI calls, and what co
     },
     { "type": "footer", "props": {} }
   ],
-  "audience": { "contact_list_id": 42 }
+  "audience": {
+    "audience_type": "lists",
+    "contact_list_id": 42
+  }
 }
 ```
 
@@ -159,6 +162,19 @@ These examples show the full loop: what you say, what your AI calls, and what co
     Campaign goes live and starts sending to 1,250 contacts.
   </Step>
 </Steps>
+
+If the campaign audience is `all_contacts`, the final call must include `confirm_send_to_all`:
+
+```json
+{
+  "target_type": "campaign",
+  "target_id": 7,
+  "operation": "live",
+  "confirm_send_to_all": true
+}
+```
+
+Approval, Safe Mode, and `confirm_send_to_all` are separate checks. Approval verifies content and preflight readiness. Safe Mode can still block API-key live/schedule calls. `confirm_send_to_all` only confirms that the broad all-subscribed-contacts audience is intentional.
 
 ---
 

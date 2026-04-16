@@ -5,12 +5,22 @@ description: One-time email sends to your audience
 
 # Campaigns
 
-A campaign is a one-time email send to a contact list or segment. Each campaign uses a template and tracks delivery metrics (opens, clicks, bounces, unsubscribes).
+A campaign is a one-time email or SMS send to an explicit audience. Each campaign uses a template and tracks delivery metrics (opens, clicks, bounces, unsubscribes).
 
 ## Campaign vs Flow
 
-- **Campaign** — manual, one-time send to a list. Good for newsletters, announcements, promotions.
+- **Campaign** — manual, one-time send to selected lists, a segment, or All Contacts. Good for newsletters, announcements, promotions.
 - **Flow** — automated, event-triggered sequence. Good for welcome series, onboarding, re-engagement.
+
+## Audiences
+
+Campaigns do not fall back to everyone when no audience is selected. Choose one audience type:
+
+- **Contact lists** — send to one or more lists, optionally filtered by a segment.
+- **Segment** — send to contacts matching a saved segment.
+- **All Contacts** — send to every subscribed contact in the brand.
+
+All Contacts is a deliberate target. The dashboard shows it as a pinned audience option and asks for confirmation before delivery. MCP/API users must also confirm an all-contacts launch with `confirm_send_to_all`.
 
 ## Scheduling
 
