@@ -2,10 +2,10 @@
   "mcpSpec": "0.2.0",
   "mcpVersion": "2025-11-25",
   "server": {
-    "name": "nitrosend",
+    "name": "nitro",
     "version": "1.0.0"
   },
-  "description": "Nitrosend MCP server — full email marketing automation from any AI client. Compose campaigns, build flows, manage contacts, check analytics, and control delivery through natural language.",
+  "description": "Multi-channel marketing automation platform. Use nitro_get_status first to understand account state. Read nitro://guide for vocabulary and workflow.",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -13,10 +13,13 @@
     "resources": {
       "subscribe": false,
       "listChanged": false
+    },
+    "prompts": {
+      "listChanged": false
     }
   },
   "transport": {
-    "type": "http",
+    "type": "streamable-http",
     "url": "https://api.nitrosend.com/mcp"
   },
   "tools": [
@@ -28,10 +31,10 @@
         "properties": {}
       },
       "annotations": {
+        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
+        "openWorldHint": false
       }
     },
     {
@@ -74,10 +77,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
+        "openWorldHint": false
       }
     },
     {
@@ -113,10 +116,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
+        "openWorldHint": false
       }
     },
     {
@@ -192,10 +195,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": true,
-        "readOnlyHint": false
+        "openWorldHint": true
       }
     },
     {
@@ -242,10 +245,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -336,10 +339,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -396,10 +399,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -472,10 +475,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -727,10 +730,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -797,8 +800,17 @@
           },
           "audience": {
             "type": "object",
-            "description": "Target audience for the campaign",
+            "description": "Target audience for the campaign. Use audience_type='all_contacts' only for an explicit all-subscribed-contacts send.",
             "properties": {
+              "audience_type": {
+                "type": "string",
+                "enum": [
+                  "lists",
+                  "segment",
+                  "all_contacts"
+                ],
+                "description": "Explicit audience target: lists, segment, or all_contacts"
+              },
               "contact_list_ids": {
                 "type": "array",
                 "items": {
@@ -837,15 +849,15 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
       "name": "nitro_manage_domains",
-      "description": "Manage sending domains — add, verify, check DNS, list, and remove. Add returns provider verification, SPF, DKIM, DMARC, MX, return-path, and tracking records; check_dns validates both the customer-facing records and the Nitro-owned delegate targets behind them. Managed SES uses Nitro-branded MX indirection, while BYO providers return their own receiving records.",
+      "description": "Manage sending domains — add, verify, check DNS, list, and remove. Add returns the core DNS records needed to finish setup plus any optional improvements such as tracking or inbound routing. check_dns validates both the customer-facing records and the Nitro-owned delegate targets behind them. Managed SES uses Nitro-branded MX indirection, while BYO providers return their own receiving records.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -858,7 +870,7 @@
               "list",
               "remove"
             ],
-            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\")}. Registers domain with email provider and returns DNS records. The user must add these DNS records at their domain registrar. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider if DNS records have propagated. Also runs independent DNS validation and returns per-record dns_health. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation only. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records and Nitro-managed delegate targets before verify.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
+            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\")}. Registers domain with email provider and returns DNS records. The user must add these DNS records at their domain registrar. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider if the core DNS records have propagated. Also runs independent DNS validation and returns per-record dns_health. Optional records like tracking are reported separately and do not block completion. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation only. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records and Nitro-managed delegate targets before verify. Optional improvements are surfaced without blocking setup completion.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
           },
           "params": {
             "type": "object",
@@ -883,10 +895,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": true,
-        "readOnlyHint": false
+        "openWorldHint": true
       }
     },
     {
@@ -920,10 +932,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -959,15 +971,15 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
+        "openWorldHint": false
       }
     },
     {
       "name": "nitro_send_test_message",
-      "description": "Send a real test message for an existing template, campaign, or flow step. Supports email and SMS targets. This never sends to a campaign audience, never approves delivery, and never schedules or launches a campaign. For the common \"send a test of the last campaign\" workflow, pass latest_campaign: true. If a flow has multiple message steps, pass action_id or template_id from nitro_review_delivery review_steps. Retry safety: pass the same idempotency_key on retry to avoid duplicate test messages.",
+      "description": "Send a real test message for an existing template, campaign, or flow step.\nSupports email and SMS targets. This never sends to a campaign audience, never approves delivery, and never schedules or launches a campaign.\nFor the common \"send a test of the last campaign\" workflow, pass latest_campaign: true.\nIf a flow has multiple message steps, pass action_id or template_id from nitro_review_delivery review_steps.\nRetry safety: pass the same idempotency_key on retry to avoid duplicate test messages.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1036,10 +1048,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": true,
-        "readOnlyHint": false
+        "openWorldHint": true
       }
     },
     {
@@ -1080,6 +1092,10 @@
             "type": "string",
             "format": "date-time",
             "description": "Required for schedule operation (ISO 8601 datetime)"
+          },
+          "confirm_send_to_all": {
+            "type": "boolean",
+            "description": "Required when making a campaign live or scheduled with audience_type='all_contacts'. Forces an explicit all-subscribed-contacts confirmation."
           }
         },
         "required": [
@@ -1090,10 +1106,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": true,
-        "readOnlyHint": false
+        "openWorldHint": true
       }
     },
     {
@@ -1134,10 +1150,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": true
+        "openWorldHint": false
       }
     },
     {
@@ -1181,10 +1197,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": false
+        "openWorldHint": false
       }
     },
     {
@@ -1229,11 +1245,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false,
-        "readOnlyHint": false,
-        "title": "Set Memory"
+        "openWorldHint": false
       }
     },
     {
@@ -1270,10 +1285,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": true,
-        "readOnlyHint": false
+        "openWorldHint": true
       }
     },
     {
@@ -1327,11 +1342,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": true,
-        "readOnlyHint": false,
-        "title": "Send transactional email or SMS"
+        "openWorldHint": true
       }
     },
     {
@@ -1356,11 +1370,10 @@
         "additionalProperties": false
       },
       "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": false,
-        "readOnlyHint": false,
-        "title": "Request Support"
+        "openWorldHint": false
       }
     }
   ],
@@ -1368,69 +1381,127 @@
     {
       "uri": "nitro://guide",
       "name": "guide",
-      "description": "Platform guide: vocabulary, modes, workflow, constraints"
+      "description": "The platform guide your AI reads before doing anything. Covers Nitrosend vocabulary (contacts, channels, flows, campaigns, templates, segments), the two operating modes (tool-driven and goal-driven), the recommended workflow sequence, volume and tier constraints, and common pitfalls to avoid. Read this first."
     },
     {
       "uri": "nitro://account",
       "name": "account",
-      "description": "Current account state: tier, counts, onboarding, brand status"
+      "description": "Live snapshot of the current account: tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress (brand_setup, domain_verified, first_draft, first_send), contact and list counts, and active flow/campaign summary."
     },
     {
       "uri": "nitro://schema",
       "name": "schema",
-      "description": "Email component types, flow step types, trigger types, filters"
+      "description": "Machine-readable schema for composing emails and flows. Includes every email section type (header, text, image, button, columns, product, social, divider, spacer, footer) with required and optional props, all flow step types with their parameters, trigger event names, and the full list of segment filter names and predicates."
     },
     {
       "uri": "nitro://brand",
       "name": "brand",
-      "description": "Brand identity: colors, fonts, logo, links"
+      "description": "The account's brand identity as configured in Brand Settings. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Your AI reads this automatically when composing emails so designs match the brand."
     },
     {
       "uri": "nitro://providers",
       "name": "providers",
-      "description": "Email provider status, domain verification, sending mode"
+      "description": "Current email provider configuration and health. Shows whether the account uses Nitrosend's managed SES or a BYO provider (Mailgun, SES), domain verification status for each sending domain, and the active sending mode (sandbox vs production)."
     },
     {
       "uri": "nitro://config",
       "name": "config",
-      "description": "Account configuration: sender defaults, verified domains"
+      "description": "Account-level sender defaults: from_name, from_email, reply_to, and saved test email recipients. These are applied automatically to campaigns and flows when per-message overrides are not specified."
     },
     {
       "uri": "nitro://examples/email",
       "name": "example-email",
-      "description": "Comprehensive email reference: every section type (header, hero, text, image, button, columns, product, social, divider, spacer, footer) with all props and styles"
+      "description": "A complete working email design showing every section type in context — header with logo, hero image, text blocks, buttons, two-column product grid, social links, divider, spacer, and footer with unsubscribe. Use as a copy-paste starting point or reference for prop names, style overrides, and column nesting."
     },
     {
       "uri": "nitro://examples/flow",
       "name": "example-flow",
-      "description": "Comprehensive flow reference: all step types (email, sms, wait, split, emit_event), triggers, branching, filter syntax, wait durations"
+      "description": "A complete automation flow example demonstrating all step types: email with inline design, SMS, wait (duration in seconds), split with filter conditions and yes/no branches, emit_event, webhook, subscribe, and unsubscribe. Shows trigger configuration, branching structure, and merge-tag usage."
     },
     {
       "uri": "nitro://examples/campaign",
       "name": "example-campaign",
-      "description": "Comprehensive campaign reference: email + SMS campaigns, audience targeting, scheduling, full design examples"
+      "description": "Complete campaign examples for both email and SMS channels. Shows audience targeting with contact_list_ids and segment_id, scheduled delivery with scheduled_at, inline email design with sections, and SMS body composition."
     },
     {
       "uri": "nitro://knowledge/index",
       "name": "knowledge-index",
-      "description": "Email marketing knowledge: topic catalog with slugs, titles, descriptions"
+      "description": "Index of built-in email marketing knowledge topics. Returns a list of available slugs with titles and short descriptions. Use a slug with nitro://knowledge/{slug} to read the full topic content. Topics cover deliverability, subject lines, segmentation, automation best practices, and compliance."
     },
     {
       "uri": "nitro://memory",
       "name": "memory",
-      "description": "Persistent operator preferences, goals, tasks, and notes"
+      "description": "The operator's persistent AI memory document. Contains business goals, target audience, preferred email strategy, tone of voice notes, and any other context the operator has saved. Your AI reads this automatically to inform decisions about email content, flow design, and campaign targeting. Managed via the nitro_set_memory tool."
     }
   ],
   "resourceTemplates": [
     {
       "uriTemplate": "nitro://knowledge/{slug}",
       "name": "knowledge-topic",
-      "description": "Individual knowledge topic content — use slug from knowledge index"
+      "description": "Full content for a single knowledge topic. Pass a slug from the knowledge index (e.g. nitro://knowledge/deliverability). Returns a markdown document with actionable guidance your AI can apply when composing emails, building flows, or advising on strategy."
     },
     {
       "uriTemplate": "nitro://prompts/{name}",
       "name": "prompt",
-      "description": "Prompt template by name — returns rendered workflow instructions"
+      "description": "Rendered prompt template by name. Returns structured workflow instructions that guide the AI through multi-step tasks like onboarding a new account, running a campaign review, or setting up a welcome series. Each prompt includes context requirements, step sequence, and expected tool calls."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "audience-analysis",
+      "description": "Analyse audience segments and engagement",
+      "arguments": [
+        {
+          "name": "goal",
+          "description": "What you want to learn or achieve, e.g. 'find disengaged subscribers', 'segment by purchase history', 'identify VIP customers'",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "build-email",
+      "description": "Compose a marketing email",
+      "arguments": [
+        {
+          "name": "goal",
+          "description": "What the email is for, e.g. 'announce our spring sale', 'weekly newsletter', 'event invitation', 'product launch'",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "build-flow",
+      "description": "Create an automated email flow from scratch",
+      "arguments": [
+        {
+          "name": "goal",
+          "description": "What the flow should achieve, e.g. 'welcome series for new signups', 'abandoned cart recovery', 're-engage inactive subscribers'",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "diagnose-deliverability",
+      "description": "Diagnose and fix email deliverability issues"
+    },
+    {
+      "name": "flow-review",
+      "description": "Review and optimise an existing flow",
+      "arguments": [
+        {
+          "name": "flow_id",
+          "description": "ID of the flow to review. If omitted, lists active flows for the user to choose.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "onboard-brand",
+      "description": "Set up brand identity for a new account"
+    },
+    {
+      "name": "weekly-report",
+      "description": "Generate a weekly performance report"
     }
   ]
 }
