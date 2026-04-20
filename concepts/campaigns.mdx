@@ -25,3 +25,39 @@ All Contacts is a deliberate target. The dashboard shows it as a pinned audience
 ## Scheduling
 
 Campaigns can be sent immediately or scheduled for a future date and time.
+
+## Edit lock and lifecycle
+
+Once a campaign is sent, its content is locked. The API response includes an `editable: boolean` field and the dashboard renders a banner reflecting the current lifecycle:
+
+| Status | Editable | What you can do |
+| --- | --- | --- |
+| `draft` | yes | Full edit access. |
+| `scheduled` | yes, until 5 minutes before send | A countdown banner appears 15 minutes before the lock time. |
+| `scheduled` (final 5 min) | no | Cancel or duplicate. |
+| `live` | no | Wait for completion. |
+| `paused` | no | Resume sends the original to remaining contacts. Cancel + Duplicate if you want to change direction. |
+| `completed` / `cancelled` / `archived` | no | Duplicate to iterate. |
+
+**Name is always editable.** The name is internal metadata (list/search reference), never delivered content. Renaming a sent campaign succeeds on every status.
+
+**Status transitions are always allowed.** Resume, Cancel, and other lifecycle operations are not content edits and are not blocked by the lock.
+
+When a locked campaign receives content edits (trigger, template, channel, scheduled_at), the API returns:
+
+```json
+{
+  "code": 422,
+  "error": true,
+  "error_code": "campaign_locked",
+  "message": "This campaign has been sent and can't be changed.",
+  "status": "completed",
+  "hint": "Duplicate it to create a new draft."
+}
+```
+
+## Duplicating a sent campaign
+
+`POST /v1/my/campaigns/{id}/duplicate` returns a fresh draft that copies the source's audience (trigger.audience_type, contact_list_ids, segment_id) and template content (design, subject, preheader, body, from_name, from_email, reply_to). It does **not** copy schedule, approval, send history, or metrics — the new campaign starts clean with `status: draft`, `approval_state: pending_review`, and name `"Copy of {original}"`.
+
+Duplicate works on any status, locked or not. In the dashboard, the banner on locked campaigns shows **Edit as new campaign** as the primary CTA, and the overflow menu on every campaign row exposes the same action.
