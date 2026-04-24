@@ -6,6 +6,6 @@
     "build": "npx sourcey build"
   },
   "dependencies": {
-    "sourcey": "^3.4.11"
+    "sourcey": "^3.5.0"
   }
 }

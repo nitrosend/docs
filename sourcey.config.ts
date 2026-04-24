@@ -2,6 +2,7 @@ import { defineConfig } from "sourcey";
 
 export default defineConfig({
   name: "Nitrosend",
+  prettyUrls: "strip",
   theme: {
     colors: {
       primary: "#FF4D00",
