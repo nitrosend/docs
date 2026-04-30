@@ -1,0 +1,109 @@
+---
+title: Install & sign in
+description: Install the Nitrosend CLI, sign in with OAuth or an API key, and confirm your connection
+---
+
+# Install & sign in
+
+## Install
+
+The CLI ships as `@nitrosend/cli` on npm. Install globally with your package manager of choice:
+
+<CodeGroup>
+```bash npm
+npm install -g @nitrosend/cli
+```
+
+```bash pnpm
+pnpm add -g @nitrosend/cli
+```
+
+```bash yarn
+yarn global add @nitrosend/cli
+```
+</CodeGroup>
+
+Requires Node.js 18 or newer. Confirm the install:
+
+```bash
+nitrosend --version
+```
+
+## Sign in
+
+The CLI supports two auth modes. OAuth for humans on a workstation, API keys for CI and headless agents.
+
+### OAuth (recommended for humans)
+
+```bash
+nitrosend login
+```
+
+Opens a browser window for OAuth PKCE. The resulting profile is stored under your platform config directory (or `NITROSEND_CONFIG_DIR` if set) — never inside your repo.
+
+Pass `--profile <name>` to keep multiple accounts side by side:
+
+```bash
+nitrosend login --profile work
+nitrosend login --profile personal
+nitrosend whoami --profile work
+```
+
+### API key (recommended for CI and headless)
+
+Get an API key from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com), then either store it as a profile:
+
+```bash
+nitrosend login --api-key nskey_live_...
+```
+
+…or pass it through the environment without writing to disk:
+
+```bash
+export NITROSEND_API_KEY=nskey_live_...
+nitrosend mcp tools list
+```
+
+Environment variables take precedence over stored profiles, which makes the CLI safe to drop into a CI runner that injects secrets at job time.
+
+<Tip>
+  In `--non-interactive` or `--machine` mode, OAuth login is rejected — interactive auth would block the run. Use an API key or a pre-existing profile for those workflows.
+</Tip>
+
+## Confirm the connection
+
+```bash
+nitrosend whoami
+```
+
+Prints the active auth source, profile name, and API endpoint. If `whoami` succeeds, the next step is the dashboard — a single read that summarises account state, blockers, and what to do next:
+
+```bash
+nitrosend
+```
+
+The bare `nitrosend` invocation is the dashboard alias. It calls `nitro_get_status` and renders the response envelope's `blockers` and `next_action` fields. From here, list MCP tools to confirm the platform surface is reachable:
+
+```bash
+nitrosend mcp tools list
+```
+
+## Sign out
+
+```bash
+nitrosend logout
+```
+
+Removes the active profile. Use `--profile <name>` to remove a specific one. `logout` does not revoke the underlying token — to revoke, do that from the dashboard.
+
+## Custom API endpoints
+
+Point the CLI at a non-production endpoint with `--api-url` or `NITROSEND_API_URL`:
+
+```bash
+nitrosend login --api-url https://api.staging.nitrosend.com/mcp
+# or
+export NITROSEND_API_URL=https://api.staging.nitrosend.com/mcp
+```
+
+Project-level defaults live in `.nitrosend.yml` — see [Project config](/cli/project-config).

@@ -1,0 +1,85 @@
+---
+title: Command reference
+description: Full Nitrosend CLI command reference, generated from the CLI's command descriptors
+---
+
+# Command reference
+
+This page is generated from `COMMAND_DESCRIPTORS` in the CLI repo. Every command listed here has a typed input schema, output schema, safety class, and idempotency policy. Use `nitrosend describe <command> --json` to read the live descriptor for any command.
+
+<Tip>
+  In agent runners, prefer `nitrosend describe` over this page. The descriptor returned by the CLI is always in sync with the binary you're running.
+</Tip>
+
+## Core
+
+| Command | Summary |
+|---|---|
+| `nitrosend` | Show account state, blockers, and suggested next actions. |
+| `nitrosend describe <command>` | Return descriptor, schemas, examples, and safety metadata for a command. |
+| `nitrosend completion <bash\|zsh\|fish>` | Generate shell completion. |
+| `nitrosend recent` | Show redacted recent commands. |
+| `nitrosend redo [index]` | Show or re-run a recent command. |
+
+## Auth
+
+| Command | Summary |
+|---|---|
+| `nitrosend login` | Authenticate with OAuth in the browser. |
+| `nitrosend login --api-key <key>` | Store an API-key profile. |
+| `nitrosend logout` | Remove the active local profile. |
+| `nitrosend whoami` | Show active auth source, profile, and API endpoint. |
+
+## MCP
+
+The CLI is the Nitrosend MCP, callable from a shell. These commands dispatch JSON-RPC over HTTP to the same endpoint chat MCP clients use.
+
+| Command | Summary |
+|---|---|
+| `nitrosend mcp initialize` | Initialise MCP handshake. |
+| `nitrosend mcp tools list` | List MCP tools. |
+| `nitrosend mcp tools call <name> --args '{...}'` | Call an MCP tool. |
+| `nitrosend mcp resources list` | List MCP resources. |
+| `nitrosend mcp resources read <uri>` | Read an MCP resource (e.g. `nitro://account`). |
+| `nitrosend mcp prompts list` | List MCP prompts. |
+| `nitrosend mcp prompts get <name> --args '{...}'` | Get an MCP prompt. |
+
+The full set of available tools (`nitro_get_status`, `nitro_compose_campaign`, …) is documented under the [MCP Tools](/mcp) tab.
+
+## Agent
+
+These commands are stable stubs for agent approval handoff. They will gain SSE waiter behaviour in a future release.
+
+| Command | Summary |
+|---|---|
+| `nitrosend approve <token>` | Approve a pending agent operation token. |
+| `nitrosend reject <token>` | Reject a pending agent operation token. |
+
+## Fixtures
+
+Test commands that exercise destructive safety UX without touching live data.
+
+| Command | Summary |
+|---|---|
+| `nitrosend fixture destroy <name> --confirm <name>` | Exercise typed-confirmation flow against a fixture. |
+
+## Global flags
+
+| Flag | Effect |
+|---|---|
+| `--json` / `--ndjson` / `--csv` | Output mode. |
+| `--machine` | Implies `--json --non-interactive --no-color --no-pager`; auto-issues idempotency keys. |
+| `--non-interactive` | Refuse to prompt; fail closed. |
+| `--dry-run` | Resolve and validate without performing side effects. Honoured where supported. |
+| `--explain` | Return the resolved plan as data. No side effects. |
+| `--yes` | Skip ordinary confirmations. Never bypasses typed confirmation. |
+| `--trace` | Print timing diagnostics on stderr. |
+| `--profile <name>` | Override active profile. |
+| `--api-url <url>` | Override the MCP endpoint. |
+| `--api-key <key>` | One-shot API key for this invocation. |
+| `--args` / `--json-args` | JSON-encoded arguments for `mcp tools call` and `mcp prompts get`. |
+| `--confirm <target>` | Typed confirmation for destructive commands. |
+| `--no-color` / `--no-pager` | Strip ANSI / pagers. |
+| `--no-browser` | Skip the browser open during OAuth login. |
+
+See [Agent mode](/cli/agent-mode) for the full envelope shape and exit code map.

@@ -1,0 +1,162 @@
+---
+title: Recipes
+description: End-to-end CLI examples for CI pipelines, local operating, and agent runners
+---
+
+# Recipes
+
+Concrete patterns for the three audiences the CLI is built for.
+
+## CI pipelines
+
+### GitHub Actions: send a release notification
+
+Use `nitrosend mcp tools call` to fire a transactional message after a deploy. `--machine` gives stable JSON, exit codes, and an auto-issued idempotency key.
+
+```yaml
+name: Notify release
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install -g @nitrosend/cli
+      - name: Send release email
+        env:
+          NITROSEND_API_KEY: ${{ secrets.NITROSEND_API_KEY }}
+        run: |
+          nitrosend mcp tools call nitro_send_message --machine --args "$(cat <<EOF
+          {
+            "channel": "email",
+            "to": "team@example.com",
+            "subject": "Release ${{ github.event.release.tag_name }}",
+            "body": "<p>${{ github.event.release.html_url }}</p>",
+            "idempotency_key": "release-${{ github.event.release.id }}"
+          }
+          EOF
+          )"
+```
+
+The `idempotency_key` inside `--args` is what the platform dedupes against — set it from a stable, retry-survivable value like the release ID so a re-run of the job won't double-send. Branch on exit codes for retry strategy: `75` retriable, `77` means rotate the API key, `78` means upgrade the CLI step.
+
+### Daily account health check
+
+Run the dashboard read, fail the job on blockers:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+result=$(nitrosend --machine)
+blockers=$(echo "$result" | jq -r '.sidecars.blockers // [] | length')
+
+if [ "$blockers" -gt 0 ]; then
+  echo "$result" | jq '.sidecars.blockers'
+  exit 1
+fi
+```
+
+## Local operating
+
+### Quick status snapshot
+
+Three commands cover most "what's the state of my account" questions:
+
+```bash
+nitrosend                              # account state, blockers, next_action
+nitrosend mcp resources read nitro://account
+nitrosend mcp tools call nitro_get_insights --args '{"scope":"account"}'
+```
+
+### Pipe campaign results into a spreadsheet
+
+```bash
+nitrosend mcp tools call nitro_query \
+  --args '{"resource":"campaigns","page":1,"per_page":100}' \
+  --csv > campaigns.csv
+```
+
+CSV mode is table-only — no envelope, no sidecars. Use it when you want raw rows.
+
+### Replay a recent command
+
+```bash
+nitrosend recent              # show the last 10 commands
+nitrosend redo 1 --explain    # show what `redo 1` would run, without running
+```
+
+`recent` and `redo` are local-only — they never call the API and they redact obvious secrets in their stored history.
+
+### Tab completion
+
+```bash
+# bash
+nitrosend completion bash >> ~/.bashrc
+
+# zsh
+nitrosend completion zsh > ~/.config/zsh/completions/_nitrosend
+
+# fish
+nitrosend completion fish > ~/.config/fish/completions/nitrosend.fish
+```
+
+## Agent runners
+
+### Plan, then act
+
+Use `--explain` to get a deterministic plan before deciding to execute. The plan is the same envelope shape as a real run, with `would_execute: false`.
+
+```bash
+plan=$(nitrosend mcp tools call nitro_compose_campaign \
+  --args "$(cat brief.json)" --explain --machine)
+
+# Inspect the plan, decide, then run for real
+echo "$plan" | jq '.data'
+
+if [ "$(echo "$plan" | jq -r '.data.would_execute')" = "false" ]; then
+  nitrosend mcp tools call nitro_compose_campaign \
+    --args "$(cat brief.json)" --machine
+fi
+```
+
+### Discover the contract before calling
+
+Cache the descriptor at startup. Don't guess flags.
+
+```bash
+nitrosend describe mcp tools call --json | jq '.input_schema'
+```
+
+The descriptor includes safety class, dry-run support, idempotency policy, and an `agent.suitable` flag. Skip any command marked `suitable: false` from an autonomous runner.
+
+### Approval handoff
+
+When an agent needs human sign-off mid-run, hand off to `approve` / `reject` and pause. The CLI exposes these as stable stubs today and will gain an SSE waiter endpoint in a future release.
+
+```bash
+# Agent emits a token, then waits.
+nitrosend approve $TOKEN   # human runs this
+nitrosend reject  $TOKEN   # or this
+```
+
+### Read sidecars for next-action loops
+
+Don't write your own "what should I do next" logic. The platform already returns one. Read `sidecars.next_action` and `sidecars.suggested_tool_calls` and let it drive the loop.
+
+```bash
+result=$(nitrosend mcp tools call nitro_get_status --machine)
+next=$(echo "$result" | jq -r '.sidecars.next_action // empty')
+[ -n "$next" ] && echo "Next: $next"
+```
+
+## See also
+
+- [Agent mode](/cli/agent-mode) — the full machine-readable contract
+- [Project config](/cli/project-config) — environments and the production guard
+- [MCP integrations overview](/integrations/overview) — when to use a chat MCP client instead

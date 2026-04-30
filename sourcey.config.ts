@@ -79,6 +79,24 @@ export default defineConfig({
         mcp: "./nitrosend.mcp.json",
       },
       {
+        tab: "CLI",
+        slug: "cli",
+        groups: [
+          {
+            group: "Get Started",
+            pages: ["cli/overview", "cli/install"],
+          },
+          {
+            group: "Operating",
+            pages: ["cli/agent-mode", "cli/project-config", "cli/recipes"],
+          },
+          {
+            group: "Reference",
+            pages: ["cli/reference"],
+          },
+        ],
+      },
+      {
         tab: "API Reference",
         slug: "api",
         openapi: "https://api.nitrosend.com/openapi.yaml",

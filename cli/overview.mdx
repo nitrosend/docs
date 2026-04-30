@@ -1,0 +1,47 @@
+---
+title: CLI overview
+description: When to reach for the Nitrosend CLI, and what it gives you that chat MCP clients and the REST API can't
+---
+
+# CLI overview
+
+Use the Nitrosend CLI when you're scripting CI, building an agent runner, or operating Nitrosend from a terminal. It is the Nitrosend MCP callable from a shell: same tools, same envelope, plus exit codes, dry-run, project context, and typed confirmation.
+
+## When to use which surface
+
+Nitrosend exposes three peer surfaces over the same platform. Pick the one that matches where your work lives.
+
+| Surface | Reach for it when | Skip it when |
+|---|---|---|
+| **MCP via chat client** (Claude Code, ChatGPT, Cursor, …) | You want a conversation with the platform — drafting copy, exploring data, planning sends. | You need deterministic, scriptable behaviour. |
+| **CLI** (`nitrosend`) | You're scripting CI, building an agent runner, or running Nitrosend from a terminal. You need exit codes, JSON envelopes, dry-run, typed prod confirmation. | You're integrating Nitrosend into application code. |
+| **[REST API](/integrations/rest-api)** | You're integrating Nitrosend into application code, sending transactional messages from a backend, or wiring up a partner integration. | You need the MCP envelope's `next_action` / `blockers` guidance fields. |
+
+The CLI calls the same MCP tools your chat client calls and returns the same envelope shape — the difference is contract: it has stable exit codes, machine-readable output modes, and refuses unsafe ops in non-interactive mode.
+
+## First workflow
+
+Three commands to confirm the CLI is wired up to your account.
+
+```bash
+nitrosend login
+nitrosend whoami
+nitrosend
+```
+
+`nitrosend login` runs OAuth in your browser. `whoami` prints the active profile and API endpoint. The bare `nitrosend` invocation runs the dashboard — account state, blockers, and suggested next actions.
+
+For CI or headless workflows, swap OAuth for an API key:
+
+```bash
+nitrosend login --api-key nskey_live_...
+# or
+export NITROSEND_API_KEY=nskey_live_...
+nitrosend mcp tools list
+```
+
+See [Install & sign in](/cli/install) for the full setup, [Agent mode](/cli/agent-mode) for the machine-readable contract, and [Recipes](/cli/recipes) for end-to-end examples.
+
+## What the CLI doesn't try to be
+
+The CLI is for deterministic shell workflows. It is not a replacement for the chat experience or the dashboard. It does not own features the MCP doesn't expose — every command is a sensible thing to call from a shell *and* has a clean MCP analogue. If you need a richer composer, use a chat MCP client. If you need to ship Nitrosend inside an application, use the [REST API](/integrations/rest-api).

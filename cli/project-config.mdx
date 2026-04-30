@@ -1,0 +1,94 @@
+---
+title: Project config
+description: Per-project defaults via .nitrosend.yml — profiles, environments, and the production typed-confirm guard
+---
+
+# Project config
+
+Project-level defaults live in `.nitrosend.yml`. The CLI walks up from your current directory until it finds one, then merges its values with environment variables and command flags. Flags win, then environment variables, then the file.
+
+## File shape
+
+```yaml
+profile: sandbox
+environment: sandbox
+output: json
+api_url: https://api.nitrosend.com/mcp
+```
+
+| Field | Effect |
+|---|---|
+| `profile` | Default profile to use when `--profile` is not passed. |
+| `environment` | Label shown on every command result. Drives the production guard (see below). |
+| `output` | Default output mode (`tty`, `json`, `ndjson`, `csv`). |
+| `api_url` | Default MCP endpoint. Overridden by `--api-url` or `NITROSEND_API_URL`. |
+
+`.nitrosend.yml` must never contain secrets. API keys belong in `NITROSEND_API_KEY` or in a profile stored under your platform config directory. Commit `.nitrosend.yml` to your repo so the whole team gets the same defaults; keep credentials outside it.
+
+## Environments
+
+`environment` is a free-form label, but two values are special:
+
+- **`sandbox`** — the default. No extra confirmation required for destructive commands beyond the typed target name.
+- **`production`** — destructive commands gain an extra typed confirmation step on top of the per-command target. Designed to make it hard to run a destructive command in prod by muscle memory.
+
+The label is rendered on every command result. In agent mode, it appears in `meta.environment` so harnesses can branch on it.
+
+```yaml
+# .nitrosend.yml in your prod automation repo
+profile: prod
+environment: production
+output: json
+```
+
+## The production guard
+
+Destructive commands declare a `confirmation_target` in their descriptor — typically the resource name. Running them anywhere requires typing that target. In `environment: production`, the guard widens: **every** destructive command demands typed confirmation, even ones that wouldn't ordinarily require it. The promotion is per-environment, not per-command — set `environment: production` once in the relevant `.nitrosend.yml` and the rule applies to every destructive command run from that directory.
+
+```bash
+nitrosend fixture destroy demo --confirm demo
+```
+
+In an interactive shell, the CLI also prompts: `Type demo to continue:`. The typed answer must match the target exactly.
+
+`--yes` does **not** bypass typed confirmation. `--non-interactive` and `--machine` fail closed when typed confirmation is required — they error with `typed_confirmation_required` (exit code `77`) and tell you to rerun with `--confirm <target>`. Agent runners that need to execute destructive prod commands must pass `--confirm` ahead of time, sourced from a human-approved input.
+
+## Profiles
+
+Profiles let you keep multiple accounts or endpoints side by side. Switch with `--profile <name>` or by setting `profile` in `.nitrosend.yml`. The active profile is reported by `whoami`:
+
+```bash
+nitrosend whoami
+```
+
+Profile precedence, highest to lowest:
+
+1. `--profile <name>` flag
+2. `NITROSEND_PROFILE` environment variable
+3. `profile:` in `.nitrosend.yml`
+4. The `default` profile
+
+Profiles store an OAuth refresh token or an API key plus the API URL. They're written to your platform config directory (or `NITROSEND_CONFIG_DIR` if set), not into the repo.
+
+## Environment variables
+
+| Variable | Effect |
+|---|---|
+| `NITROSEND_API_KEY` | API key. Wins over any stored profile. |
+| `NITROSEND_API_URL` | MCP endpoint URL. |
+| `NITROSEND_PROFILE` | Profile name. |
+| `NITROSEND_CONFIG_DIR` | Where profiles are stored. Default is the platform config dir. |
+
+CI runners typically set only `NITROSEND_API_KEY` and rely on the rest from `.nitrosend.yml`.
+
+## Example: monorepo with sandbox + prod scripts
+
+```
+my-app/
+├── .nitrosend.yml          # profile: sandbox, environment: sandbox
+└── scripts/
+    └── deploy/
+        └── .nitrosend.yml  # profile: prod, environment: production
+```
+
+Running `nitrosend ...` from the repo root uses the sandbox profile and skips prod confirmations. Running it from `scripts/deploy/` uses the prod profile and demands typed confirmation for any destructive op. The CLI walks up from the cwd, so the nearest config wins.

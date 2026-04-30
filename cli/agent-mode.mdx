@@ -1,0 +1,138 @@
+---
+title: Agent mode
+description: Machine-readable output, stable exit codes, dry-run, and idempotency for CI and agent runners
+---
+
+# Agent mode
+
+The CLI is contract-first. Every command has a `CommandDescriptor` with input and output schemas, a safety class, and explicit dry-run and idempotency policies. Agent mode is what you turn on to make those contracts load-bearing in CI and agent runners.
+
+## Turning it on
+
+`--machine` is the master switch:
+
+```bash
+nitrosend mcp tools call nitro_get_status --machine
+```
+
+`--machine` implies `--json --non-interactive --no-color --no-pager` and assigns an automatic idempotency key for commands that take side effects. It is the single flag CI and agent runners should use; the rest are escape hatches when you want partial behaviour.
+
+| Flag | What it does |
+|---|---|
+| `--machine` | Enables agent mode. Implies `--json --non-interactive --no-color --no-pager`. Auto-issues idempotency keys. |
+| `--json` | Stable JSON envelope on stdout. |
+| `--ndjson` | One stable stream event per line. |
+| `--csv` | Tabular data only, for piping into spreadsheets. |
+| `--non-interactive` | Refuse to prompt. Fail closed when input would be required. |
+| `--no-color` / `--no-pager` | Strip ANSI and pagers — useful when piping. |
+| `--dry-run` | Resolve and validate without performing side effects. Honoured by commands that declare `supports_dry_run: true`. |
+| `--explain` | Return the resolved plan as data. No side effects. |
+| `--yes` | Skip non-typed confirmations. Never bypasses typed confirmation. |
+| `--trace` | Print timing diagnostics on stderr. |
+
+## Stdout is sacred
+
+In `--json`, `--ndjson`, or `--machine` mode, stdout carries only the result envelope. No spinners, warnings, prompts, traces, upgrade notices, or color codes. Diagnostics go to stderr. Pipe `nitrosend ... --machine` into `jq` and trust it.
+
+## The result envelope
+
+Every successful command returns an object with this shape:
+
+```json
+{
+  "schema_version": 1,
+  "command": "mcp tools call",
+  "data": { "...": "tool-specific payload" },
+  "meta": {
+    "environment": "sandbox",
+    "profile": "default",
+    "duration_ms": 142,
+    "idempotency_key": "cli-lt8h2c"
+  },
+  "sidecars": {
+    "blockers": [],
+    "next_action": "Run `nitrosend mcp tools list --json`.",
+    "suggested_tool_calls": [{ "name": "nitro_get_status", "arguments": {} }]
+  }
+}
+```
+
+The `sidecars` block is the same envelope chat MCP clients read — `next_action`, `blockers`, and `suggested_tool_calls` propagate straight from the platform. Agent runners should consume `sidecars` to decide the next step rather than parse human-facing fields.
+
+## Errors
+
+Errors share the envelope. They never appear on stdout in human-facing modes, but in `--json` they do — agents need a single stream to parse.
+
+```json
+{
+  "schema_version": 1,
+  "command": "mcp tools call",
+  "error": {
+    "code": "validation_error",
+    "message": "Email is required",
+    "how_to_fix": "Pass `to: \"<email>\"` in --args.",
+    "suggested_tool_call": { "name": "nitro_get_status", "arguments": {} }
+  },
+  "meta": { "environment": "sandbox", "duration_ms": 87 }
+}
+```
+
+Do not retry the same call on error. Read `how_to_fix` and follow it. If `suggested_tool_call` is present, call that instead.
+
+## Exit codes
+
+Stable across versions:
+
+| Code | Meaning |
+|---|---|
+| `0` | Success |
+| `64` | Usage error (unknown command, bad flags) |
+| `65` | Data or validation error |
+| `69` | Service unavailable |
+| `70` | Internal error |
+| `75` | Temporary or retriable failure |
+| `77` | Permission or auth failure |
+| `78` | Unsupported or outdated CLI |
+
+Agent runners should branch on exit codes for retry strategy: `75` is retriable with backoff, `77` means re-auth, `78` means upgrade the CLI before continuing, everything else is terminal for the run.
+
+## Dry run and explain
+
+Two flavours of "don't actually do it":
+
+- `--dry-run` — runs the command up to the side-effect boundary and reports what *would* happen. Only honoured by commands that declare `supports_dry_run: true` in their descriptor; others reject the flag with a usage error.
+- `--explain` — returns the resolved plan as data. Available on every command. Use it from an agent harness to fetch a deterministic plan before deciding to execute.
+
+```bash
+nitrosend mcp tools call nitro_compose_campaign --args '{...}' --explain --json
+```
+
+## Idempotency
+
+Commands that take side effects declare `idempotency: { mode: "auto" }` in their descriptor. In `--machine` mode the CLI auto-issues a per-process idempotency key and surfaces it as `meta.idempotency_key` on the result, so a retry inside the same run dedupes against the original call.
+
+For per-call idempotency that survives runner restarts (the common CI case), pass an `idempotency_key` inside `--args` for the underlying MCP tool — `nitro_send_message`, `nitro_compose_campaign`, and other write tools all accept one. The platform dedupes on that key, not on the CLI's per-process key.
+
+```bash
+nitrosend mcp tools call nitro_send_message --machine --args '{
+  "channel": "email",
+  "to": "user@example.com",
+  "subject": "Receipt",
+  "body": "<p>Thanks!</p>",
+  "idempotency_key": "order-42"
+}'
+```
+
+## Describe a command
+
+`describe` returns the descriptor for any command — schemas, examples, safety class, dry-run support, idempotency, and whether the command is suitable for agent use:
+
+```bash
+nitrosend describe mcp tools call --json
+```
+
+Agent harnesses should `describe` a command once at startup and cache the schema instead of guessing flags.
+
+## Confirmations
+
+`--yes` skips ordinary `y/N` prompts. It does **not** bypass typed confirmation on destructive commands — those require the user to type the literal target name and fail closed in `--non-interactive` and `--machine` modes. See [Project config](/cli/project-config) for production environment guards.
