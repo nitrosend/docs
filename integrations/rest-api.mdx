@@ -177,10 +177,12 @@ puts result
 | **Contacts** | | |
 | List contacts | `GET` | `/contacts` |
 | Create contact | `POST` | `/contacts` |
-| Search contacts | `GET` | `/contacts/search?q=...` |
+| Bulk import contacts | `POST` | `/imports` |
+| Poll import status | `GET` | `/imports/{id}` |
 | **Lists** | | |
 | List contact lists | `GET` | `/lists` |
 | Create list | `POST` | `/lists` |
+| Add/remove contacts by email | `POST` | `/lists/{id}/contacts/bulk` |
 | **Templates** | | |
 | List templates | `GET` | `/templates` |
 | Create template | `POST` | `/templates` |
@@ -196,6 +198,21 @@ puts result
 | Get account info | `GET` | `/account` |
 
 See the full [API Reference](/api/) for detailed request/response schemas.
+
+## Bulk imports
+
+Use `POST /v1/my/imports` with `multipart/form-data` to upload a CSV. The
+response includes an import `id`; poll `GET /v1/my/imports/{id}` for status,
+row counts, and row-level errors. For contact imports, pass `options` with
+`list_ids` so imported contacts are assigned to the target list:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/imports \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -F "file=@contacts.csv" \
+  -F "resource=contacts" \
+  -F 'options={"list_ids":[88]}'
+```
 
 ## Pagination
 
