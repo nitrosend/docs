@@ -1,0 +1,132 @@
+---
+title: Vercel AI SDK
+description: Use Nitrosend tools inside Vercel AI SDK agents and generateText/streamText calls
+---
+
+# Vercel AI SDK
+
+`@nitrosend/ai-sdk` exposes Nitrosend's MCP tool surface — sending email,
+managing contacts, building flows, running campaigns — to applications
+built on the [Vercel AI SDK](https://ai-sdk.dev). It is a typed wrapper
+over the Nitrosend remote MCP server and is **not** a model package.
+
+## Install
+
+```bash
+npm install @nitrosend/ai-sdk ai @ai-sdk/mcp zod
+```
+
+The examples below also use `@ai-sdk/openai` for the model. Substitute
+your preferred AI SDK model package (`@ai-sdk/anthropic`,
+`@ai-sdk/google`, etc.):
+
+```bash
+npm install @ai-sdk/openai
+```
+
+## Authenticate
+
+Get a key from **Settings → API Keys** and export it. The package reads
+`NITROSEND_API_KEY` automatically, or you can pass `apiKey` explicitly.
+
+```bash
+export NITROSEND_API_KEY="nskey_live_<your-api-key>"
+```
+
+## Quickstart — generateText
+
+`stopWhen: stepCountIs(N)` is required for tool-calling workflows: AI SDK
+defaults to a single step, so without it the call stops as soon as the
+model invokes a Nitrosend tool and you never see the final summary text.
+
+```ts
+import { generateText, stepCountIs } from 'ai';
+import { openai } from '@ai-sdk/openai';
+import { withNitrosendTools } from '@nitrosend/ai-sdk';
+
+const result = await withNitrosendTools({}, async ({ tools }) => {
+  return generateText({
+    model: openai('gpt-4o'),
+    tools,
+    stopWhen: stepCountIs(5),
+    prompt: 'Send a welcome email to founder@acme.com.',
+  });
+});
+```
+
+## Streaming — streamText
+
+```ts
+import { streamText, stepCountIs } from 'ai';
+import { openai } from '@ai-sdk/openai';
+import { withNitrosendTools } from '@nitrosend/ai-sdk';
+
+await withNitrosendTools({}, async ({ tools }) => {
+  const stream = streamText({
+    model: openai('gpt-4o'),
+    tools,
+    stopWhen: stepCountIs(5),
+    prompt: 'Add founder@acme.com to the "Power users" list and confirm.',
+  });
+
+  for await (const part of stream.textStream) {
+    process.stdout.write(part);
+  }
+
+  await stream.consumeStream();
+});
+```
+
+`withNitrosendTools` opens the MCP transport, hands you the toolset, and
+closes the transport in a `finally` block when your callback resolves or
+throws — including when `streamText` is awaited inside.
+
+## Lifecycle and subsets
+
+For longer-lived processes, hold the client yourself:
+
+```ts
+import { nitrosend } from '@nitrosend/ai-sdk';
+
+const { tools, client, close } = await nitrosend();
+try {
+  // …pass `tools` to generateText/streamText, or use `client` directly…
+} finally {
+  await close();
+}
+```
+
+Filter the toolset to only what your agent should reach for — types narrow
+to match. Use `withNitrosendTools` so the transport closes after use:
+
+```ts
+import { withNitrosendTools } from '@nitrosend/ai-sdk';
+
+await withNitrosendTools(
+  { tools: ['nitro_get_status', 'nitro_send_message'] },
+  async ({ tools }) => {
+    // tools is typed to exactly { nitro_get_status, nitro_send_message }
+  },
+);
+```
+
+## Errors
+
+The wrapper does not retry. All failures throw `NitrosendAISDKError` with
+a stable `.code` and the original error preserved on `.cause`:
+
+- `AUTH_MISSING` — no credential was found in options or env.
+- `AUTH_INVALID_PREFIX` — `apiKey` did not start with `nskey_live_` / `nskey_test_`.
+- `CLIENT_INIT_FAILED` — MCP transport could not connect (check URL, network, key).
+- `TOOLS_LIST_FAILED` — server rejected the tools list call.
+
+## Related
+
+- [REST API](./rest-api) — Nitrosend HTTP API used by `@nitrosend/sdk`.
+- [MCP overview](./overview) — connecting Claude Desktop / Cursor / IDEs via
+  the `@nitrosend/mcp` stdio bridge.
+- [Tools Registry submission](https://ai-sdk.dev/tools-registry) — public
+  AI SDK tool directory; this package targets that listing.
+
+The companion native Vercel listing (one-click install, secret rotation,
+billing) is tracked in a separate Nitrosend spec and is not yet shipped.

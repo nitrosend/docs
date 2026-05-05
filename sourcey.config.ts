@@ -50,7 +50,7 @@ export default defineConfig({
           },
           {
             group: "API Integrations",
-            pages: ["integrations/rest-api"],
+            pages: ["integrations/rest-api", "integrations/vercel-ai-sdk"],
           },
           {
             group: "Guides",
