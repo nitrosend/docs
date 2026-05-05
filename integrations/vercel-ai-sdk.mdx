@@ -35,12 +35,12 @@ export NITROSEND_API_KEY="nskey_live_<your-api-key>"
 
 ## Quickstart — generateText
 
-`stopWhen: stepCountIs(N)` is required for tool-calling workflows: AI SDK
+`stopWhen: isStepCount(N)` is required for tool-calling workflows: AI SDK
 defaults to a single step, so without it the call stops as soon as the
 model invokes a Nitrosend tool and you never see the final summary text.
 
 ```ts
-import { generateText, stepCountIs } from 'ai';
+import { generateText, isStepCount } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { withNitrosendTools } from '@nitrosend/ai-sdk';
 
@@ -48,7 +48,7 @@ const result = await withNitrosendTools({}, async ({ tools }) => {
   return generateText({
     model: openai('gpt-4o'),
     tools,
-    stopWhen: stepCountIs(5),
+    stopWhen: isStepCount(5),
     prompt: 'Send a welcome email to founder@acme.com.',
   });
 });
@@ -57,7 +57,7 @@ const result = await withNitrosendTools({}, async ({ tools }) => {
 ## Streaming — streamText
 
 ```ts
-import { streamText, stepCountIs } from 'ai';
+import { streamText, isStepCount } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { withNitrosendTools } from '@nitrosend/ai-sdk';
 
@@ -65,7 +65,7 @@ await withNitrosendTools({}, async ({ tools }) => {
   const stream = streamText({
     model: openai('gpt-4o'),
     tools,
-    stopWhen: stepCountIs(5),
+    stopWhen: isStepCount(5),
     prompt: 'Add founder@acme.com to the "Power users" list and confirm.',
   });
 
