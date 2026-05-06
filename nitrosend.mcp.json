@@ -492,6 +492,24 @@
             "type": "string",
             "description": "Latest user instruction to preserve inside the composition contract."
           },
+          "draft_meta": {
+            "type": "object",
+            "description": "Host-composed draft metadata from composition_contract: creative_route_id, concrete_anchor, why_this_earns_the_inbox.",
+            "properties": {
+              "creative_route_id": {
+                "type": "string",
+                "description": "Chosen composition_contract.creative_routes[].id"
+              },
+              "concrete_anchor": {
+                "type": "string",
+                "description": "Specific proof, product detail, visual, code/output, quote, number, or brand moment used."
+              },
+              "why_this_earns_the_inbox": {
+                "type": "string",
+                "description": "One sentence explaining the creative move."
+              }
+            }
+          },
           "preheader": {
             "type": "string",
             "description": "Email preheader text shown in inbox preview"
@@ -611,6 +629,24 @@
           "user_instruction": {
             "type": "string",
             "description": "Latest user instruction to preserve inside the composition contract."
+          },
+          "draft_meta": {
+            "type": "object",
+            "description": "Host-composed draft metadata from composition_contract: creative_route_id, concrete_anchor, why_this_earns_the_inbox.",
+            "properties": {
+              "creative_route_id": {
+                "type": "string",
+                "description": "Chosen composition_contract.creative_routes[].id"
+              },
+              "concrete_anchor": {
+                "type": "string",
+                "description": "Specific proof, product detail, visual, code/output, quote, number, or brand moment used."
+              },
+              "why_this_earns_the_inbox": {
+                "type": "string",
+                "description": "One sentence explaining the creative move."
+              }
+            }
           },
           "trigger": {
             "type": "object",
@@ -893,6 +929,24 @@
           "user_instruction": {
             "type": "string",
             "description": "Latest user instruction to preserve inside the composition contract."
+          },
+          "draft_meta": {
+            "type": "object",
+            "description": "Host-composed draft metadata from composition_contract: creative_route_id, concrete_anchor, why_this_earns_the_inbox.",
+            "properties": {
+              "creative_route_id": {
+                "type": "string",
+                "description": "Chosen composition_contract.creative_routes[].id"
+              },
+              "concrete_anchor": {
+                "type": "string",
+                "description": "Specific proof, product detail, visual, code/output, quote, number, or brand moment used."
+              },
+              "why_this_earns_the_inbox": {
+                "type": "string",
+                "description": "One sentence explaining the creative move."
+              }
+            }
           },
           "subject": {
             "type": "string",
