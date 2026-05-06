@@ -31,10 +31,10 @@
         "properties": {}
       },
       "annotations": {
-        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": true
       }
     },
     {
@@ -77,10 +77,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": true
       }
     },
     {
@@ -116,10 +116,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": true
       }
     },
     {
@@ -195,10 +195,39 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": true
+        "openWorldHint": true,
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "nitro_ingest_image",
+      "description": "Ingest a local or chat-attached image into Nitrosend and return a Nitro CDN URL you can place directly into email design fields like image.src, product.image_url, hero.background_url, or theme.logo_url.\nUse this only for local/chat images. If the user already has a public remote URL, use that URL directly in compose tools instead.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_data": {
+            "type": "string",
+            "description": "Image payload as raw base64 bytes or a full data URL. PNG, JPEG, or WebP only; decoded size must be under 10MB."
+          },
+          "filename": {
+            "type": "string",
+            "description": "Original filename for the image, such as hero.png or product-shot.jpg."
+          },
+          "content_type": {
+            "type": "string",
+            "description": "Optional MIME type hint when image_data is raw base64 rather than a data URL."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false,
+        "readOnlyHint": false,
+        "title": "Ingest image"
       }
     },
     {
@@ -245,10 +274,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
@@ -339,10 +368,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
@@ -399,15 +428,15 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
       "name": "nitro_manage_template",
-      "description": "Create, update, or clone a reusable email template. Brand theme applied automatically.\nFor composing new emails to send, use nitro_compose_campaign instead.\n\nModes (auto-detected):\n\n- **Create** — provide sections + subject (required). Sections define the email layout.\n- **Update** — provide template_id + any fields to change. Use if_version for optimistic concurrency.\n- **Clone** — provide based_on (source template_id). Optionally override sections/subject/name.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate templates.",
+      "description": "Create, update, or clone a reusable email template. Brand theme applied automatically.\nFor composing new emails to send, use nitro_compose_campaign instead.\nFor goal or intent-driven template creation/redesign, use composition_mode=\"intent\"\nfirst. Nitrosend returns a compact composition_contract; the agent host\nwrites the sections, can validate without persistence, then calls this\nsame tool with composition_mode=\"draft\". Contract-loop states return as\nnormal tool results with composition_status and isError=false.\n\nModes (auto-detected):\n\n- **Create** — provide sections + subject (required). Sections define the email layout.\n- **Update** — provide template_id + any fields to change. Use if_version for optimistic concurrency.\n- **Clone** — provide based_on (source template_id). Optionally override sections/subject/name.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate templates.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -425,6 +454,43 @@
           "name": {
             "type": "string",
             "description": "Template display name"
+          },
+          "composition_mode": {
+            "type": "string",
+            "enum": [
+              "intent",
+              "draft",
+              "validate"
+            ],
+            "description": "intent returns composition_contract; validate checks a draft without persistence; draft validates and persists."
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "Email composition contract id returned from composition_mode=intent."
+          },
+          "validate_only": {
+            "type": "boolean",
+            "description": "Alias for composition_mode=validate. Does not persist or consume repair attempts.",
+            "default": false
+          },
+          "design_mode_override": {
+            "type": "string",
+            "enum": [
+              "premium_rich",
+              "premium_minimal",
+              "founder_letter",
+              "transactional_plain"
+            ],
+            "description": "Renegotiate/validate the draft under a different design mode."
+          },
+          "renegotiate": {
+            "type": "boolean",
+            "description": "When true with design_mode_override, keeps the same contract but changes the design mode.",
+            "default": false
+          },
+          "user_instruction": {
+            "type": "string",
+            "description": "Latest user instruction to preserve inside the composition contract."
           },
           "preheader": {
             "type": "string",
@@ -460,7 +526,7 @@
           },
           "goal": {
             "type": "string",
-            "description": "Goal-driven composition (Phase 5 — not yet available)"
+            "description": "Goal string for host-composed template composition contracts"
           },
           "dry_run": {
             "type": "boolean",
@@ -475,15 +541,15 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
       "name": "nitro_compose_flow",
-      "description": "Create or replace an automation flow from trigger + steps array.\nCreates a draft — use nitro_control_delivery to approve and activate.\n\nModes: create (new flow), replace (rebuild existing — requires confirm: true + flow_id), patch (rename only — requires flow_id).\nStep types: email (subject + design or body), sms (body), wait (duration in seconds), split (filters + yes/no branches, no nesting), emit_event (fire event for contact to trigger other flows), webhook (url + optional method/headers/body), subscribe (opt-in contact to channel), unsubscribe (opt-out contact from channel).\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate flows.",
+      "description": "Create or replace an automation flow from trigger + steps array.\nCreates a draft — use nitro_control_delivery to approve and activate.\nFor goal or intent-driven email flows, use composition_mode=\"intent\" first. Nitrosend\nreturns a compact composition_contract; the agent host writes the steps,\ncan validate without persistence, then calls this same tool with\ncomposition_mode=\"draft\". Contract-loop states return as normal tool\nresults with composition_status and isError=false.\n\nModes: create (new flow), replace (rebuild existing — requires confirm: true + flow_id), patch (rename only — requires flow_id).\nStep types: email (subject + design or body), sms (body), wait (duration in seconds), split (filters + yes/no branches, no nesting), emit_event (fire event for contact to trigger other flows), webhook (url + optional method/headers/body), subscribe (opt-in contact to channel), unsubscribe (opt-out contact from channel).\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate flows.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -507,7 +573,44 @@
           },
           "goal": {
             "type": "string",
-            "description": "Goal string for AI generation (Phase 5C — feature gated)"
+            "description": "Goal string for host-composed flow composition contracts"
+          },
+          "composition_mode": {
+            "type": "string",
+            "enum": [
+              "intent",
+              "draft",
+              "validate"
+            ],
+            "description": "intent returns composition_contract; validate checks a draft without persistence; draft validates and persists."
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "Email composition contract id returned from composition_mode=intent."
+          },
+          "validate_only": {
+            "type": "boolean",
+            "description": "Alias for composition_mode=validate. Does not persist or consume repair attempts.",
+            "default": false
+          },
+          "design_mode_override": {
+            "type": "string",
+            "enum": [
+              "premium_rich",
+              "premium_minimal",
+              "founder_letter",
+              "transactional_plain"
+            ],
+            "description": "Renegotiate/validate the draft under a different design mode."
+          },
+          "renegotiate": {
+            "type": "boolean",
+            "description": "When true with design_mode_override, keeps the same contract but changes the design mode.",
+            "default": false
+          },
+          "user_instruction": {
+            "type": "string",
+            "description": "Latest user instruction to preserve inside the composition contract."
           },
           "trigger": {
             "type": "object",
@@ -722,23 +825,18 @@
             "description": "Required for replace mode"
           }
         },
-        "required": [
-          "name",
-          "trigger",
-          "steps"
-        ],
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
       "name": "nitro_compose_campaign",
-      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
+      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nFor manual sections without a composition_contract, read nitro://brand and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS and\nnitro_send_message simple sends are exempt.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -757,7 +855,44 @@
           },
           "goal": {
             "type": "string",
-            "description": "Goal string for AI generation (Phase 5C — feature gated)"
+            "description": "Goal string for host-composed campaign composition contracts"
+          },
+          "composition_mode": {
+            "type": "string",
+            "enum": [
+              "intent",
+              "draft",
+              "validate"
+            ],
+            "description": "intent returns composition_contract; validate checks a draft without persistence; draft validates and persists."
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "Email composition contract id returned from composition_mode=intent."
+          },
+          "validate_only": {
+            "type": "boolean",
+            "description": "Alias for composition_mode=validate. Does not persist or consume repair attempts.",
+            "default": false
+          },
+          "design_mode_override": {
+            "type": "string",
+            "enum": [
+              "premium_rich",
+              "premium_minimal",
+              "founder_letter",
+              "transactional_plain"
+            ],
+            "description": "Renegotiate/validate the draft under a different design mode."
+          },
+          "renegotiate": {
+            "type": "boolean",
+            "description": "When true with design_mode_override, keeps the same contract but changes the design mode.",
+            "default": false
+          },
+          "user_instruction": {
+            "type": "string",
+            "description": "Latest user instruction to preserve inside the composition contract."
           },
           "subject": {
             "type": "string",
@@ -843,16 +978,13 @@
             "description": "Optional deduplication key"
           }
         },
-        "required": [
-          "name"
-        ],
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
@@ -870,7 +1002,7 @@
               "list",
               "remove"
             ],
-            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\")}. Registers domain with email provider and returns DNS records. The user must add these DNS records at their domain registrar. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider if the core DNS records have propagated. Also runs independent DNS validation and returns per-record dns_health. Optional records like tracking are reported separately and do not block completion. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation only. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records and Nitro-managed delegate targets before verify. Optional improvements are surfaced without blocking setup completion.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
+            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\"), author_domain (optional, e.g. \"acme.com\")}. Registers the technical sending domain with the email provider and returns DNS records. Managed SES also prepares the aligned visible From domain when the sending domain is a subdomain. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider if the core DNS records have propagated. Also runs independent DNS validation and returns per-record dns_health. Optional records like tracking are reported separately and do not block completion. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation only. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records and Nitro-managed delegate targets before verify. Optional improvements are surfaced without blocking setup completion.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
           },
           "params": {
             "type": "object",
@@ -878,7 +1010,11 @@
             "properties": {
               "domain_name": {
                 "type": "string",
-                "description": "Domain to manage (e.g. 'send.acme.com'). Required for add, verify, remove."
+                "description": "Technical sending domain to manage (e.g. 'send.acme.com'). Required for add, verify, remove."
+              },
+              "author_domain": {
+                "type": "string",
+                "description": "Optional visible From domain to authorize for managed SES (e.g. 'acme.com'). Must be the organizational domain of domain_name."
               }
             },
             "additionalProperties": false
@@ -895,15 +1031,15 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": true
+        "openWorldHint": true,
+        "readOnlyHint": false
       }
     },
     {
       "name": "nitro_configure_account",
-      "description": "Configure account sender defaults (from_name, from_email, reply_to) and test email recipients. Call with no fields to read current config. from_email must match a verified domain.",
+      "description": "Configure account sender defaults (from_name, from_email, reply_to) and test email recipients. Call with no fields to read current config. from_email must be authorized by a verified sending domain.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -913,7 +1049,7 @@
           },
           "from_email": {
             "type": "string",
-            "description": "Sender email address (must match a verified domain)"
+            "description": "Visible From address. May use the apex domain when an aligned sending subdomain authorizes it."
           },
           "reply_to": {
             "type": "string",
@@ -932,10 +1068,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
@@ -971,10 +1107,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": true
       }
     },
     {
@@ -1048,10 +1184,11 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": true
+        "openWorldHint": true,
+        "readOnlyHint": false,
+        "title": "Send test message"
       }
     },
     {
@@ -1106,10 +1243,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": true
+        "openWorldHint": true,
+        "readOnlyHint": false
       }
     },
     {
@@ -1150,10 +1287,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": true
       }
     },
     {
@@ -1197,10 +1334,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
@@ -1245,10 +1382,11 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false,
+        "title": "Set Memory"
       }
     },
     {
@@ -1285,10 +1423,10 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": true
+        "openWorldHint": true,
+        "readOnlyHint": false
       }
     },
     {
@@ -1342,10 +1480,11 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": true
+        "openWorldHint": true,
+        "readOnlyHint": false,
+        "title": "Send transactional email or SMS"
       }
     },
     {
@@ -1370,10 +1509,11 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": false,
-        "openWorldHint": false
+        "openWorldHint": false,
+        "readOnlyHint": false,
+        "title": "Request Support"
       }
     }
   ],
