@@ -1,9 +1,9 @@
 {
   "mcpSpec": "0.2.0",
-  "mcpVersion": "2025-11-25",
+  "mcpVersion": "2026-05-07",
   "server": {
     "name": "nitro",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "description": "Multi-channel marketing automation platform. Use nitro_get_status first to understand account state. Read nitro://guide for vocabulary and workflow.",
   "capabilities": {
