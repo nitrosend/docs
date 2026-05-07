@@ -7,6 +7,10 @@ description: Add Nitrosend as a Custom Connector in Claude Desktop for conversat
 
 Connect Nitrosend to Claude Desktop as a Custom Connector and manage your email marketing through natural conversation. No coding, no config files — just add the connection and start prompting.
 
+<Info>
+  Claude Desktop users should connect Nitrosend as a Custom Connector. Do not install `@nitrosend/cli` or run `nitrosend login` for the standard Claude Desktop setup — the CLI is for terminal and CI workflows, not Desktop connector onboarding.
+</Info>
+
 ## What is MCP?
 
 **MCP (Model Context Protocol)** is an open standard that lets Claude connect directly to external services. When Nitrosend is connected as an MCP server, Claude gets native access to your email marketing — campaigns, flows, contacts, templates, analytics — all through conversation.
@@ -92,9 +96,9 @@ Beyond tools, Claude can read live resources for deeper context:
   Learn how to configure Brand Settings and AI Memory to make every email smarter.
 </Card>
 
-## Alternative: Manual MCP configuration
+## Legacy fallback: Manual MCP configuration
 
-If the Custom Connector method isn't available in your version of Claude Desktop, you can configure MCP manually using an API key:
+If the Custom Connector method isn't available in your version of Claude Desktop, update Claude Desktop first. Only use this local stdio fallback when you cannot use Custom Connectors and you understand that it stores an API key in your local Claude config:
 
 <Expandable title="Manual config file setup">
 
@@ -123,5 +127,5 @@ Restart Claude Desktop. You should see a hammer icon indicating MCP tools are av
 </Expandable>
 
 <Info>
-  Requires Node.js 18 or later for the manual config method. The Custom Connector method has no local dependencies.
+  Requires Node.js 18 or later for the manual config method. The Custom Connector method has no local dependencies and remains the recommended path.
 </Info>
