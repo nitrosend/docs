@@ -1,0 +1,89 @@
+---
+title: Vercel Marketplace
+description: Install Nitrosend from Vercel Marketplace and connect project-ready AI SDK and MCP secrets
+---
+
+# Vercel Marketplace
+
+Nitrosend's Vercel Marketplace integration is a thin native adapter over the
+existing Nitrosend dashboard. Vercel handles install, resource connection,
+secret delivery, plan changes, and billing. Nitrosend handles account, brand,
+campaign, list, template, and support workflows in the existing dashboard
+through SSO.
+
+Marketplace availability depends on Vercel provider approval. Until approval
+is complete, use the regular Nitrosend dashboard and API key flow.
+
+## What Vercel Creates
+
+When you install Nitrosend from Vercel Marketplace, Vercel provisions a
+`nitrosend-email` resource. The resource maps to a Nitrosend account and brand,
+then creates project secrets for connected Vercel projects:
+
+- `NITROSEND_API_KEY`
+- `NITROSEND_MCP_URL`
+- `NITROSEND_API_URL`
+
+Vercel may add a project-selected prefix when a resource is connected to a
+project. If you choose a prefix in Vercel, use the prefixed variable names in
+your app. Without a prefix, the examples below work as written.
+
+## Use With AI SDK
+
+```bash
+npm install @nitrosend/ai-sdk ai @ai-sdk/mcp zod
+```
+
+```ts
+import { generateText, isStepCount } from "ai";
+import { withNitrosendTools } from "@nitrosend/ai-sdk";
+
+const result = await withNitrosendTools({}, async ({ tools }) => {
+  return generateText({
+    model,
+    tools,
+    stopWhen: isStepCount(5),
+    prompt: "Send a welcome email to the newest trial users.",
+  });
+});
+```
+
+`@nitrosend/ai-sdk` reads `NITROSEND_API_KEY` and `NITROSEND_MCP_URL`
+automatically from the Vercel project environment.
+
+## Management
+
+Use Vercel for Marketplace resource operations:
+
+- install and reinstall Nitrosend
+- connect the resource to projects
+- rotate secrets
+- change the Marketplace billing plan
+- uninstall the resource
+
+Use the existing Nitrosend dashboard for product work:
+
+- manage brands and sending domains
+- build campaigns and templates
+- manage lists and contacts
+- review usage and account settings
+- contact support
+
+There is no separate Marketplace dashboard. Vercel SSO opens the existing
+Nitrosend dashboard with the right account and brand context.
+
+## Billing
+
+Marketplace-billed resources are billed through Vercel. Nitrosend keeps a local
+entitlement subscription so account limits work, but it does not create a
+separate direct subscription for the same Marketplace resource.
+
+Paid Marketplace plans use resource-level billing, usage reporting, invoice
+submission, and invoice lifecycle webhooks. Free resources do not submit
+chargeable invoices.
+
+Nitrosend sends Vercel's current Marketplace billing payloads: usage reports
+include `timestamp`, `eod`, `period`, `billing`, and `usage`; invoices include
+`invoiceDate`, `period`, `items`, and a stable `externalId`. Invoice webhooks
+are verified with Vercel's `X-Vercel-Signature` header before entitlement state
+is updated.
