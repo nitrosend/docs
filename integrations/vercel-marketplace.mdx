@@ -57,7 +57,7 @@ Use Vercel for Marketplace resource operations:
 
 - install and reinstall Nitrosend
 - connect the resource to projects
-- rotate secrets
+- rotate secrets, with old keys kept through Vercel's requested grace window
 - change the Marketplace billing plan
 - uninstall the resource
 
@@ -72,6 +72,10 @@ Use the existing Nitrosend dashboard for product work:
 There is no separate Marketplace dashboard. Vercel SSO opens the existing
 Nitrosend dashboard with the right account and brand context.
 
+The SSO entry point follows Vercel's redirect-login flow: Vercel sends
+`mode=sso`, `code`, and `state`; Nitrosend exchanges them with Vercel for a
+short-lived OIDC token, verifies it, then opens the existing dashboard callback.
+
 ## Billing
 
 Marketplace-billed resources are billed through Vercel. Nitrosend keeps a local
@@ -83,7 +87,12 @@ submission, and invoice lifecycle webhooks. Free resources do not submit
 chargeable invoices.
 
 Nitrosend sends Vercel's current Marketplace billing payloads: usage reports
-include `timestamp`, `eod`, `period`, `billing`, and `usage`; invoices include
-`invoiceDate`, `period`, `items`, and a stable `externalId`. Invoice webhooks
-are verified with Vercel's `X-Vercel-Signature` header before entitlement state
-is updated.
+go to `/billing` with `timestamp`, `eod`, `period`, `billing.items`, and `usage`;
+invoices go to `/billing/invoices` with `invoiceDate`, `period`, `items`, and
+a stable `externalId`. Invoice webhooks are verified with Vercel's
+`X-Vercel-Signature` header before entitlement state is updated. Failed-payment
+`notpaid` events are recorded without immediate suspension; overdue or refunded
+events suspend the Marketplace resource, and paid events reactivate it. Paid
+resource and installation deletions submit a final resource invoice before
+deactivating local entitlements, and deletion responses remain unfinalized while
+Marketplace invoices are open.
