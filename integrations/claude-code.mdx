@@ -35,7 +35,7 @@ Ask Claude:
 What's my Nitrosend account status?
 ```
 
-Claude will call the `nitro_get_status` tool and show your account health, onboarding progress, and recommendations.
+Claude will call the `nitro_get_status` tool and show your current account, sender identity, dashboard links, readiness, onboarding progress, blockers, and recommendations.
 
 ## How MCP works
 
@@ -53,11 +53,10 @@ Once connected, Claude Code has access to these tools:
 
 | Tool | What it does |
 |------|-------------|
-| `nitro_get_status` | Account health, onboarding, and recommendations |
+| `nitro_get_status` | Account context, sender identity, readiness, and recommendations |
 | `nitro_manage_template` | Create, update, or clone reusable email templates |
 | `nitro_compose_campaign` | Create email or SMS campaigns with audience targeting |
 | `nitro_compose_flow` | Build automation flows with triggers, steps, and branches |
-| `nitro_send_message` | Send a single transactional email or SMS immediately |
 | `nitro_manage_audience` | Create contacts, manage lists, record events, tag contacts |
 | `nitro_import_contacts` | Bulk import contacts (up to 100 inline) |
 | `nitro_search_contacts` | Search contacts by email, name, or phone |
@@ -84,7 +83,7 @@ Claude can also read live resources for deeper context:
 | `nitro://guide` | Platform vocabulary, workflows, and tool descriptions |
 | `nitro://schema` | Email component types, flow step types, filter definitions |
 | `nitro://brand` | Your brand identity — colors, fonts, tone, logo |
-| `nitro://account` | Current account status, tier, and limits |
+| `nitro://account` | Current account context, sender identity, dashboard links, tier, and limits |
 | `nitro://config` | Sender defaults and verified domains |
 
 ## Example workflows

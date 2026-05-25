@@ -111,15 +111,15 @@ nitrosend mcp tools call nitro_compose_campaign --args '{...}' --explain --json
 
 Commands that take side effects declare `idempotency: { mode: "auto" }` in their descriptor. In `--machine` mode the CLI auto-issues a per-process idempotency key and surfaces it as `meta.idempotency_key` on the result, so a retry inside the same run dedupes against the original call.
 
-For per-call idempotency that survives runner restarts (the common CI case), pass an `idempotency_key` inside `--args` for the underlying MCP tool — `nitro_send_message`, `nitro_compose_campaign`, and other write tools all accept one. The platform dedupes on that key, not on the CLI's per-process key.
+For per-call idempotency that survives runner restarts (the common CI case), pass an `idempotency_key` inside `--args` for the underlying MCP write tool, such as `nitro_compose_campaign` or `nitro_compose_flow`. The platform dedupes on that key, not on the CLI's per-process key.
 
 ```bash
-nitrosend mcp tools call nitro_send_message --machine --args '{
+nitrosend mcp tools call nitro_compose_campaign --machine --args '{
+  "name": "Release announcement",
   "channel": "email",
-  "to": "user@example.com",
-  "subject": "Receipt",
-  "body": "<p>Thanks!</p>",
-  "idempotency_key": "order-42"
+  "subject": "Release notes are live",
+  "body": "The latest release is now available.",
+  "idempotency_key": "release-announcement-42"
 }'
 ```
 
