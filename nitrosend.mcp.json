@@ -1,9 +1,9 @@
 {
   "mcpSpec": "0.2.0",
-  "mcpVersion": "2026-05-07",
+  "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.2.0"
+    "version": "1.2.1"
   },
   "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
   "capabilities": {
