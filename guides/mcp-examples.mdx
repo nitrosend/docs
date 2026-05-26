@@ -31,6 +31,21 @@ These examples show the full loop: what you say, what your AI calls, and what co
 {
   "result": {
     "status": "needs_attention",
+    "current_brand": {
+      "sid": "brd_abc123",
+      "name": "Acme Co",
+      "company_name": "Acme Co",
+      "context_source": "oauth_selection"
+    },
+    "available_brands": {
+      "items": [
+        { "sid": "brd_abc123", "name": "Acme Co", "is_current": true },
+        { "sid": "brd_xyz789", "name": "Acme Outlet" }
+      ],
+      "returned": 2,
+      "limit": 25
+    },
+    "available_brands_truncated": false,
     "account": {
       "tier": "free",
       "can_send": true,
@@ -41,6 +56,8 @@ These examples show the full loop: what you say, what your AI calls, and what co
       "campaign_count": 2
     },
     "brand": {
+      "sid": "brd_abc123",
+      "name": "Acme Co",
       "setup_complete": false,
       "company_name": "Acme Co"
     },
@@ -72,11 +89,24 @@ These examples show the full loop: what you say, what your AI calls, and what co
       { "action": "Verify a sending domain", "tool": "nitro_manage_domains" }
     ]
   },
-  "meta": { "tool": "nitro_get_status" }
+  "meta": {
+    "tool": "nitro_get_status",
+    "current_brand": { "sid": "brd_abc123", "name": "Acme Co" }
+  }
 }
 ```
 
 **What happens next:** The AI reads the issues and recommendations, then calls `nitro_set_brand` to fix the physical address — no extra prompting needed.
+
+For multi-brand accounts, switch context before making changes:
+
+```json
+{
+  "brand_sid": "brd_xyz789"
+}
+```
+
+The AI calls `nitro_select_brand` with that SID. Future OAuth MCP tool calls use that brand. API key connections are pinned to the API key's brand and cannot switch.
 
 ---
 

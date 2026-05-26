@@ -11,6 +11,8 @@ Nitrosend's two most powerful MCP features are **Brand Settings** and **AI Memor
 
 **Brand Settings** define how your emails look and who they come from. When your AI creates an email via MCP, these settings are applied automatically — the right colors, fonts, logo, and tone, every time.
 
+In multi-brand accounts, MCP has a current brand. Use `nitro_get_status` to inspect `current_brand` and `available_brands`, then use `nitro_select_brand` to switch the current brand for OAuth sessions. `nitro_set_brand` does not switch context; it updates the identity of the currently selected brand.
+
 ### What Brand Settings include
 
 | Setting | What it controls |
@@ -152,6 +154,7 @@ Here's the difference these settings make:
 
 | Tool | What it does |
 |------|-------------|
+| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
 | `nitro_set_brand` | Set brand identity from a website URL or direct fields |
 | `nitro_set_memory` | Read, update, patch, or append to AI Memory |
 

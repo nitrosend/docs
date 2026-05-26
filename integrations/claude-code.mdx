@@ -9,7 +9,7 @@ description: Connect Nitrosend to Claude Code via MCP for terminal-based AI emai
 
 ## What is MCP?
 
-**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to 21 email marketing tools — no API wrappers, no middleware, no boilerplate.
+**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to 23 email marketing tools — no API wrappers, no middleware, no boilerplate.
 
 ## Setup
 
@@ -54,6 +54,7 @@ Once connected, Claude Code has access to these tools:
 | Tool | What it does |
 |------|-------------|
 | `nitro_get_status` | Account context, sender identity, readiness, and recommendations |
+| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
 | `nitro_manage_template` | Create, update, or clone reusable email templates |
 | `nitro_compose_campaign` | Create email or SMS campaigns with audience targeting |
 | `nitro_compose_flow` | Build automation flows with triggers, steps, and branches |
@@ -73,6 +74,8 @@ Once connected, Claude Code has access to these tools:
 | `nitro_manage_billing` | Plan status and upgrades |
 | `nitro_configure_providers` | BYO email provider (Mailgun, SES) |
 | `nitro_request_support` | Submit a support request to the Nitrosend team |
+
+For multi-brand accounts, ask Claude to check `nitro_get_status` first. OAuth sessions can use `nitro_select_brand` to persist the selected brand for this user, OAuth application, and account. API keys are pinned to their key's brand, and `nitro_set_brand` edits brand identity rather than switching context.
 
 ## MCP resources
 
