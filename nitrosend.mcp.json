@@ -25,7 +25,7 @@
   "tools": [
     {
       "name": "nitro_get_status",
-      "description": "Get current account health, onboarding status, and recommendations.",
+      "description": "Get current account context, sender identity, dashboard links, readiness, onboarding status, and recommendations.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -45,25 +45,13 @@
         "properties": {
           "brand_sid": {
             "type": "string",
-            "description": "Exact brand SID to select."
+            "description": "Exact brand SID to select. Provide either brand_sid or name."
           },
           "name": {
             "type": "string",
-            "description": "Brand name to select when the SID is unknown. Ambiguous names return candidates without changing context."
+            "description": "Brand name to select when the SID is unknown. Provide either name or brand_sid. Ambiguous names return candidates without changing context."
           }
         },
-        "anyOf": [
-          {
-            "required": [
-              "brand_sid"
-            ]
-          },
-          {
-            "required": [
-              "name"
-            ]
-          }
-        ],
         "additionalProperties": false
       },
       "annotations": {
@@ -483,6 +471,36 @@
               "type": "object"
             }
           },
+          "section_updates": {
+            "type": "array",
+            "description": "Small update shortcut for existing sections. Each item targets by 0-based index, or by type plus optional 0-based occurrence, and shallow-merges props/styles. Does not change section order or type.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "description": "0-based section index"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Existing section type to target or assert"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "description": "0-based occurrence among sections of the requested type"
+                },
+                "props": {
+                  "type": "object",
+                  "description": "Props to shallow-merge into the target section"
+                },
+                "styles": {
+                  "type": "object",
+                  "description": "Styles to shallow-merge into the target section"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
           "subject": {
             "type": "string",
             "description": "Email subject line (recommended under 60 chars)"
@@ -515,7 +533,7 @@
               "premium_rich",
               "premium_minimal",
               "founder_letter",
-              "transactional_plain"
+              "utility_plain"
             ],
             "description": "Renegotiate/validate the draft under a different design mode."
           },
@@ -653,7 +671,7 @@
               "premium_rich",
               "premium_minimal",
               "founder_letter",
-              "transactional_plain"
+              "utility_plain"
             ],
             "description": "Renegotiate/validate the draft under a different design mode."
           },
@@ -707,7 +725,7 @@
           },
           "steps": {
             "type": "array",
-            "description": "Ordered array of flow steps. Required props per type:\n\n- **email** — subject (required), design ({sections, theme}) or body, preheader, from_name, from_email, reply_to, transactional (boolean), bcc (string, optional BCC email address)\n- **sms** — body (required)\n- **wait** — duration (integer, seconds — e.g. 86400 = 1 day)\n- **split** — filters (required, [{name, predicate, value}]), yes (steps array), no (steps array). Nested splits are allowed.\n- **emit_event** — event_name (required), event_data (object), forward_event_data (boolean)\n- **webhook** — url (required), method (POST or PUT, default POST), headers (object), body (template string with merge tags)\n- **subscribe** — channel (phone, email, or all — default phone). Subscribes the contact.\n- **unsubscribe** — channel (phone, email, or all — default phone). Unsubscribes the contact.",
+            "description": "Ordered array of flow steps. Required props per type:\n\n- **email** — subject (required), design ({sections, theme}) or body, preheader, from_name, from_email, reply_to, bcc (string, optional BCC email address)\n- **sms** — body (required)\n- **wait** — duration (integer, seconds — e.g. 86400 = 1 day)\n- **split** — filters (required, [{name, predicate, value}]), yes (steps array), no (steps array). Nested splits are allowed.\n- **emit_event** — event_name (required), event_data (object), forward_event_data (boolean)\n- **webhook** — url (required), method (POST or PUT, default POST), headers (object), body (template string with merge tags)\n- **subscribe** — channel (phone, email, or all — default phone). Subscribes the contact.\n- **unsubscribe** — channel (phone, email, or all — default phone). Unsubscribes the contact.",
             "items": {
               "type": "object",
               "properties": {
@@ -759,11 +777,6 @@
                 "template_version": {
                   "type": "integer",
                   "description": "Read-only backing template version returned by Nitrosend; pass it back as if_version when replacing a flow."
-                },
-                "transactional": {
-                  "type": "boolean",
-                  "default": false,
-                  "description": "Mark email as transactional. Skips subscription check, CAN-SPAM footer, warmup, List-Unsubscribe, and tracking. Use for receipts, password resets, etc."
                 },
                 "bcc": {
                   "type": "string",
@@ -916,7 +929,7 @@
     },
     {
       "name": "nitro_compose_campaign",
-      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nFor manual sections without a composition_contract, read nitro://brand and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS and\nnitro_send_message simple sends are exempt.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
+      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nFor manual sections without a composition_contract, read nitro://brand and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS campaigns\nare exempt from email composition contracts.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -975,7 +988,7 @@
               "premium_rich",
               "premium_minimal",
               "founder_letter",
-              "transactional_plain"
+              "utility_plain"
             ],
             "description": "Renegotiate/validate the draft under a different design mode."
           },
@@ -1160,7 +1173,7 @@
     },
     {
       "name": "nitro_configure_account",
-      "description": "Configure account sender defaults (from_name, from_email, reply_to) and test email recipients. Call with no fields to read current config. from_email must be authorized by a verified sending domain.",
+      "description": "Read or configure sender defaults (from_name, from_email, reply_to) and test email recipients. Use nitro_get_status for account identity, dashboard links, readiness, and blockers. from_email must be authorized by a verified sending domain.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1359,6 +1372,10 @@
           "confirm": {
             "type": "boolean",
             "description": "Required for operation='delete'."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Optional retry key for campaign live sends. Reuse the same key after a timeout to recover the same delivery progress."
           }
         },
         "required": [
@@ -1652,7 +1669,7 @@
     {
       "uri": "nitro://account",
       "name": "account",
-      "description": "Live snapshot of the current account: tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress (brand_setup, domain_verified, first_draft, first_send), contact and list counts, and active flow/campaign summary."
+      "description": "Live snapshot of the current account context: account, brand, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
     },
     {
       "uri": "nitro://schema",
