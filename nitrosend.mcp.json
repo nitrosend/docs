@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.2.1"
+    "version": "1.3.0"
   },
   "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
   "capabilities": {
@@ -78,13 +78,14 @@
               "lists",
               "events",
               "imports",
-              "messages"
+              "messages",
+              "history"
             ],
             "description": "Which entity type to query. Use nitro_search_contacts for full-text contact search."
           },
           "filters": {
             "type": "object",
-            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\n\n- **flows** — status (draft/active/paused/archived), campaign_id (integer|null), trigger_event (string), search (string)\n- **campaigns** — status (draft/active/paused/completed), search (string)\n- **templates** — subject (string, ILIKE match on subject line)\n- **segments** — name (string, ILIKE match)\n- **contacts** — query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\n- **lists** — name (string, ILIKE match)\n- **events** — name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\n- **imports** — status (pending/processing/completed/failed)\n- **messages** — channel (email/sms), status (queued/sent/failed), to (string, recipient address)"
+            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\n\n- **flows** — status (draft/active/paused/archived), campaign_id (integer|null), trigger_event (string), search (string)\n- **campaigns** — status (draft/active/paused/completed), search (string)\n- **templates** — subject (string, ILIKE match on subject line)\n- **segments** — name (string, ILIKE match)\n- **contacts** — query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\n- **lists** — name (string, ILIKE match)\n- **events** — name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\n- **imports** — status (pending/processing/completed/failed)\n- **messages** — channel (email/sms), status (queued/sent/failed), to (string, recipient address)\n- **history** — source (notification/tool), event_type, tool, actor, correlation_id, resource_uri, from, to"
           },
           "page": {
             "type": "integer",
@@ -1725,6 +1726,11 @@
       "uri": "nitro://memory",
       "name": "memory",
       "description": "The operator's persistent AI memory document. Contains business goals, target audience, preferred email strategy, tone of voice notes, and any other context the operator has saved. Your AI reads this automatically to inform decisions about email content, flow design, and campaign targeting. Managed via the nitro_set_memory tool."
+    },
+    {
+      "uri": "nitro://history",
+      "name": "history",
+      "description": "Unified account history combining notification events and MCP tool audit entries. Includes deliverability warnings, auto-pauses, suppressions, and tool-call audit records with timestamps, correlation IDs, payload summaries, and rollback eligibility."
     }
   ],
   "resourceTemplates": [
