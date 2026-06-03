@@ -11,8 +11,8 @@ export default defineConfig({
     },
   },
   logo: {
-    light: "./logo/light.svg",
-    dark: "./logo/dark.svg",
+    light: "./logo/light.png",
+    dark: "./logo/dark.png",
     href: "https://nitrosend.com",
   },
   favicon: "./favicon.svg",
