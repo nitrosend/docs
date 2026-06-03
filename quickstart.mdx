@@ -21,32 +21,78 @@ Sign up at [app.nitrosend.com](https://app.nitrosend.com).
 
 ### 2. Connect your AI tool
 
-Add Nitrosend as an MCP server. Pick your tool:
+Add Nitrosend as an MCP server, then sign in. Pick your tool:
 
-<CodeGroup>
-```bash Claude Code
-claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
-```
+<Tabs>
+  <Tab title="Claude Code">
+    Run one command in your terminal:
 
-```bash Codex CLI
-codex mcp add nitrosend --url https://api.nitrosend.com/mcp
-```
-</CodeGroup>
+    ```bash
+    claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
+    ```
 
-For **Claude Desktop**, **ChatGPT**, **Cursor**, **Gemini**, or **other tools** — see the [full integration guides](/integrations/overview).
+    Then run `/mcp` inside Claude Code and complete the Nitrosend sign-in.
+  </Tab>
+  <Tab title="Claude Desktop">
+    Add Nitrosend as a **Custom Connector** — not the CLI. In Claude Desktop, go to **Settings** → **Connections** → **Customize** → **Add Connectors +** → **Add Custom Connector**, then enter:
 
-Claude Desktop users should use the Custom Connector flow, not the Nitrosend
-CLI. The CLI is for terminal and CI workflows after you specifically choose the
-shell surface.
+    - **Name**: `nitrosend`
+    - **Remote MCP URL**: `https://api.nitrosend.com/mcp`
 
-### 3. Sign in when prompted
+    Click **Connect** and sign in when prompted. No API key needed.
+  </Tab>
+  <Tab title="ChatGPT">
+    Install the official Nitrosend app from the ChatGPT app directory, click **Connect**, and sign in — no config, no API key.
 
-Most clients open a Nitrosend sign-in window on first use. If a CLI client does not prompt immediately, open its MCP manager and complete OAuth there:
+    [Install the Nitrosend app in ChatGPT →](https://chatgpt.com/apps/nitrosend---ai-native-email/asdk_app_69c236abbea481918d9180a100abd6b0)
 
-- **Claude Code:** run `/mcp`
-- **Codex CLI:** run `codex mcp login nitrosend`
+    Don't see the direct link? Open **Settings** → **Apps** in ChatGPT, search `Nitrosend`, and connect. Full walkthrough in the [ChatGPT guide](/integrations/chatgpt).
+  </Tab>
+  <Tab title="Codex CLI">
+    Add the server, then sign in:
 
-### 4. Start prompting
+    ```bash
+    codex mcp add nitrosend --url https://api.nitrosend.com/mcp
+    codex mcp login nitrosend
+    ```
+
+    Codex can also use the same official app as ChatGPT.
+  </Tab>
+  <Tab title="Cursor">
+    Add Nitrosend to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (this repo):
+
+    ```json
+    {
+      "mcpServers": {
+        "nitrosend": {
+          "url": "https://api.nitrosend.com/mcp"
+        }
+      }
+    }
+    ```
+
+    Restart Cursor. On first use it prompts you to sign in via OAuth.
+  </Tab>
+  <Tab title="Gemini CLI">
+    Add Nitrosend to `~/.gemini/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "nitrosend": {
+          "httpUrl": "https://api.nitrosend.com/mcp"
+        }
+      }
+    }
+    ```
+
+    Restart Gemini CLI and sign in when prompted.
+  </Tab>
+</Tabs>
+
+Using **VS Code**, **Windsurf**, **Zed**, or another client? See the [full integration guides](/integrations/overview).
+
+### 3. Start prompting
 
 Try this to get a full setup in one go:
 
