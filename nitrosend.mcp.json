@@ -5,7 +5,7 @@
     "name": "nitro",
     "version": "1.3.0"
   },
-  "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
+  "description": "Multi-channel email marketing and newsletter automation platform. Use nitro_get_status first for current account and client-account context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current client account with nitro_select_client_account; API-key connections are pinned to their key's client account.",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -38,18 +38,18 @@
       }
     },
     {
-      "name": "nitro_select_brand",
-      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. API-key connections are brand-pinned and cannot switch.",
+      "name": "nitro_select_client_account",
+      "description": "Select the current client account for this OAuth MCP connection. Use this instead of passing client_account_sid to other tools. API-key connections are client-account-pinned and cannot switch.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "brand_sid": {
+          "client_account_sid": {
             "type": "string",
-            "description": "Exact brand SID to select. Provide either brand_sid or name."
+            "description": "Exact client account SID to select. Provide either client_account_sid or name."
           },
           "name": {
             "type": "string",
-            "description": "Brand name to select when the SID is unknown. Provide either name or brand_sid. Ambiguous names return candidates without changing context."
+            "description": "Client account name to select when the SID is unknown. Provide either name or client_account_sid. Ambiguous names return candidates without changing context."
           }
         },
         "additionalProperties": false
@@ -148,14 +148,14 @@
       }
     },
     {
-      "name": "nitro_set_brand",
-      "description": "Set up brand identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). Sync mode (default) returns results immediately — best when you need brand data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
+      "name": "nitro_set_brand_kit",
+      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string",
-            "description": "Website URL to scrape brand from"
+            "description": "Website URL to scrape Brand Kit identity from"
           },
           "logo_url": {
             "type": "string",
@@ -163,7 +163,7 @@
           },
           "fields": {
             "type": "object",
-            "description": "Direct brand field updates",
+            "description": "Direct Brand Kit field updates",
             "properties": {
               "company_name": {
                 "type": "string"
@@ -930,7 +930,7 @@
     },
     {
       "name": "nitro_compose_campaign",
-      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nFor manual sections without a composition_contract, read nitro://brand and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS campaigns\nare exempt from email composition contracts.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
+      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nFor manual sections without a composition_contract, read nitro://brand-kit and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS campaigns\nare exempt from email composition contracts.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1271,7 +1271,7 @@
           "latest_campaign": {
             "type": "boolean",
             "default": false,
-            "description": "Use the most recently created campaign in this brand."
+            "description": "Use the most recently created campaign in this client account."
           },
           "template_id": {
             "type": "integer",
@@ -1670,7 +1670,7 @@
     {
       "uri": "nitro://account",
       "name": "account",
-      "description": "Live snapshot of the current account context: account, brand, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
+      "description": "Live snapshot of the current account context: account, current client account, Brand Kit, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
     },
     {
       "uri": "nitro://schema",
@@ -1678,9 +1678,9 @@
       "description": "Machine-readable schema for composing emails and flows. Includes every email section type (header, text, image, button, columns, product, social, divider, spacer, footer) with required and optional props, all flow step types with their parameters, trigger event names, and the full list of segment filter names and predicates."
     },
     {
-      "uri": "nitro://brand",
-      "name": "brand",
-      "description": "The account's brand identity as configured in Brand Settings. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Your AI reads this automatically when composing emails so designs match the brand."
+      "uri": "nitro://brand-kit",
+      "name": "brand-kit",
+      "description": "The current client account's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Your AI reads this automatically when composing emails so designs match the brand."
     },
     {
       "uri": "nitro://providers",
@@ -1795,8 +1795,8 @@
       ]
     },
     {
-      "name": "onboard-brand",
-      "description": "Set up brand identity for a new account"
+      "name": "onboard-brand-kit",
+      "description": "Set up Brand Kit identity for a new client account"
     },
     {
       "name": "weekly-report",

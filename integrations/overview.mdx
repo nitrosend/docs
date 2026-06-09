@@ -19,8 +19,8 @@ Nitrosend is designed to be controlled by AI. Instead of clicking through dashbo
 
 When you connect via MCP, your AI assistant gets:
 
-- **23 specialized tools** — compose emails, build flows, manage contacts, switch brand context, check analytics, control delivery, and more
-- **Live resources** — your brand identity, account state, platform guide, and email design schema
+- **23 specialized tools** — compose emails, build flows, manage contacts, switch client-account context, check analytics, control delivery, and more
+- **Live resources** — your Brand Kit, account state, platform guide, and email design schema
 - **Full context** — your AI knows your brand colors, tone of voice, and sending history before it writes a single email
 - **Two-way control** — create, preview, test, approve, send, pause, and analyze, all from conversation
 
@@ -30,17 +30,17 @@ When you connect via MCP, your AI assistant gets:
 |---|---|---|
 | **Best for** | Claude, ChatGPT, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Zed | Custom apps, Zapier, n8n, Make, server-side integrations |
 | **Setup** | 1 click, 1 command, or a short JSON config + OAuth sign-in | API key + define function calls or curl |
-| **AI context** | Full — brand, schema, guide, account state | You provide context manually |
+| **AI context** | Full — Brand Kit, schema, guide, account state | You provide context manually |
 | **Tools** | 23 purpose-built tools with validation | Raw HTTP endpoints |
 | **Coding required** | No | Minimal to moderate |
 
 <Tip>
-  **Use MCP whenever possible.** It gives your AI far more context about your account, brand, and email best practices than the REST API alone. The result is better emails with less prompting.
+  **Use MCP whenever possible.** It gives your AI far more context about your account, Brand Kit, and email best practices than the REST API alone. The result is better emails with less prompting.
 </Tip>
 
-### Multi-brand accounts
+### Client accounts
 
-MCP always operates on one current brand. `nitro_get_status` shows `current_brand` and `available_brands`; OAuth users can switch with `nitro_select_brand`, and that selection persists per user, OAuth application, and account. API key connections are pinned to the API key's brand. `nitro_set_brand` is different: it edits the selected brand's identity, such as colors, logo, company details, and voice.
+MCP always operates on one current client account. `nitro_get_status` shows `current_client_account` and `available_client_accounts`; OAuth users can switch with `nitro_select_client_account`, and that selection persists per user, OAuth application, and account. API key connections are pinned to the API key's client account. `nitro_set_brand_kit` is different: it edits the selected client account's Brand Kit, such as colors, logo, company details, and voice.
 
 ## Choose your platform
 
@@ -91,10 +91,10 @@ Cursor, or similar clients; the CLI is a separate terminal/CI surface.
   </Card>
 </CardGroup>
 
-## Supercharge your AI with Brand & Memory
+## Supercharge your AI with Brand Kit & Memory
 
-Once connected, set up [Brand Settings](/integrations/mcp-brand-memory#brand-settings) and [AI Memory](/integrations/mcp-brand-memory#ai-memory) to give your AI deep context about your business. This means every email it creates automatically matches your brand voice, follows your strategy, and improves over time.
+Once connected, set up [Brand Kit](/integrations/mcp-brand-kit-memory#brand-kit) and [AI Memory](/integrations/mcp-brand-kit-memory#ai-memory) to give your AI deep context about your business. This means every email it creates automatically matches your brand voice, follows your strategy, and improves over time.
 
-<Card title="Brand Settings & AI Memory" icon="sparkles" href="/integrations/mcp-brand-memory">
+<Card title="Brand Kit & AI Memory" icon="sparkles" href="/integrations/mcp-brand-kit-memory">
   Teach your AI your brand voice, colors, goals, and strategy so every email it creates is on-brand and on-strategy.
 </Card>
