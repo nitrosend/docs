@@ -32,15 +32,15 @@ These examples show the full loop: what you say, what your AI calls, and what co
   "result": {
     "status": "needs_attention",
     "current_client_account": {
-      "sid": "brd_abc123",
+      "sid": "8f1e2d3c4b5a69788796a5b4",
       "name": "Acme Co",
       "company_name": "Acme Co",
       "context_source": "oauth_selection"
     },
     "available_client_accounts": {
       "items": [
-        { "sid": "brd_abc123", "name": "Acme Co", "is_current": true },
-        { "sid": "brd_xyz789", "name": "Acme Outlet" }
+        { "sid": "8f1e2d3c4b5a69788796a5b4", "name": "Acme Co", "is_current": true },
+        { "sid": "1a2b3c4d5e6f708192837465", "name": "Acme Outlet" }
       ],
       "returned": 2,
       "limit": 25
@@ -56,7 +56,7 @@ These examples show the full loop: what you say, what your AI calls, and what co
       "campaign_count": 2
     },
     "client_account": {
-      "sid": "brd_abc123",
+      "sid": "8f1e2d3c4b5a69788796a5b4",
       "name": "Acme Co",
       "setup_complete": false,
       "company_name": "Acme Co"
@@ -91,7 +91,7 @@ These examples show the full loop: what you say, what your AI calls, and what co
   },
   "meta": {
     "tool": "nitro_get_status",
-    "current_client_account": { "sid": "brd_abc123", "name": "Acme Co" }
+    "current_client_account": { "sid": "8f1e2d3c4b5a69788796a5b4", "name": "Acme Co" }
   }
 }
 ```
@@ -102,7 +102,7 @@ For accounts with multiple client accounts, switch context before making changes
 
 ```json
 {
-  "client_account_sid": "brd_xyz789"
+  "client_account_sid": "1a2b3c4d5e6f708192837465"
 }
 ```
 
