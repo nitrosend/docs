@@ -5,7 +5,7 @@
     "name": "nitro",
     "version": "1.3.0"
   },
-  "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and client-account context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current client account with nitro_select_client_account; API-key connections are pinned to their key's client account.",
+  "description": "Multi-channel email marketing and newsletter automation platform. Use nitro_get_status first for current account and client-account context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current client account with nitro_select_client_account; API-key connections are pinned to their key's client account.",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -155,7 +155,7 @@
         "properties": {
           "url": {
             "type": "string",
-            "description": "Website URL to scrape brand from"
+            "description": "Website URL to scrape Brand Kit identity from"
           },
           "logo_url": {
             "type": "string",
@@ -163,7 +163,7 @@
           },
           "fields": {
             "type": "object",
-            "description": "Direct brand field updates",
+            "description": "Direct Brand Kit field updates",
             "properties": {
               "company_name": {
                 "type": "string"
