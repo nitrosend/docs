@@ -1,19 +1,19 @@
 ---
-title: Brand Settings & AI Memory
+title: Brand Kit & AI Memory
 description: Teach your AI your brand voice, goals, and strategy so every email it creates is on-brand
 ---
 
-# Brand Settings & AI Memory
+# Brand Kit & AI Memory
 
-Nitrosend's two most powerful MCP features are **Brand Settings** and **AI Memory**. Together, they give your AI assistant deep context about your business — so every email it creates automatically matches your brand, follows your strategy, and improves over time.
+Nitrosend's two most powerful MCP features are **Brand Kit** and **AI Memory**. Together, they give your AI assistant deep context about your business — so every email it creates automatically matches your brand, follows your strategy, and improves over time.
 
-## Brand Settings
+## Brand Kit
 
-**Brand Settings** define how your emails look and who they come from. When your AI creates an email via MCP, these settings are applied automatically — the right colors, fonts, logo, and tone, every time.
+**Brand Kit** defines how your emails look and who they come from. When your AI creates an email via MCP, these settings are applied automatically — the right colors, fonts, logo, and tone, every time.
 
-In multi-brand accounts, MCP has a current brand. Use `nitro_get_status` to inspect `current_brand` and `available_brands`, then use `nitro_select_brand` to switch the current brand for OAuth sessions. `nitro_set_brand` does not switch context; it updates the identity of the currently selected brand.
+In accounts with multiple client accounts, MCP has a current client account. Use `nitro_get_status` to inspect `current_client_account` and `available_client_accounts`, then use `nitro_select_client_account` to switch the current client account for OAuth sessions. `nitro_set_brand_kit` does not switch context; it updates the Brand Kit for the currently selected client account.
 
-### What Brand Settings include
+### What Brand Kit includes
 
 | Setting | What it controls |
 |---------|-----------------|
@@ -27,16 +27,16 @@ In multi-brand accounts, MCP has a current brand. Use `nitro_get_status` to insp
 | **Logo** | Light and dark versions, applied to email headers |
 | **Physical address** | Required for CAN-SPAM compliance in email footers |
 
-### How to configure Brand Settings
+### How to configure Brand Kit
 
 <Tabs>
   <Tab title="Dashboard">
-    Go to [**Brand > Identity**](https://app.nitrosend.com/my/brand) in the Nitrosend dashboard. Fill in your brand details and click save.
+    Go to [**Client Account > Brand Kit**](https://app.nitrosend.com/my/client-account) in the Nitrosend dashboard. Fill in your Brand Kit details and click save.
   </Tab>
   <Tab title="Via MCP (AI prompt)">
     Ask your connected AI assistant:
     ```
-    Set up my brand from https://mywebsite.com
+    Set up my Brand Kit from https://mywebsite.com
     ```
     Claude will scrape your website for brand colors, fonts, and logo, then configure everything automatically. You can also set fields directly:
     ```
@@ -49,14 +49,14 @@ In multi-brand accounts, MCP has a current brand. Use `nitro_get_status` to insp
     curl -X POST https://api.nitrosend.com/mcp \
       -H "Authorization: Bearer $NITROSEND_API_KEY" \
       -H "Content-Type: application/json" \
-      -d '{"method": "nitro_set_brand", "params": {"url": "https://mywebsite.com"}}'
+      -d '{"method": "nitro_set_brand_kit", "params": {"url": "https://mywebsite.com"}}'
     ```
   </Tab>
 </Tabs>
 
-### Why Brand Settings matter for AI
+### Why Brand Kit matters for AI
 
-Without Brand Settings, your AI has to guess your brand colors, tone, and style for every email. With Brand Settings configured:
+Without Brand Kit, your AI has to guess your brand colors, tone, and style for every email. With Brand Kit configured:
 
 - Emails automatically use your brand colors, fonts, and logo
 - Subject lines and copy match your company's tone
@@ -104,7 +104,7 @@ time-poor. They value efficiency and straight talk over flashy design.
 
 <Tabs>
   <Tab title="Dashboard">
-    Go to [**Brand > AI Memory**](https://app.nitrosend.com/my/brand/memory) in the Nitrosend dashboard. Edit the markdown document and save.
+    Go to [**Client Account > AI Memory**](https://app.nitrosend.com/my/client-account/memory) in the Nitrosend dashboard. Edit the markdown document and save.
   </Tab>
   <Tab title="Via MCP (AI prompt)">
     Ask your connected AI assistant:
@@ -134,30 +134,30 @@ The more context you put in AI Memory, the less you need to explain in each prom
 
 Here's the difference these settings make:
 
-### Without Brand Settings & Memory
+### Without Brand Kit & Memory
 
 > **You**: Create a campaign about our new feature
 >
 > **Claude**: What's your brand color? What tone should I use? Who's the audience? What's the call to action? What's your company name for the footer?
 
-### With Brand Settings & Memory configured
+### With Brand Kit & Memory configured
 
 > **You**: Create a campaign about our new feature
 >
 > **Claude**: Done. I've created a campaign using your indigo brand theme, written in your friendly-but-professional tone, targeting your active subscribers. The CTA links to your product page. Here's a preview — want me to send a test?
 
 <Tip>
-  **Start with Brand Settings, then add AI Memory.** Brand Settings handle the visual and compliance basics. AI Memory adds the strategic layer that makes your AI truly effective.
+  **Start with Brand Kit, then add AI Memory.** Brand Kit handles the visual and compliance basics. AI Memory adds the strategic layer that makes your AI truly effective.
 </Tip>
 
-## MCP tools for Brand & Memory
+## MCP tools for Brand Kit & Memory
 
 | Tool | What it does |
 |------|-------------|
-| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
-| `nitro_set_brand` | Set brand identity from a website URL or direct fields |
+| `nitro_select_client_account` | Switch the current client account for OAuth MCP sessions |
+| `nitro_set_brand_kit` | Set brand identity from a website URL or direct fields |
 | `nitro_set_memory` | Read, update, patch, or append to AI Memory |
 
 | Resource | What it provides |
 |----------|-----------------|
-| `nitro://brand` | Current brand identity (read-only snapshot) |
+| `nitro://brand-kit` | Current Brand Kit identity (read-only snapshot) |

@@ -78,8 +78,8 @@ Send a test of my latest campaign to user@example.com
 | Tool | Description |
 |------|-------------|
 | `nitro_get_status` | Account context, sender identity, readiness, and recommendations |
-| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
-| `nitro_set_brand` | Brand identity from URL or manual fields |
+| `nitro_select_client_account` | Switch the current client account for OAuth MCP sessions |
+| `nitro_set_brand_kit` | Brand Kit identity from URL or manual fields |
 | `nitro_manage_domains` | Add and verify sending domains |
 | `nitro_configure_account` | Sender defaults and test recipients |
 | `nitro_ingest_image` | Import a local or chat image for email sections |
@@ -108,7 +108,7 @@ Send a test of my latest campaign to user@example.com
     Open Cursor's MCP settings and confirm the `nitrosend` server is enabled. Trigger a Nitrosend tool call again. If Cursor still does not prompt for OAuth, remove and re-add the `nitrosend` entry and restart Cursor once.
   </Accordion>
   <Accordion title="Tools not appearing in Cursor Chat">
-    If you edited `mcp.json` manually, make sure Cursor picked up the new config. A restart is sometimes required after adding a brand new server. Check that `api.nitrosend.com` is reachable: `curl -I https://api.nitrosend.com/mcp`
+    If you edited `mcp.json` manually, make sure Cursor picked up the new config. A restart is sometimes required after adding a new server. Check that `api.nitrosend.com` is reachable: `curl -I https://api.nitrosend.com/mcp`
   </Accordion>
 </AccordionGroup>
 
