@@ -7,7 +7,7 @@ description: Install Nitrosend from Vercel Marketplace and connect project-ready
 
 Nitrosend's Vercel Marketplace integration is a thin native adapter over the
 existing Nitrosend dashboard. Vercel handles install, resource connection,
-secret delivery, plan changes, and billing. Nitrosend handles account, client account,
+secret delivery, plan changes, and billing. Nitrosend handles account, brand,
 campaign, list, template, and support workflows in the existing dashboard
 through SSO.
 
@@ -17,7 +17,7 @@ is complete, use the regular Nitrosend dashboard and API key flow.
 ## What Vercel Creates
 
 When you install Nitrosend from Vercel Marketplace, Vercel provisions a
-`nitrosend-email` resource. The resource maps to a Nitrosend account and client account,
+`nitrosend-email` resource. The resource maps to a Nitrosend account and brand,
 then creates project secrets for connected Vercel projects:
 
 - `NITROSEND_API_KEY`
@@ -63,14 +63,14 @@ Use Vercel for Marketplace resource operations:
 
 Use the existing Nitrosend dashboard for product work:
 
-- manage client accounts and sending domains
+- manage brands and sending domains
 - build campaigns and templates
 - manage lists and contacts
 - review usage and account settings
 - contact support
 
 There is no separate Marketplace dashboard. Vercel SSO opens the existing
-Nitrosend dashboard with the right account and client-account context.
+Nitrosend dashboard with the right account and brand context.
 
 The SSO entry point follows Vercel's redirect-login flow: Vercel sends
 `mode=sso`, `code`, and `state`; Nitrosend exchanges them with Vercel for a

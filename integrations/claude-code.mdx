@@ -54,7 +54,7 @@ Once connected, Claude Code has access to these tools:
 | Tool | What it does |
 |------|-------------|
 | `nitro_get_status` | Account context, sender identity, readiness, and recommendations |
-| `nitro_select_client_account` | Switch the current client account for OAuth MCP sessions |
+| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
 | `nitro_ingest_image` | Import a local or chat image for email sections |
 | `nitro_manage_template` | Create, update, or clone reusable email templates |
 | `nitro_compose_campaign` | Create email or SMS campaigns with audience targeting |
@@ -77,7 +77,7 @@ Once connected, Claude Code has access to these tools:
 | `nitro_configure_providers` | BYO email provider (Mailgun, SES) |
 | `nitro_request_support` | Submit a support request to the Nitrosend team |
 
-For accounts with multiple client accounts, ask Claude to check `nitro_get_status` first. OAuth sessions can use `nitro_select_client_account` to persist the selected client account for this user, OAuth application, and account. API keys are pinned to their key's client account, and `nitro_set_brand_kit` edits Brand Kit identity rather than switching context.
+For accounts with multiple brands, ask Claude to check `nitro_get_status` first. OAuth sessions can use `nitro_select_brand` to persist the selected brand for this user, OAuth application, and account. API keys are pinned to their key's brand, and `nitro_set_brand_kit` edits Brand Kit identity rather than switching context.
 
 ## MCP resources
 

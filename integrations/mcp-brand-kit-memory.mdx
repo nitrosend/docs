@@ -11,7 +11,7 @@ Nitrosend's two most powerful MCP features are **Brand Kit** and **AI Memory**. 
 
 **Brand Kit** defines how your emails look and who they come from. When your AI creates an email via MCP, these settings are applied automatically — the right colors, fonts, logo, and tone, every time.
 
-In accounts with multiple client accounts, MCP has a current client account. Use `nitro_get_status` to inspect `current_client_account` and `available_client_accounts`, then use `nitro_select_client_account` to switch the current client account for OAuth sessions. `nitro_set_brand_kit` does not switch context; it updates the Brand Kit for the currently selected client account.
+In accounts with multiple brands, MCP has a current brand. Use `nitro_get_status` to inspect `current_brand` and `available_brands`, then use `nitro_select_brand` to switch the current brand for OAuth sessions. `nitro_set_brand_kit` does not switch context; it updates the Brand Kit for the currently selected brand.
 
 ### What Brand Kit includes
 
@@ -31,7 +31,7 @@ In accounts with multiple client accounts, MCP has a current client account. Use
 
 <Tabs>
   <Tab title="Dashboard">
-    Go to [**Client Account > Brand Kit**](https://app.nitrosend.com/my/client-account) in the Nitrosend dashboard. Fill in your Brand Kit details and click save.
+    Go to [**Brand > Brand Kit**](https://app.nitrosend.com/my/brand) in the Nitrosend dashboard. Fill in your Brand Kit details and click save.
   </Tab>
   <Tab title="Via MCP (AI prompt)">
     Ask your connected AI assistant:
@@ -104,7 +104,7 @@ time-poor. They value efficiency and straight talk over flashy design.
 
 <Tabs>
   <Tab title="Dashboard">
-    Go to [**Client Account > AI Memory**](https://app.nitrosend.com/my/client-account/memory) in the Nitrosend dashboard. Edit the markdown document and save.
+    Go to [**Brand > AI Memory**](https://app.nitrosend.com/my/brand/memory) in the Nitrosend dashboard. Edit the markdown document and save.
   </Tab>
   <Tab title="Via MCP (AI prompt)">
     Ask your connected AI assistant:
@@ -154,7 +154,7 @@ Here's the difference these settings make:
 
 | Tool | What it does |
 |------|-------------|
-| `nitro_select_client_account` | Switch the current client account for OAuth MCP sessions |
+| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
 | `nitro_set_brand_kit` | Set brand identity from a website URL or direct fields |
 | `nitro_set_memory` | Read, update, patch, or append to AI Memory |
 

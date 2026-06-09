@@ -79,7 +79,7 @@ When an AI agent is managing contacts on a user's behalf, use the `nitro_manage_
 - **`tag_action: "remove"`** — removes the given tags from each contact; leaves other tags untouched.
 - **`tag_action: "set"`** — replaces the entire tag list on each contact with the given tags.
 
-`contact_ids` is required — omit it and the call fails rather than silently tagging every contact in the client account. Pass `dry_run: true` alongside to preview the affected `contact_count` without persisting.
+`contact_ids` is required — omit it and the call fails rather than silently tagging every contact in the brand. Pass `dry_run: true` alongside to preview the affected `contact_count` without persisting.
 
 See [Example Workflows](/guides/mcp-examples#example-4-bulk-tag-contacts) for a full prompt-to-result walkthrough.
 

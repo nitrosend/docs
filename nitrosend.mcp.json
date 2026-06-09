@@ -5,7 +5,7 @@
     "name": "nitro",
     "version": "1.3.0"
   },
-  "description": "Multi-channel email marketing and newsletter automation platform. Use nitro_get_status first for current account and client-account context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current client account with nitro_select_client_account; API-key connections are pinned to their key's client account.",
+  "description": "Multi-channel email marketing and newsletter automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -38,18 +38,18 @@
       }
     },
     {
-      "name": "nitro_select_client_account",
-      "description": "Select the current client account for this OAuth MCP connection. Use this instead of passing client_account_sid to other tools. API-key connections are client-account-pinned and cannot switch.",
+      "name": "nitro_select_brand",
+      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. API-key connections are brand-pinned and cannot switch.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "client_account_sid": {
+          "brand_sid": {
             "type": "string",
-            "description": "Exact client account SID to select. Provide either client_account_sid or name."
+            "description": "Exact brand SID to select. Provide either brand_sid or name."
           },
           "name": {
             "type": "string",
-            "description": "Client account name to select when the SID is unknown. Provide either name or client_account_sid. Ambiguous names return candidates without changing context."
+            "description": "Brand name to select when the SID is unknown. Provide either name or brand_sid. Ambiguous names return candidates without changing context."
           }
         },
         "additionalProperties": false
@@ -1271,7 +1271,7 @@
           "latest_campaign": {
             "type": "boolean",
             "default": false,
-            "description": "Use the most recently created campaign in this client account."
+            "description": "Use the most recently created campaign in this brand."
           },
           "template_id": {
             "type": "integer",
@@ -1670,7 +1670,7 @@
     {
       "uri": "nitro://account",
       "name": "account",
-      "description": "Live snapshot of the current account context: account, current client account, Brand Kit, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
+      "description": "Live snapshot of the current account context: account, current brand, Brand Kit, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
     },
     {
       "uri": "nitro://schema",
@@ -1680,7 +1680,7 @@
     {
       "uri": "nitro://brand-kit",
       "name": "brand-kit",
-      "description": "The current client account's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Your AI reads this automatically when composing emails so designs match the brand."
+      "description": "The current brand's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Your AI reads this automatically when composing emails so designs match the brand."
     },
     {
       "uri": "nitro://providers",
@@ -1796,7 +1796,7 @@
     },
     {
       "name": "onboard-brand-kit",
-      "description": "Set up Brand Kit identity for a new client account"
+      "description": "Set up Brand Kit identity for a new brand"
     },
     {
       "name": "weekly-report",

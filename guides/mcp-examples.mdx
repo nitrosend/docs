@@ -31,13 +31,13 @@ These examples show the full loop: what you say, what your AI calls, and what co
 {
   "result": {
     "status": "needs_attention",
-    "current_client_account": {
+    "current_brand": {
       "sid": "8f1e2d3c4b5a69788796a5b4",
       "name": "Acme Co",
       "company_name": "Acme Co",
       "context_source": "oauth_selection"
     },
-    "available_client_accounts": {
+    "available_brands": {
       "items": [
         { "sid": "8f1e2d3c4b5a69788796a5b4", "name": "Acme Co", "is_current": true },
         { "sid": "1a2b3c4d5e6f708192837465", "name": "Acme Outlet" }
@@ -45,7 +45,7 @@ These examples show the full loop: what you say, what your AI calls, and what co
       "returned": 2,
       "limit": 25
     },
-    "available_client_accounts_truncated": false,
+    "available_brands_truncated": false,
     "account": {
       "tier": "free",
       "can_send": true,
@@ -55,7 +55,7 @@ These examples show the full loop: what you say, what your AI calls, and what co
       "flow_count": 1,
       "campaign_count": 2
     },
-    "client_account": {
+    "brand": {
       "sid": "8f1e2d3c4b5a69788796a5b4",
       "name": "Acme Co",
       "setup_complete": false,
@@ -91,22 +91,22 @@ These examples show the full loop: what you say, what your AI calls, and what co
   },
   "meta": {
     "tool": "nitro_get_status",
-    "current_client_account": { "sid": "8f1e2d3c4b5a69788796a5b4", "name": "Acme Co" }
+    "current_brand": { "sid": "8f1e2d3c4b5a69788796a5b4", "name": "Acme Co" }
   }
 }
 ```
 
 **What happens next:** The AI reads the issues and recommendations, then calls `nitro_set_brand_kit` to fix the physical address — no extra prompting needed.
 
-For accounts with multiple client accounts, switch context before making changes:
+For accounts with multiple brands, switch context before making changes:
 
 ```json
 {
-  "client_account_sid": "1a2b3c4d5e6f708192837465"
+  "brand_sid": "1a2b3c4d5e6f708192837465"
 }
 ```
 
-The AI calls `nitro_select_client_account` with that SID. Future OAuth MCP tool calls use that client account. API key connections are pinned to the API key's client account and cannot switch.
+The AI calls `nitro_select_brand` with that SID. Future OAuth MCP tool calls use that brand. API key connections are pinned to the API key's brand and cannot switch.
 
 ---
 
@@ -323,7 +323,7 @@ Approval, Safe Mode, and `confirm_send_to_all` are separate checks. Approval ver
 **What happens next:** Each contact's existing tags are merged with `vip` and `newsletter` (no duplicates). Use `tag_action: "remove"` to strip tags, or `tag_action: "set"` to replace each contact's tag list entirely. Pass `dry_run: true` to preview — the response then returns `contact_count` (how many would be affected) instead of `updated`, and persists nothing.
 
 <Tip>
-  To tag by email instead of ID, first call `nitro_search_contacts` to resolve emails → contact IDs, then pass the IDs into `bulk_tag`. The tool intentionally requires `contact_ids` so an empty filter can't accidentally tag every contact in the client account.
+  To tag by email instead of ID, first call `nitro_search_contacts` to resolve emails → contact IDs, then pass the IDs into `bulk_tag`. The tool intentionally requires `contact_ids` so an empty filter can't accidentally tag every contact in the brand.
 </Tip>
 
 ---
