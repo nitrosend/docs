@@ -5,7 +5,7 @@
     "name": "nitro",
     "version": "1.3.0"
   },
-  "description": "Multi-channel email marketing and newsletter automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
+  "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -34,12 +34,35 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "nitro_select_account",
+      "description": "Switch the current Nitrosend account for this OAuth MCP connection. Use when the task is for a different account than the one shown in nitro_get_status. The switch takes effect on the next tool call. API-key connections are pinned to their key's account and cannot switch.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "integer",
+            "description": "ID of the account to switch to. Get IDs from nitro_get_status.available_accounts.items[*].id."
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": false
       }
     },
     {
       "name": "nitro_select_brand",
-      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. API-key connections are brand-pinned and cannot switch.",
+      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. API-key connections are pinned to one brand and cannot switch.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -149,28 +172,22 @@
     },
     {
       "name": "nitro_set_brand_kit",
-      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
+      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). For local logo files, call nitro_ingest first and pass the returned media_url/image_url as logo_url. Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string",
-            "description": "Website URL to scrape Brand Kit identity from"
+            "description": "Website URL to scrape Brand Kit from"
           },
           "logo_url": {
             "type": "string",
-            "description": "Direct URL to a logo image (png/jpg/webp/svg) to attach — SVGs are auto-converted to PNG"
+            "description": "Public or Nitro CDN URL to a logo image (png/jpg/webp/svg) to attach. For local logo files, call nitro_ingest with kind='image' first and pass the returned media_url or image_url here. Raw signed_id values are not accepted."
           },
           "fields": {
             "type": "object",
             "description": "Direct Brand Kit field updates",
             "properties": {
-              "company_name": {
-                "type": "string"
-              },
-              "company_description": {
-                "type": "string"
-              },
               "brand_color": {
                 "type": "string",
                 "description": "Hex color e.g. #ff0000"
@@ -183,13 +200,40 @@
                 "type": "string",
                 "description": "Hex color"
               },
-              "font_heading": {
-                "type": "string"
-              },
               "font_body": {
                 "type": "string"
               },
+              "font_heading": {
+                "type": "string"
+              },
+              "heading_size": {
+                "type": "integer",
+                "description": "Heading/title font size in pixels, 12-48"
+              },
+              "body_size": {
+                "type": "integer",
+                "description": "Body text font size in pixels, 12-20"
+              },
+              "radius": {
+                "type": "integer",
+                "description": "Global brand corner radius in pixels, 0-64"
+              },
+              "spacing_density": {
+                "type": "string",
+                "enum": [
+                  "compact",
+                  "normal",
+                  "spacious"
+                ],
+                "description": "Section spacing rhythm: compact, normal, or spacious"
+              },
+              "company_name": {
+                "type": "string"
+              },
               "physical_address": {
+                "type": "string"
+              },
+              "company_description": {
                 "type": "string"
               }
             }
@@ -228,10 +272,14 @@
     },
     {
       "name": "nitro_ingest",
-      "description": "Ingest an image media asset into Nitrosend and return Nitro CDN URLs you can place directly into design fields like image.src, product.image_url, hero.background_url, or theme.logo_url.\nUse image_data only for small local/chat-attached images. Use signed_id after API direct upload for larger local files. Public remote image URLs can be used directly in compose tools when permanence is not required, or passed as image_url here when Nitro-hosted permanence is desired.",
+      "description": "Ingest a local or remote asset into Nitrosend-hosted storage and return URLs you can place directly into email design fields.\nV1 supports kind=image only. Use image_data only for small local/chat-attached images. For larger local image files, call this tool with upload={kind: 'image', filename, content_type, byte_size, checksum} to create a direct upload reservation, PUT bytes to the returned direct_upload.url, then call this tool again with signed_id. Public remote image URLs can be used directly in compose tools when permanence is not required, or passed as image_url here when Nitro-hosted permanence is desired.",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "kind": {
+            "type": "string",
+            "description": "Asset kind to ingest. V1 supports image only."
+          },
           "image_data": {
             "type": "string",
             "description": "Image payload as raw base64 bytes or a full data URL. PNG, JPEG, or WebP only; decoded size must be under 10MB."
@@ -242,7 +290,41 @@
           },
           "signed_id": {
             "type": "string",
-            "description": "Active Storage signed_id returned by /v1/direct_uploads after uploading bytes with purpose=image or purpose=media_asset."
+            "description": "Upload signed_id returned by this tool's upload reservation after PUTing image bytes to direct_upload.url."
+          },
+          "upload": {
+            "type": "object",
+            "description": "Reserve an authorized upload link for a local asset. V1 supports kind=image only. Provide filename, content_type, byte_size, and base64 MD5 checksum; then PUT bytes to the returned direct_upload.url and call this tool again with signed_id.",
+            "required": [
+              "kind",
+              "filename",
+              "byte_size",
+              "checksum",
+              "content_type"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "description": "Asset kind. V1 supports image only."
+              },
+              "filename": {
+                "type": "string",
+                "description": "Original image filename, e.g. hero.png."
+              },
+              "content_type": {
+                "type": "string",
+                "description": "MIME type. Use image/png, image/jpeg, or image/webp."
+              },
+              "byte_size": {
+                "type": "integer",
+                "description": "Exact file size in bytes before upload."
+              },
+              "checksum": {
+                "type": "string",
+                "description": "Base64 MD5 checksum required by Active Storage direct upload."
+              }
+            },
+            "additionalProperties": false
           },
           "filename": {
             "type": "string",
@@ -260,7 +342,7 @@
         "idempotentHint": false,
         "openWorldHint": false,
         "readOnlyHint": false,
-        "title": "Ingest image"
+        "title": "Ingest asset"
       }
     },
     {
@@ -325,27 +407,12 @@
           },
           "filters": {
             "type": "array",
-            "description": "Array of filter objects. Each filter has:\n- **name** — filter alias from flows.yml (e.g. \"contact_email\", \"contact_first_name\", \"contact_country\", \"contact_subscribed_email\", \"contact_created_at\", \"contact_tag\")\n- **predicate** — Ransack predicate — eq, not_eq, cont, not_cont, start, end, gt, lt, gteq, lteq, present, blank, true, false, in, not_in\n- **value** — filter value (string, number, boolean, or array for in/not_in). For present/blank/true/false predicates, pass true.",
+            "description": "Array of filter objects. Each filter has:\n- **name** — filter alias from flows.yml (e.g. \"contact_email\", \"contact_first_name\", \"contact_country\", \"contact_subscribed_email\", \"contact_created_at\", \"contact_tag\")\n- **predicate** — Ransack predicate — eq, not_eq, cont, not_cont, start, end, gt, lt, gteq, lteq, present, blank, true, false\n- **value** — filter value (string, number, or boolean). For present/blank/true/false predicates, pass true.",
             "items": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
-                  "enum": [
-                    "contact_first_name",
-                    "contact_last_name",
-                    "contact_phone_number",
-                    "contact_email",
-                    "contact_country",
-                    "contact_subscribed_phone",
-                    "contact_subscribed_email",
-                    "contact_created_at",
-                    "contact_last_interacted_at",
-                    "contact_source",
-                    "contact_tag",
-                    "contact_verified",
-                    "contact_enriched"
-                  ],
                   "description": "Filter name — read nitro://schema for full details"
                 },
                 "predicate": {
@@ -364,14 +431,12 @@
                     "present",
                     "blank",
                     "true",
-                    "false",
-                    "in",
-                    "not_in"
+                    "false"
                   ],
                   "description": "Ransack predicate"
                 },
                 "value": {
-                  "description": "Filter value — string, number, boolean, or array. For present/blank predicates, pass true."
+                  "description": "Filter value — string, number, or boolean. For present/blank predicates, pass true."
                 }
               },
               "required": [
@@ -409,7 +474,7 @@
     },
     {
       "name": "nitro_import_contacts",
-      "description": "Import contacts from inline records (< 100) or reference a pre-uploaded CSV import. Email contacts are auto-subscribed by default. For SMS-only contacts, set opt_in: true explicitly (TCPA compliance).",
+      "description": "Import contacts from inline records (< 100), reserve an authorized CSV upload link, finalize an uploaded signed_id, or process an existing import_id. Email contacts are auto-subscribed by default. For SMS-only contacts, set opt_in: true explicitly (TCPA compliance). For large local CSVs, call this tool with upload={filename, content_type, byte_size, checksum}, PUT bytes to the returned direct_upload.url, then call this tool again with signed_id. Large CSV imports use the same async pipeline as app/API/CLI: up to 250k rows self-serve, with sends held for review above 20k; larger files return contact_sales.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -448,6 +513,65 @@
             "type": "integer",
             "description": "Existing Import record ID for CSV processing"
           },
+          "signed_id": {
+            "type": "string",
+            "description": "Upload signed_id returned by this tool's upload reservation after PUTing CSV bytes to direct_upload.url."
+          },
+          "upload": {
+            "type": "object",
+            "description": "Reserve an authorized upload link for a local CSV file. Provide filename, content_type, byte_size, and base64 MD5 checksum; then PUT bytes to the returned direct_upload.url and call this tool again with signed_id.",
+            "required": [
+              "filename",
+              "byte_size",
+              "checksum",
+              "content_type"
+            ],
+            "properties": {
+              "filename": {
+                "type": "string",
+                "description": "Original CSV filename, e.g. contacts.csv."
+              },
+              "content_type": {
+                "type": "string",
+                "description": "MIME type. Use text/csv or application/csv."
+              },
+              "byte_size": {
+                "type": "integer",
+                "description": "Exact file size in bytes before upload."
+              },
+              "checksum": {
+                "type": "string",
+                "description": "Base64 MD5 checksum required by Active Storage direct upload."
+              }
+            },
+            "additionalProperties": false
+          },
+          "resource": {
+            "type": "string",
+            "description": "Import resource. Use contacts for contact CSV imports.",
+            "default": "contacts"
+          },
+          "parser": {
+            "type": "string",
+            "description": "Parser name. Use default unless a future schema documents another parser.",
+            "default": "default"
+          },
+          "columns": {
+            "type": "object",
+            "description": "Optional import column mapping object."
+          },
+          "options": {
+            "type": "object",
+            "description": "Import options, e.g. {list_ids: [123]} to add imported contacts to lists.",
+            "properties": {
+              "list_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
           "dry_run": {
             "type": "boolean",
             "description": "Preview import without persisting (default: false)",
@@ -469,23 +593,27 @@
     },
     {
       "name": "nitro_manage_template",
-      "description": "Create, update, or clone a reusable email template. Brand theme applied automatically.\nFor composing new emails to send, use nitro_compose_campaign instead.\nFor goal or intent-driven template creation/redesign, use composition_mode=\"intent\"\nfirst. Nitrosend returns a compact composition_contract; the agent host\nwrites the sections, can validate without persistence, then calls this\nsame tool with composition_mode=\"draft\". Contract-loop states return as\nnormal tool results with composition_status and isError=false.\n\nModes (auto-detected):\n\n- **Create** — provide sections + subject (required). Sections define the email layout.\n- **Update** — provide template_id + any fields to change. Use if_version for optimistic concurrency.\n- **Clone** — provide based_on (source template_id). Optionally override sections/subject/name.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate templates.",
+      "description": "Create, update, or clone a reusable email template. Brand theme applied automatically.\nFor composing new emails to send, use nitro_compose_campaign instead.\nFor edits to existing sections, prefer section_updates: target by section id,\nuse text_patch for copy changes, and shallow-merge props/styles for visual or\nattribute changes. Use full sections only for full replacements/redesigns.\nFor goal or intent-driven template creation/redesign, use\ncomposition_mode=\"intent\" first. Nitrosend returns a compact\ncomposition_contract; the agent host writes the sections, can validate\nwithout persistence, then calls this same tool with\ncomposition_mode=\"draft\". Contract-loop states return as normal tool\nresults with composition_status and isError=false.\n\nModes (auto-detected):\n\n- **Create** — provide sections + subject (required). Sections define the email layout.\n- **Update** — provide template_id + fields to change. To change existing sections, use section_updates (target by id; use text_patch for copy changes). Use if_version for optimistic concurrency.\n- **Clone** — provide based_on (source template_id). Optionally override sections/subject/name.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate templates.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "sections": {
             "type": "array",
-            "description": "Array of section objects: {type, props, styles?}. Read nitro://schema for full prop specs.\n\nSection types and key props:\n\n- **header** — {logo_url, logo_alt, logo_width, background_color}\n- **text** — {content (HTML string)}\n- **image** — {src, alt, href, width}\n- **button** — {text, href, background_color, text_color, align, border_radius, padding}\n- **columns** — {columns: [{width, sections: [...]}]} — nested sections inside columns\n- **product** — {name, price, image_url, href, description}\n- **social** — {links: [{platform, url}], align}\n- **divider** — {color, width, padding}\n- **spacer** — {height}\n- **footer** — {company_name, address, unsubscribe_text}\n\nImage-bearing URL props accept public URLs or Nitro CDN media_url/image_url values returned by nitro_ingest. Do not place raw direct-upload signed_id values in sections.",
+            "description": "Array of section objects: {id?, type, props, styles?}. Read nitro://schema for full prop specs. Persisted sections receive stable top-level ids for future section_updates targeting.\n\nSection types and key props:\n\n- **header** — {variant, wordmark_text, logo_url, logo_alt, logo_width, background_color}\n- **text** — {content (HTML string)}\n- **image** — {src, alt, href, width}\n- **button** — {text, href, background_color, text_color, section_background_color, align, border_radius, inner_padding, font_weight, font_family, text_transform}. background_color is the button fill; section_background_color is the surrounding band.\n- **columns** — {columns: [{width, sections: [...]}]} — nested sections inside columns\n- **product** — {name, price, image_url, href, description}\n- **social** — {links: [{platform, url}], align}\n- **divider** — {color, width, padding}\n- **spacer** — {height}\n- **footer** — {company_name, address, unsubscribe_text}\n\nImage-bearing URL props accept public URLs or Nitro CDN media_url/image_url values returned by nitro_ingest. For a local image too large for image_data, call nitro_ingest with upload={kind: 'image', filename, content_type, byte_size, checksum}, PUT bytes to direct_upload.url, then call nitro_ingest with signed_id and use the returned media_url/image_url here. Do not place raw signed_id values in sections.",
             "items": {
               "type": "object"
             }
           },
           "section_updates": {
             "type": "array",
-            "description": "Small update shortcut for existing sections. Each item targets by 0-based index, or by type plus optional 0-based occurrence, and shallow-merges props/styles. Does not change section order or type.",
+            "description": "Small update shortcut for existing sections. Prefer targeting by stable section id from nitro_query/template reads; fall back to 0-based index, or type plus optional 0-based occurrence. Shallow-merges props/styles or uses text_patch for literal copy edits inside a string prop. Does not change section order or type.",
             "items": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Stable section id from the stored template sections array. Preferred target."
+                },
                 "index": {
                   "type": "integer",
                   "description": "0-based section index"
@@ -505,6 +633,30 @@
                 "styles": {
                   "type": "object",
                   "description": "Styles to shallow-merge into the target section"
+                },
+                "text_patch": {
+                  "type": "object",
+                  "description": "Literal string replacement inside one string prop. Defaults prop by section type when unambiguous, e.g. text.content, hero.title, button.text. Requires exactly one match unless all=true.",
+                  "properties": {
+                    "prop": {
+                      "type": "string",
+                      "description": "String prop to edit. Required when the section type has no clear default or when editing a non-default prop."
+                    },
+                    "find": {
+                      "type": "string",
+                      "description": "Literal substring to find"
+                    },
+                    "replace": {
+                      "type": "string",
+                      "description": "Replacement string"
+                    },
+                    "all": {
+                      "type": "boolean",
+                      "description": "Replace every occurrence; requires at least one match",
+                      "default": false
+                    }
+                  },
+                  "additionalProperties": false
                 }
               },
               "additionalProperties": false
@@ -591,7 +743,7 @@
           },
           "theme": {
             "type": "object",
-            "description": "Theme overrides merged on top of brand theme. Keys: brand_color (hex), bg_color (hex), text_color (hex), font_body (string), font_heading (string), logo_url (URL)"
+            "description": "Theme overrides merged on top of brand theme. Keys: brand_color (hex), bg_color (hex), text_color (hex), font_body (string), font_heading (string), logo_url (public URL or nitro_ingest media_url/image_url, not raw signed_id). For a local logo file, call nitro_ingest with upload={kind: 'image', filename, content_type, byte_size, checksum}, PUT bytes, then call nitro_ingest with signed_id and use the returned media_url/image_url. Also supports radius (integer px), spacing_density (compact, normal, spacious)."
           },
           "template_id": {
             "type": "integer",
@@ -734,7 +886,7 @@
           },
           "steps": {
             "type": "array",
-            "description": "Ordered array of flow steps. Required props per type:\n\n- **email** — subject (required), design ({sections, theme}) or body, preheader, from_name, from_email, reply_to, bcc (string, optional BCC email address)\n- **sms** — body (required)\n- **wait** — duration (integer, seconds — e.g. 86400 = 1 day)\n- **split** — filters (required, [{name, predicate, value}]), yes (steps array), no (steps array). Nested splits are allowed.\n- **emit_event** — event_name (required), event_data (object), forward_event_data (boolean)\n- **webhook** — url (required), method (POST or PUT, default POST), headers (object), body (template string with merge tags)\n- **subscribe** — channel (phone, email, or all — default phone). Subscribes the contact.\n- **unsubscribe** — channel (phone, email, or all — default phone). Unsubscribes the contact.",
+            "description": "Ordered array of flow steps. Required props per type:\n\n- **email** — subject (required), design ({sections, theme}) or body, preheader, from_name, from_email, reply_to, bcc (string, optional BCC email address). Theme may include radius and spacing_density.\n- **sms** — body (required)\n- **wait** — duration (integer, seconds — e.g. 86400 = 1 day)\n- **split** — filters (required, [{name, predicate, value}]), yes (steps array), no (steps array). Nested splits are allowed.\n- **emit_event** — event_name (required), event_data (object), forward_event_data (boolean)\n- **webhook** — url (required), method (POST or PUT, default POST), headers (object), body (template string with merge tags)\n- **subscribe** — channel (phone, email, or all — default phone). Subscribes the contact.\n- **unsubscribe** — channel (phone, email, or all — default phone). Unsubscribes the contact.",
             "items": {
               "type": "object",
               "properties": {
@@ -777,7 +929,7 @@
                 },
                 "design": {
                   "type": "object",
-                  "description": "Email design: { sections: [...], theme: {...} }"
+                  "description": "Email design: { sections: [...], theme: {...} }. Theme keys include brand_color, bg_color, text_color, font_body, font_heading, logo_url, radius, spacing_density."
                 },
                 "if_version": {
                   "type": "integer",
@@ -833,21 +985,6 @@
                     "properties": {
                       "name": {
                         "type": "string",
-                        "enum": [
-                          "contact_first_name",
-                          "contact_last_name",
-                          "contact_phone_number",
-                          "contact_email",
-                          "contact_country",
-                          "contact_subscribed_phone",
-                          "contact_subscribed_email",
-                          "contact_created_at",
-                          "contact_last_interacted_at",
-                          "contact_source",
-                          "contact_tag",
-                          "contact_verified",
-                          "contact_enriched"
-                        ],
                         "description": "Filter name — read nitro://schema for full details"
                       },
                       "predicate": {
@@ -866,9 +1003,7 @@
                           "present",
                           "blank",
                           "true",
-                          "false",
-                          "in",
-                          "not_in"
+                          "false"
                         ],
                         "description": "Ransack predicate"
                       },
@@ -938,7 +1073,7 @@
     },
     {
       "name": "nitro_compose_campaign",
-      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nFor manual sections without a composition_contract, read nitro://brand-kit and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS campaigns\nare exempt from email composition contracts.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
+      "description": "Compose and send an email or SMS to an audience. This is the default tool when users want to draft, write, or send an email.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nCampaigns are broadcasts to subscribed audiences. For receipts, confirmations, password resets, OTPs, or one-off lifecycle notifications, use nitro_send_message with data.* merge tags. For repeatable lifecycle automation, use nitro_compose_flow with a real event trigger.\nFor manual sections without a composition_contract, read nitro://brand-kit and nitro://schema; use nitro://email-marketing and nitro://email-design when deeper strategy or design context is needed.\n\nEmail modes (channel auto-detected as \"email\" when sections or template_id provided):\n\n- **Host-composed contract** — composition_mode: \"intent\" returns a compact composition_contract. Fill next_call with subject/preheader/sections, optionally dry-run with composition_mode: \"validate\", then persist with composition_mode: \"draft\".\n- **Inline** — sections + subject (required) — compose email design directly\n- **Clone** — template_id — clone design from existing template, optionally override subject\n- **Plain text** — body + subject — simple text email without design\n\nSMS mode: channel: \"sms\" + body (required)\n\nGoal-driven email requests use the host-composed contract path by default;\nNitrosend compiles the brief and validates/persists, while the agent host\nwrites the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nUse $contract_ref for high-risk literals, e.g.\n{\"$contract_ref\":\"hard_constraints.urls.primary_cta\"}. SMS campaigns\nare exempt from email composition contracts.\n\nRetry safety: pass the same idempotency_key on retry to avoid duplicate campaigns.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1054,14 +1189,14 @@
           },
           "sections": {
             "type": "array",
-            "description": "Email design sections array — same format as nitro_manage_template. Requires subject. Image-bearing URL props accept public URLs or Nitro CDN media_url/image_url values returned by nitro_ingest; do not place raw direct-upload signed_id values in sections.",
+            "description": "Email design sections array — same format as nitro_manage_template. Requires subject. Image-bearing URL props accept public URLs or Nitro CDN media_url/image_url values returned by nitro_ingest. For a local image too large for image_data, call nitro_ingest with upload={kind: 'image', filename, content_type, byte_size, checksum}, PUT bytes to direct_upload.url, then call nitro_ingest with signed_id and use the returned media_url/image_url here. Do not place raw signed_id values in sections.",
             "items": {
               "type": "object"
             }
           },
           "theme": {
             "type": "object",
-            "description": "Email theme overrides merged on brand theme: {brand_color, bg_color, text_color, font_body, font_heading, logo_url}. logo_url must be a public URL or nitro_ingest media_url/image_url, not a raw signed_id."
+            "description": "Email theme overrides merged on brand theme: {brand_color, bg_color, text_color, font_body, font_heading, logo_url, radius, spacing_density}. logo_url must be a public URL or nitro_ingest media_url/image_url, not a raw signed_id. For a local logo file, call nitro_ingest with upload={kind: 'image', filename, content_type, byte_size, checksum}, PUT bytes, then call nitro_ingest with signed_id and use the returned media_url/image_url."
           },
           "template_id": {
             "type": "integer",
@@ -1613,7 +1748,7 @@
           },
           "data": {
             "type": "object",
-            "description": "Merge variables e.g. { order_id: 123, name: 'Alice' }"
+            "description": "Transactional merge variables. Use in email templates as {{ data.order_id }} or nested paths like {{ data.customer.name }}."
           },
           "idempotency_key": {
             "type": "string",
@@ -1667,6 +1802,35 @@
         "readOnlyHint": false,
         "title": "Request Support"
       }
+    },
+    {
+      "name": "nitro_search_docs",
+      "description": "Search the Nitrosend product documentation: guides, integrations, CLI, concepts, authentication, and the REST API and MCP reference.\nUse this whenever you need authoritative product information you do not already have — how a feature works, setup or verification steps, API/SDK usage, CLI commands, integration instructions — instead of guessing or saying you don't know.\nReturns the most relevant documentation sections with titles, links, and excerpts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to look up, e.g. 'verify sending domain', 'rest api authentication', 'cli install', 'connect cursor'"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return (default 6, max 10)",
+            "default": 6
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Search documentation"
+      }
     }
   ],
   "resources": [
@@ -1678,7 +1842,7 @@
     {
       "uri": "nitro://account",
       "name": "account",
-      "description": "Live snapshot of the current account context: account, current brand, Brand Kit, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
+      "description": "Live snapshot of the current account context: account, brand, sender identity, dashboard links, tier (free / paid / trusted), email and SMS volume used vs caps, onboarding checklist progress, contact and list counts, and active flow/campaign summary."
     },
     {
       "uri": "nitro://schema",
@@ -1688,7 +1852,7 @@
     {
       "uri": "nitro://brand-kit",
       "name": "brand-kit",
-      "description": "The current brand's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Your AI reads this automatically when composing emails so designs match the brand."
+      "description": "The selected brand's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Use nitro_ingest for local logo files before setting logo_url. Your AI reads this automatically when composing emails so designs match the Brand Kit."
     },
     {
       "uri": "nitro://providers",
@@ -1709,6 +1873,16 @@
       "uri": "nitro://email-marketing",
       "name": "email-marketing",
       "description": "Deep email marketing reference for campaign, template, or flow email content. Composition contracts already include selected marketing capsules; read this only when deeper strategy, audience, lifecycle, copy, deliverability, compliance, or intent context is needed."
+    },
+    {
+      "uri": "nitro://lifecycle",
+      "name": "lifecycle",
+      "description": "Canonical machine-readable lifecycle flow catalog. Includes priority order, goal aliases, real trigger events, trigger gating requirements, revenue rationale, and structured cadence for welcome, abandoned cart, browse abandonment, post-purchase, win-back, re-engagement, and newsletter flows."
+    },
+    {
+      "uri": "nitro://docs",
+      "name": "docs",
+      "description": "The Nitrosend product documentation map: every guide, integration, CLI, concept, authentication, and REST API / MCP reference page with its path and summary. Use the nitro_search_docs tool to search the full documentation content for how-to and reference answers."
     },
     {
       "uri": "nitro://examples/email",
@@ -1798,6 +1972,22 @@
         {
           "name": "flow_id",
           "description": "ID of the flow to review. If omitted, lists active flows for the user to choose.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "lifecycle-setup",
+      "description": "Review a brand site and draft the key lifecycle automation flows",
+      "arguments": [
+        {
+          "name": "website_url",
+          "description": "Brand website to review and scrape, e.g. https://example.com",
+          "required": false
+        },
+        {
+          "name": "test_recipient",
+          "description": "Email address that should receive flow test messages",
           "required": false
         }
       ]
