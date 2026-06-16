@@ -53,3 +53,9 @@ See [Install & sign in](/cli/install) for the full setup, [Agent mode](/cli/agen
 ## What the CLI doesn't try to be
 
 The CLI is for deterministic shell workflows. It is not a replacement for the chat experience or the dashboard. It does not own features the MCP doesn't expose — every command is a sensible thing to call from a shell *and* has a clean MCP analogue. If you need a richer composer, use a chat MCP client. If you need to ship Nitrosend inside an application, use the [REST API](/integrations/rest-api).
+
+For image media files in templates and campaigns, v1 does not add a separate
+`nitrosend media upload` command. Use the REST direct-upload flow instead:
+reserve `/v1/direct_uploads` with `purpose=image` or `purpose=media_asset`, PUT
+the bytes to the returned upload URL, then submit the returned `signed_id` to
+`/v1/my/images`.

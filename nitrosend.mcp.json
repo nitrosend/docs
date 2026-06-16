@@ -228,7 +228,7 @@
     },
     {
       "name": "nitro_ingest_image",
-      "description": "Ingest a local or chat-attached image into Nitrosend and return a Nitro CDN URL you can place directly into email design fields like image.src, product.image_url, hero.background_url, or theme.logo_url.\nUse this only for local/chat images. If the user already has a public remote URL, use that URL directly in compose tools instead.",
+      "description": "Ingest an image media asset into Nitrosend and return Nitro CDN URLs you can place directly into design fields like image.src, product.image_url, hero.background_url, or theme.logo_url.\nUse image_data only for small local/chat-attached images. Use signed_id after API direct upload for larger local files. Public remote image URLs can be used directly in compose tools when permanence is not required, or passed as image_url here when Nitro-hosted permanence is desired.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -236,9 +236,17 @@
             "type": "string",
             "description": "Image payload as raw base64 bytes or a full data URL. PNG, JPEG, or WebP only; decoded size must be under 10MB."
           },
+          "image_url": {
+            "type": "string",
+            "description": "Public http/https image URL to ingest into Nitro-hosted storage when permanence is desired. PNG, JPEG, or WebP only; remote file must be under 10MB."
+          },
+          "signed_id": {
+            "type": "string",
+            "description": "Active Storage signed_id returned by /v1/direct_uploads after uploading bytes with purpose=image or purpose=media_asset."
+          },
           "filename": {
             "type": "string",
-            "description": "Original filename for the image, such as hero.png or product-shot.jpg."
+            "description": "Original filename for image_data uploads, or an optional filename override for image_url/signed_id sources."
           },
           "content_type": {
             "type": "string",
@@ -467,7 +475,7 @@
         "properties": {
           "sections": {
             "type": "array",
-            "description": "Array of section objects: {type, props, styles?}. Read nitro://schema for full prop specs.\n\nSection types and key props:\n\n- **header** — {logo_url, logo_alt, logo_width, background_color}\n- **text** — {content (HTML string)}\n- **image** — {src, alt, href, width}\n- **button** — {text, href, background_color, text_color, align, border_radius, padding}\n- **columns** — {columns: [{width, sections: [...]}]} — nested sections inside columns\n- **product** — {name, price, image_url, href, description}\n- **social** — {links: [{platform, url}], align}\n- **divider** — {color, width, padding}\n- **spacer** — {height}\n- **footer** — {company_name, address, unsubscribe_text}",
+            "description": "Array of section objects: {type, props, styles?}. Read nitro://schema for full prop specs.\n\nSection types and key props:\n\n- **header** — {logo_url, logo_alt, logo_width, background_color}\n- **text** — {content (HTML string)}\n- **image** — {src, alt, href, width}\n- **button** — {text, href, background_color, text_color, align, border_radius, padding}\n- **columns** — {columns: [{width, sections: [...]}]} — nested sections inside columns\n- **product** — {name, price, image_url, href, description}\n- **social** — {links: [{platform, url}], align}\n- **divider** — {color, width, padding}\n- **spacer** — {height}\n- **footer** — {company_name, address, unsubscribe_text}\n\nImage-bearing URL props accept public URLs or Nitro CDN media_url/image_url values returned by nitro_ingest_image. Do not place raw direct-upload signed_id values in sections.",
             "items": {
               "type": "object"
             }
@@ -1046,14 +1054,14 @@
           },
           "sections": {
             "type": "array",
-            "description": "Email design sections array — same format as nitro_manage_template. Requires subject.",
+            "description": "Email design sections array — same format as nitro_manage_template. Requires subject. Image-bearing URL props accept public URLs or Nitro CDN media_url/image_url values returned by nitro_ingest_image; do not place raw direct-upload signed_id values in sections.",
             "items": {
               "type": "object"
             }
           },
           "theme": {
             "type": "object",
-            "description": "Email theme overrides merged on brand theme: {brand_color, bg_color, text_color, font_body, font_heading, logo_url}"
+            "description": "Email theme overrides merged on brand theme: {brand_color, bg_color, text_color, font_body, font_heading, logo_url}. logo_url must be a public URL or nitro_ingest_image media_url/image_url, not a raw signed_id."
           },
           "template_id": {
             "type": "integer",
