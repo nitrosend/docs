@@ -172,7 +172,7 @@
     },
     {
       "name": "nitro_set_brand_kit",
-      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). For local logo files, call nitro_ingest first and pass the returned media_url/image_url as logo_url. Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
+      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). For local logo files, use nitro_ingest with image_data for small files or upload={kind: 'image', filename, content_type, byte_size, checksum} for larger files, then pass the returned media_url/image_url as logo_url. Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -182,7 +182,7 @@
           },
           "logo_url": {
             "type": "string",
-            "description": "Public or Nitro CDN URL to a logo image (png/jpg/webp/svg) to attach. For local logo files, call nitro_ingest with kind='image' first and pass the returned media_url or image_url here. Raw signed_id values are not accepted."
+            "description": "Public or Nitro CDN URL to a logo image (png/jpg/webp/svg) to attach. For a small local logo, call nitro_ingest with kind='image' and image_data. For a larger local logo, call nitro_ingest with upload={kind: 'image', filename, content_type, byte_size, checksum}, PUT bytes to direct_upload.url, then call nitro_ingest with signed_id. Pass the returned media_url or image_url here. Raw signed_id values are not accepted."
           },
           "fields": {
             "type": "object",
@@ -1852,7 +1852,7 @@
     {
       "uri": "nitro://brand-kit",
       "name": "brand-kit",
-      "description": "The selected brand's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. Use nitro_ingest for local logo files before setting logo_url. Your AI reads this automatically when composing emails so designs match the Brand Kit."
+      "description": "The selected brand's Brand Kit identity. Returns brand_color, text_color, bg_color, font_heading, font_body, logo_url, company_name, company_description, physical_address, and the brand voice document. For local logo files, use nitro_ingest with image_data or upload reservation before setting logo_url. Your AI reads this automatically when composing emails so designs match the Brand Kit."
     },
     {
       "uri": "nitro://providers",
