@@ -65,7 +65,7 @@ gemini "Show me insights for my last campaign compared to benchmarks"
 
 ## Function Calling via Google AI SDK (Alternative)
 
-For programmatic integration or Google AI Studio, you can define Nitrosend operations as function declarations and call the REST API directly. This requires an API key from **Settings > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com).
+For programmatic integration or Google AI Studio, you can define Nitrosend operations as function declarations and call the REST API directly. This requires an API key from **Brand > API Keys** in the [Nitrosend dashboard](https://app.nitrosend.com/my/brand/api-keys).
 
 ### Define function declarations
 
@@ -112,7 +112,7 @@ nitrosend_tools = types.Tool(
 ```python
 import requests
 
-NITROSEND_API_KEY = "nskey_live_your_key_here"  # From Settings > API Keys
+NITROSEND_API_KEY = "nskey_live_your_key_here"  # From Brand > API Keys
 BASE_URL = "https://api.nitrosend.com/v1/my"
 HEADERS = {
     "Authorization": f"Bearer {NITROSEND_API_KEY}",
