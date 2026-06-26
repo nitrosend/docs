@@ -1,8 +1,8 @@
-# NitroSend Investor Pitch
+# Nitrosend Investor Pitch
 
 ## 1. One-liner and the story
 
-NitroSend is the approve-and-ship AI growth co-pilot for Stripe-native SaaS and B2B teams.
+Nitrosend is the approve-and-ship AI growth co-pilot for Stripe-native SaaS and B2B teams.
 
 We point an agent at the data a SaaS team actually runs on, the CRM lifecycle in HubSpot or Attio and the subscription revenue in Stripe, and it proposes the next revenue-moving send. A human approves it, and a deliverability gate enforced at our own send path makes sure the agent never torches the sending domain. The reason this is not "Klaviyo plus an MCP server" is that the safety gate and the approval loop have to live inside the platform that owns the SES sending substrate, and Klaviyo's intelligence is built for Shopify order data it cannot get from a B2B SaaS account, so the quadrant we are claiming, Stripe MRR plus B2B CRM data, is the one Klaviyo is structurally weak in.
 
@@ -28,7 +28,7 @@ The product is a co-pilot, not an autopilot. The loop is: the agent reads the ac
 
 The human-in-the-loop loop already exists in code, and it is the part most worth understanding. Our in-app chat agent runs through `Chat::Orchestrator`. Read-only tools (search, status, insights) are classified as safe and execute automatically. Any tool that writes or sends, composing a campaign or triggering delivery, is held in a pending state until a person acts. The orchestrator exposes `approve_tool` and `reject_tool`. Approving runs the tool and feeds the result back into the conversation. Rejecting injects a declined result and continues. Every tool call and its state, pending, completed, error, or rejected, is persisted on `ChatMessage.tool_calls` for audit. The agent cannot run away: there is a hard cap of 20 tool rounds per turn. This is built and working today.
 
-The deliverability gate is the second, independent enforcement layer, and it sits at our own send path. We run multi-tenant SES cohorts that move accounts through probation, standard, trusted, and quarantine tiers based on bounce and complaint rates, with auto-silencing when critical thresholds breach (`Deliverability::CohortEvaluator`). A warmup enforcer caps daily volume by domain age and account tier (`Email::WarmupEnforcer`). New, unproven accounts are vetted at the send path by an LLM judge that catches impersonation and credential capture (`Trust::SendVetting`); content is spam-scored before auto-release (`Mcp::SpamScorer`); and the auto-approve policy requires a sufficient trust level, a recipient count under threshold, and a clean first-send guard (`Delivery::AutoApprovePolicy`). An agent connected to NitroSend cannot send mail that bypasses this gate, because the gate is the send path.
+The deliverability gate is the second, independent enforcement layer, and it sits at our own send path. We run multi-tenant SES cohorts that move accounts through probation, standard, trusted, and quarantine tiers based on bounce and complaint rates, with auto-silencing when critical thresholds breach (`Deliverability::CohortEvaluator`). A warmup enforcer caps daily volume by domain age and account tier (`Email::WarmupEnforcer`). New, unproven accounts are vetted at the send path by an LLM judge that catches impersonation and credential capture (`Trust::SendVetting`); content is spam-scored before auto-release (`Mcp::SpamScorer`); and the auto-approve policy requires a sufficient trust level, a recipient count under threshold, and a clean first-send guard (`Delivery::AutoApprovePolicy`). An agent connected to Nitrosend cannot send mail that bypasses this gate, because the gate is the send path.
 
 Honest scope: what the agent reads about CRM lifecycle and customer revenue today is thin, and we treat it as roadmap, not a shipped claim. Section 10 lays out exactly what is built versus what is sequenced.
 
@@ -40,7 +40,7 @@ The customer is the Stripe-native SaaS, subscription, or B2B team that runs on H
 
 The data-gravity flip is the core of the thesis. For a DTC brand, the gravity is the Shopify order stream, and that is Klaviyo's home. For a SaaS company, the gravity is somewhere else entirely: subscription state in Stripe and deal or lifecycle stage in the CRM. A platform whose intelligence is tuned for order events is sitting next to the wrong data. We position to sit next to the right data.
 
-Pricing follows the wedge. Klaviyo and Customer.io both bill on total profile count, you pay for stockpiled contacts whether or not you email them. Klaviyo moved to total-active-profile billing on February 18, 2025 ([Klaviyo billing change](https://help.klaviyo.com/hc/en-us/articles/33136281415451)), and at 200,000 profiles the Email plan runs roughly $2,070 a month ([Omnisend pricing breakdown](https://www.omnisend.com/blog/klaviyo-pricing/); [Retainful](https://www.retainful.com/blog/klaviyo-pricing)). Customer.io Essentials is $100 a month for 5,000 profiles, then $0.009 per additional profile ([Customer.io pricing](https://customer.io/pricing)). For a PLG SaaS company with a large free-tier user base, that model punishes the exact thing that makes the business work. NitroSend prices on revenue influence and usage, not on dormant contacts.
+Pricing follows the wedge. Klaviyo and Customer.io both bill on total profile count, you pay for stockpiled contacts whether or not you email them. Klaviyo moved to total-active-profile billing on February 18, 2025 ([Klaviyo billing change](https://help.klaviyo.com/hc/en-us/articles/33136281415451)), and at 200,000 profiles the Email plan runs roughly $2,070 a month ([Omnisend pricing breakdown](https://www.omnisend.com/blog/klaviyo-pricing/); [Retainful](https://www.retainful.com/blog/klaviyo-pricing)). Customer.io Essentials is $100 a month for 5,000 profiles, then $0.009 per additional profile ([Customer.io pricing](https://customer.io/pricing)). For a PLG SaaS company with a large free-tier user base, that model punishes the exact thing that makes the business work. Nitrosend prices on revenue influence and usage, not on dormant contacts.
 
 The honest cost of the wedge: a smaller TAM than horizontal email, a longer sales cycle, lower send volume per account, and a competitor set that shifts from Mailchimp toward Customer.io, HubSpot Marketing Hub, and Outreach. We are choosing a narrower, defensible lane on purpose.
 
@@ -58,11 +58,11 @@ Presence where SaaS data lives is the second. Klaviyo's native Stripe integratio
 
 The per-tenant accept, edit, reject, and outcome loop is the third, and it is the one compounding moat. It is described in full in Section 7.
 
-The honest bound on this argument: even after we win on location and gate, NitroSend is weaker than Klaviyo on raw data density. Klaviyo owns first-party purchase data; we hold a second-hand copy of CRM and revenue signals. Our edge is location, an enforced gate Klaviyo structurally cannot expose to a third-party agent, a per-tenant history that compounds, and speed. That is a defensible wedge. It is not a guaranteed win, and we do not pitch it as one.
+The honest bound on this argument: even after we win on location and gate, Nitrosend is weaker than Klaviyo on raw data density. Klaviyo owns first-party purchase data; we hold a second-hand copy of CRM and revenue signals. Our edge is location, an enforced gate Klaviyo structurally cannot expose to a third-party agent, a per-tenant history that compounds, and speed. That is a defensible wedge. It is not a guaranteed win, and we do not pitch it as one.
 
 ## 7. The compounding moat
 
-The compounding moat is a per-tenant learning loop, and the simple version is this: every time a NitroSend customer accepts a proposed send, edits it before approving, or rejects it, that decision is captured, and over time the system learns what that specific customer will and will not ship.
+The compounding moat is a per-tenant learning loop, and the simple version is this: every time a Nitrosend customer accepts a proposed send, edits it before approving, or rejects it, that decision is captured, and over time the system learns what that specific customer will and will not ship.
 
 Why per-tenant and not global. A global model, trained across every customer, favors the incumbent, because the incumbent has the most customers and therefore the most data. We cannot win that race and we are not trying to. But marketing preference is not a global truth, it is a per-account truth. What a buttoned-up B2B SaaS company will approve is the opposite of what a casual prosumer tool will approve. The asset that matters is not a global average, it is the decision history of one customer, and that history belongs to whoever holds the customer's approval surface. We hold that surface. The accept, edit, and reject signal is generated at our approval gate and nowhere else, so the longer a customer is with us, the better we get at proposing things they will actually approve, and the more friction they would face leaving.
 
@@ -84,7 +84,7 @@ So the TAM ladder is: a customer pool of tens of thousands of SaaS companies, a 
 
 A note on reading this matrix: "agent / MCP" is now table stakes. Klaviyo, Customer.io, and HubSpot all ship write-capable MCP servers, so we do not claim to be the only one with an agent. The differentiated columns are the enforced HITL plus deliverability gate, predictive (where we honestly hold a cell open), and per-tenant learning.
 
-| Capability | NitroSend | Klaviyo | Customer.io | HubSpot | Mailchimp |
+| Capability | Nitrosend | Klaviyo | Customer.io | HubSpot | Mailchimp |
 |---|---|---|---|---|---|
 | SaaS / Stripe fit | Built for it; Stripe subscription read on roadmap | Weak; predictive needs ecommerce order data | Strong event model; Stripe is a generic pipeline you wire | CRM gravity, but not built for product or order events | SMB and ecommerce centric |
 | Agent / MCP | Yes, MCP-native plus in-app chat agent | Yes, official GA MCP, 40+ write tools | Yes, live read, write, delete with write:live scope | Yes, GA MCP; cannot create or update marketing campaigns or emails | Bidirectional Claude/ChatGPT app, not an open MCP server |
