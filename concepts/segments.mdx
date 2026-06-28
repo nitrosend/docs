@@ -1,21 +1,32 @@
 ---
 title: Segments
-description: Dynamic audience groups based on conditions
+description: Dynamic audience groups based on profile, engagement, membership, and deliverability filters
 ---
 
 # Segments
 
 Segments are dynamic contact groups defined by filter conditions. Unlike static lists, segments automatically update as contacts match or stop matching the criteria.
 
-## Conditions
+## Filter builder
 
-Build segments using conditions on contact properties and behavior:
+Build segments with the same filter builder used across contacts, segments, sending activity, and flow split conditions. Filters are grouped so you can quickly find the right rule:
 
-- **Contact fields** — e.g., city equals "London"
-- **List membership** — e.g., belongs to "VIP Customers"
-- **Tags** — e.g., has tag "purchased"
-- **Engagement** — e.g., opened an email in the last 7 days
+- **Profile** — name, email, phone, country, source, tags, custom fields, and enrichment fields
+- **Membership** — contact list membership
+- **Engagement** — engagement rating, sends, opens, clicks, open rate, click rate, last opened, and last clicked
+- **Deliverability** — suppressed, bounced, complained, soft-bounce count, suppression reason, and unsubscribe date
+- **Behavior** — event history rules such as performed, not performed, count at least, and count at most
+
+Date filters support relative windows such as "within the last 30 days" and negative windows such as "has not opened in the last 30 days."
+
+## Segment counts
+
+Segment counts are refreshed in the background and shown in the segment list. Counts are intended as an operational guide before sending; final campaign audiences are still evaluated at send time so the current subscription, suppression, and unsubscribe state is respected.
 
 ## Usage
 
 Use segments as the audience for campaigns, or as conditions in flow steps to branch logic based on segment membership.
+
+## Saved views vs segments
+
+Saved views remember how you like to inspect the contacts table. Segments define an audience that can be reused for sending, automation, and agent workflows. If a filter set should affect delivery, save it as a segment.

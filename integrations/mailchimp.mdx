@@ -1,0 +1,50 @@
+---
+title: Mailchimp
+description: Import Mailchimp audiences into Nitrosend
+---
+
+# Mailchimp
+
+Connect Mailchimp to migrate your existing audiences and members into Nitrosend.
+
+## What syncs
+
+The Mailchimp connector imports:
+
+- Audiences as Nitrosend contact lists
+- Audience members as contacts
+- Email address, first name, last name, and common merge fields
+- Audience membership
+- Mailchimp source metadata on the contact
+
+Mailchimp campaign history, templates, and reports are not migrated.
+
+## Consent handling
+
+Nitrosend preserves Mailchimp email consent conservatively:
+
+- Mailchimp members with `subscribed` status are imported as subscribed to email.
+- Members with `unsubscribed`, `cleaned`, `pending`, archived, or unknown status are imported without email opt-in.
+
+This lets you keep the contact record and source data without accidentally widening your sendable audience.
+
+## Connect Mailchimp
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Mailchimp**.
+3. Click **Connect** and complete the Mailchimp OAuth flow.
+4. Return to Nitrosend and watch the sync progress.
+
+The sync runs in the background. You can leave the page while it imports contacts and return to the integration detail page to check progress.
+
+## After import
+
+After the sync completes:
+
+- Review imported lists in **Contacts > Lists**.
+- Use [segments](/concepts/segments) to build dynamic audiences from Mailchimp lists, tags, merge fields, and engagement data.
+- Send only to contacts who are subscribed in Nitrosend.
+
+<Warning>
+  Mailchimp sync is a contact and audience migration path. It does not automatically send campaigns or activate automations.
+</Warning>

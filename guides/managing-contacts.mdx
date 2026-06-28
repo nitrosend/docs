@@ -11,6 +11,10 @@ Contacts are the people you send messages to. Each contact can have an email add
 
 Go to **Contacts > Import** to upload a CSV file. Map your columns to contact fields during import.
 
+Imports run in the background and show live progress while rows are processed. You can leave the page and return to the progress tray later.
+
+You can also connect Mailchimp from **Integrations** to migrate audiences and members directly into Nitrosend. Mailchimp contacts keep their source metadata, and only Mailchimp members with `subscribed` status are opted in for email in Nitrosend.
+
 You can also add contacts via the API:
 
 ```bash
@@ -27,6 +31,12 @@ curl -X POST https://api.nitrosend.com/v1/my/contacts \
 ## Contact lists
 
 Organize contacts into lists for targeted sending. A contact can belong to multiple lists.
+
+## Saved views
+
+Use saved views to keep useful contact-table setups: search terms, filters, visible columns, and sort order. Saved views are helpful for day-to-day operations such as "recent imports", "VIPs with no recent clicks", or "contacts needing cleanup".
+
+If the same rules should become an audience for campaigns or flow conditions, create a segment instead.
 
 ## Tags
 
@@ -87,4 +97,8 @@ See [Example Workflows](/guides/mcp-examples#example-4-bulk-tag-contacts) for a 
 
 Segments are dynamic groups defined by conditions (e.g., "subscribed in the last 30 days" or "opened an email this week"). Unlike lists, segments update automatically as contacts match or stop matching the criteria.
 
-Tags are one of the available segment filters — use the `contact_tag` filter name with the `cont` (contains) predicate to build tag-based segments, e.g. `{ name: "contact_tag", predicate: "cont", value: "vip" }`.
+The segment builder supports profile, list membership, tag, custom-field, engagement, deliverability, and event-history filters. Tags are one of the available segment filters — use the `contact_tag` filter name with the `cont` (contains) predicate to build tag-based segments, e.g. `{ name: "contact_tag", predicate: "cont", value: "vip" }`.
+
+## Contact activity
+
+Open a contact to review their activity timeline. The timeline brings sends, opens, clicks, unsubscribes, bounces, complaints, list changes, and custom events together so you can understand recent behavior before sending again.

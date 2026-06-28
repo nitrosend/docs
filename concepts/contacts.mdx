@@ -1,11 +1,11 @@
 ---
 title: Contacts
-description: Understanding contacts in Nitrosend
+description: Understanding contacts, channels, activity, and saved views in Nitrosend
 ---
 
 # Contacts
 
-A contact represents a person in your audience. Contacts have channels (email, phone), custom fields, and belong to lists.
+A contact represents a person in your audience. Contacts have channels (email, phone), custom fields, tags, list memberships, subscription state, and an activity history.
 
 ## Channels
 
@@ -26,3 +26,13 @@ Unlike lists, tags are lightweight: a contact can have any number of tags. You c
 ## Subscription status
 
 Contacts can be subscribed, unsubscribed, or bounced per channel. Unsubscribed contacts are automatically excluded from campaigns.
+
+## Activity timeline
+
+Each contact has an activity timeline showing sends, opens, clicks, unsubscribes, bounces, complaints, custom events, and list changes in one place. Use it to understand how a contact reached their current state before you target them again.
+
+## Saved views
+
+The contacts table supports saved views. A saved view keeps the current search, filters, visible columns, and sort order so you can return to an operational slice of your audience quickly.
+
+Saved views are for working in the contacts table. Use [segments](/concepts/segments) when the same rules should become a reusable audience for campaigns, flows, or agents.
