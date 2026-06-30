@@ -39,6 +39,11 @@ The drag-and-drop editor lets you build responsive emails visually. Your brand t
 
 The sending activity log shows individual sends across campaigns, flows, transactional messages, and tests. Use it to inspect delivery status, failures, and message details after a send.
 
+Use the suppressions API when you need the account-level block list and bounce
+diagnostic text behind failed recipients. `GET /v1/my/suppressions` returns the
+suppressed address, reason, source event reference, and bounded provider
+diagnostic when available.
+
 ## View in browser
 
 Emails sent from Nitrosend can include a view-in-browser snapshot. This gives recipients a stable web version of the email and gives your team a reliable way to inspect what was sent after delivery.

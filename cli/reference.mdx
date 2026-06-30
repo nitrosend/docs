@@ -46,6 +46,19 @@ The CLI is the Nitrosend MCP, callable from a shell. These commands dispatch JSO
 
 The full set of available tools (`nitro_get_status`, `nitro_compose_campaign`, …) is documented under the [MCP Tools](/mcp) tab.
 
+## Data
+
+Read-only list commands call `nitro_query` and return paginated rows.
+
+| Command | Summary |
+|---|---|
+| `nitrosend flows list` | List flows. |
+| `nitrosend campaigns list` | List campaigns. |
+| `nitrosend contacts list` | List contacts. |
+| `nitrosend lists list` | List contact lists. |
+| `nitrosend templates list` | List templates. |
+| `nitrosend suppressions list` | List account suppressions with bounce diagnostics. |
+
 ## Agent
 
 These commands are stable stubs for agent approval handoff. They will gain SSE waiter behaviour in a future release.

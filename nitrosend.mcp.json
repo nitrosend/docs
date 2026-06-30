@@ -102,13 +102,14 @@
               "events",
               "imports",
               "messages",
+              "suppressions",
               "history"
             ],
             "description": "Which entity type to query. Use nitro_search_contacts for full-text contact search."
           },
           "filters": {
             "type": "object",
-            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\n\n- **flows** — status (draft/active/paused/archived), campaign_id (integer|null), trigger_event (string), search (string)\n- **campaigns** — status (draft/active/paused/completed), search (string)\n- **templates** — subject (string, ILIKE match on subject line)\n- **segments** — name (string, ILIKE match)\n- **contacts** — query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\n- **lists** — name (string, ILIKE match)\n- **events** — name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\n- **imports** — status (pending/processing/completed/failed)\n- **messages** — channel (email/sms), status (queued/sent/failed), to (string, recipient address)\n- **history** — source (notification/tool), event_type, tool, actor, correlation_id, resource_uri, from, to"
+            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\n\n- **flows** — status (draft/active/paused/archived), campaign_id (integer|null), trigger_event (string), search (string)\n- **campaigns** — status (draft/active/paused/completed), search (string)\n- **templates** — subject (string, ILIKE match on subject line)\n- **segments** — name (string, ILIKE match)\n- **contacts** — query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\n- **lists** — name (string, ILIKE match)\n- **events** — name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\n- **imports** — status (pending/processing/completed/failed)\n- **messages** — channel (email/sms), status (queued/sent/failed), to (string, recipient address)\n- **suppressions** — email, reason (hard_bounce/soft_bounce/complaint/manual/admin), source_provider, active (boolean)\n- **history** — source (notification/tool), event_type, tool, actor, correlation_id, resource_uri, from, to"
           },
           "page": {
             "type": "integer",
