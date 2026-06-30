@@ -148,8 +148,10 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
   -H "Authorization: Bearer nskey_live_..." \
   -H "Content-Type: application/json" \
   -d '{
+    "channel": "email",
     "to": "user@example.com",
     "subject": "Hello from Nitrosend",
-    "html": "<h1>Welcome!</h1>"
+    "html": "<h1>Welcome!</h1>",
+    "body": "Welcome!"
   }'
 ```

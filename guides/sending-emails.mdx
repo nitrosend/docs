@@ -25,9 +25,11 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
   -H "Authorization: Bearer nskey_live_..." \
   -H "Content-Type: application/json" \
   -d '{
+    "channel": "email",
     "to": "user@example.com",
     "subject": "Your receipt",
-    "html": "<h1>Thanks for your purchase</h1>"
+    "html": "<h1>Thanks for your purchase</h1>",
+    "body": "Thanks for your purchase"
   }'
 ```
 

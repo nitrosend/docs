@@ -41,7 +41,8 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
     "channel": "email",
     "to": "user@example.com",
     "subject": "Welcome to our platform",
-    "body": "<h1>Welcome!</h1><p>Thanks for signing up.</p>"
+    "html": "<h1>Welcome!</h1><p>Thanks for signing up.</p>",
+    "body": "Welcome! Thanks for signing up."
   }'
 ```
 
@@ -92,7 +93,8 @@ response = requests.post(f"{BASE_URL}/messages", headers=HEADERS, json={
     "channel": "email",
     "to": "user@example.com",
     "subject": "Hello from Python",
-    "body": "<h1>Hi!</h1>"
+    "html": "<h1>Hi!</h1>",
+    "body": "Hi!"
 })
 print(response.json())
 
@@ -119,7 +121,8 @@ const response = await fetch(`${BASE_URL}/messages`, {
     channel: "email",
     to: "user@example.com",
     subject: "Hello from Node.js",
-    body: "<h1>Hi!</h1>",
+    html: "<h1>Hi!</h1>",
+    body: "Hi!",
   }),
 });
 console.log(await response.json());
@@ -160,10 +163,44 @@ result = nitrosend_request(:post, "/messages", {
   channel: "email",
   to: "user@example.com",
   subject: "Hello from Ruby",
-  body: "<h1>Hi!</h1>"
+  html: "<h1>Hi!</h1>",
+  body: "Hi!"
 })
 puts result
 ```
+
+## Transactional messages
+
+`POST /v1/my/messages` queues a single transactional email or SMS and returns
+the message resource. Delivery happens through Nitrosend's normal background
+sender, so the response means "accepted for sending", not "delivered".
+
+For email, pass `channel: "email"`, `to`, `subject`, and one of `html`,
+`body`, or `template_id`. `body` is plain text; HTML belongs in `html`.
+Optional per-message delivery options are available for email only:
+
+```json
+{
+  "channel": "email",
+  "from": "Acme <hello@example.com>",
+  "to": "user@example.com",
+  "subject": "Your receipt",
+  "html": "<p>Thanks for your purchase.</p>",
+  "body": "Thanks for your purchase.",
+  "reply_to": "support@example.com",
+  "headers": { "X-Entity-Ref-ID": "order_123" },
+  "tags": { "kind": "receipt", "plan": "pro" }
+}
+```
+
+`from` / `from_email` must resolve to a verified sender identity for the brand.
+Reserved provider headers and reserved Nitrosend tag keys are rejected. System
+tags such as `account_id`, `brand_id`, and `message_id` are always controlled by
+Nitrosend.
+
+Pass an `Idempotency-Key` header on retries. Reusing the same key with the same
+payload returns the original message. Reusing the key with a different payload
+returns `409 idempotency_conflict`.
 
 ## Suppressions
 
@@ -240,7 +277,7 @@ List endpoints return paginated results. Pagination headers are included in the 
 | `X-Total-Pages` | Total number of pages |
 | `X-Page-Number` | Current page number |
 
-Use `?page=2&per_page=25` query parameters to navigate pages.
+Use `?page=2&limit=25` query parameters to navigate pages.
 
 ## Error handling
 
