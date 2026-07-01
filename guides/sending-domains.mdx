@@ -1,0 +1,80 @@
+---
+title: Sending Domains
+description: Send from your own subdomain for the best inbox placement
+---
+
+# Sending Domains
+
+By default, Nitrosend sends your email from a shared sandbox domain — great for
+trying things out, but capped and not tied to your brand. Add a sending domain
+you own and your email goes out from **your** address, on Nitrosend's sending
+infrastructure, with higher limits and the best inbox placement. There's no
+separate email provider to wire up.
+
+## Add a sending subdomain
+
+1. Go to **Brand → Domains**.
+2. Under **Add a sending domain**, enter a subdomain you own — for example
+   `send.yourdomain.com`.
+3. Nitrosend generates the DNS records for that subdomain and shows them on screen.
+4. Add those records at your DNS provider (see below). Nitrosend verifies them
+   automatically — once they resolve, the domain flips to **Verified** and becomes
+   available as a send-from address.
+
+## Use a subdomain, not your primary domain
+
+<Warning>
+  Always send from a subdomain (`send.yourdomain.com`), never your bare apex /
+  primary domain (`yourdomain.com`).
+</Warning>
+
+A subdomain **isolates** your marketing and product sending — its DNS records and
+its sending reputation — from the domain that runs your everyday inbox (for
+example Google Workspace or Gmail on `yourdomain.com`).
+
+That matters for two reasons:
+
+- **It keeps your corporate mail untouched.** Your primary domain already has mail
+  authentication set up for your team's inboxes. Sending bulk email from it can
+  interfere with that setup — a subdomain leaves it alone.
+- **It protects your reputation.** Sending volume builds a reputation with inbox
+  providers. Keeping it on a dedicated subdomain means a bad send never drags down
+  the domain your team emails from.
+
+This is the setup inbox providers like Gmail expect from senders.
+
+## Add the DNS records
+
+The **Domains** screen lists the exact records for your subdomain — typically a
+verification record, **SPF**, **DKIM**, and a return-path / tracking record. Add
+each one at your DNS provider (Cloudflare, GoDaddy, Namecheap, Route 53, and so on)
+exactly as shown.
+
+<Info>
+  DNS changes can take anywhere from a few minutes to a couple of days to
+  propagate. Nitrosend re-checks automatically — you don't need to trigger
+  verification manually.
+</Info>
+
+## Route different mail through different subdomains
+
+You can verify more than one subdomain and push different email through each by
+changing the send-from address:
+
+- `hello@news.yourdomain.com` — marketing campaigns
+- `hello@txn.yourdomain.com` — transactional / product email
+
+Splitting sending this way isolates reputation between mail types, so a large
+promotional send can't drag down your receipts and password resets. This is mostly
+useful for **large-volume senders** — most brands are perfectly fine with a single
+subdomain.
+
+## Set a reply-to address
+
+Your send-from address doesn't have to be where replies land. Set a **Reply-To**
+under **Brand → Sender** and replies go to whatever inbox you like — independent of
+the subdomain you send from.
+
+For example, send from `news@send.yourdomain.com` but have replies arrive at
+`hello@yourdomain.com`. The Reply-To can be any mailbox you actually monitor, on
+any domain.

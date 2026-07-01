@@ -56,6 +56,7 @@ export default defineConfig({
             group: "Guides",
             pages: [
               "guides/sending-emails",
+              "guides/sending-domains",
               "guides/managing-contacts",
               "guides/building-flows",
               "guides/creating-campaigns",
