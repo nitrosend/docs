@@ -29,7 +29,7 @@ export default defineConfig({
         groups: [
           {
             group: "Getting Started",
-            pages: ["introduction", "quickstart", "authentication", "pricing"],
+            pages: ["introduction", "quickstart", "agent-onboarding", "authentication", "pricing"],
           },
           {
             group: "MCP Integrations",
