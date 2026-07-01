@@ -1,0 +1,56 @@
+---
+title: Agent Onboarding
+description: How an AI agent connects to Nitrosend and sends its first email — the MCP path, the headless REST path, and the machine-readable skill file
+---
+
+# Agent Onboarding
+
+Nitrosend is built MCP-first, so an AI agent can run the whole email stack — campaigns, flows, contacts, transactional sends, deliverability — as native tools. This page is the human-readable overview. The full, machine-readable onboarding skill lives in a single file your agent can fetch and follow:
+
+<Card title="nitrosend.com/skill.md" icon="robot" href="https://nitrosend.com/skill.md">
+  The canonical agent onboarding skill: vocabulary, all 25 `nitro_*` tools, send modes, the response envelope, the delivery lifecycle, and the headless signup-to-send path. Point your agent here.
+</Card>
+
+## Two ways in
+
+<CardGroup cols={2}>
+  <Card title="MCP (recommended)" icon="plug">
+    Connect the MCP server and the agent gets 25 native tools. Best for Claude, ChatGPT, Cursor, Codex, Gemini, and any MCP client.
+  </Card>
+  <Card title="Headless REST" icon="terminal">
+    For builder stacks with no MCP client (Replit, Lovable, v0, Bolt) or CI runners: sign up, mint a key, and send over plain HTTP.
+  </Card>
+</CardGroup>
+
+## MCP path
+
+One command (or a custom connector) plus OAuth sign-in:
+
+```bash
+claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
+```
+
+Call `nitro_get_status` first for account context, then read the `nitro://guide` resource. Full per-client setup is in the [Quickstart](/quickstart) and [MCP integrations](/integrations/overview).
+
+## Headless path (no dashboard, no MCP client)
+
+<Steps>
+  <Step title="Create an account">
+    `POST /v1/signup` with `{ "user": { "email", "password" } }`. Returns a 15-day JWT in the `Authorization` response header.
+  </Step>
+  <Step title="Mint an API key">
+    `POST /v1/my/api_keys` with that JWT returns `nskey_live_...`. Store it as a secret.
+  </Step>
+  <Step title="Send from the sandbox">
+    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. A new free account sends from the shared sandbox (`<brand>@nitr-o.com`) with no DNS, capped at 50 emails/month. The send is async — poll `GET /v1/my/messages/{id}` for `status`.
+  </Step>
+  <Step title="Go to production">
+    Hand the user two links: a domain verify link (DNS) and the Stripe `checkout_url` from `POST /v1/my/subscription/checkout`. $0 plans need no card.
+  </Step>
+</Steps>
+
+<Info>
+  Node and Python `fetch` / `requests` calls work as-is. Only the bare `Python-urllib` user agent is blocked by the WAF.
+</Info>
+
+For the complete reference, always defer to [nitrosend.com/skill.md](https://nitrosend.com/skill.md) and the [REST API docs](/integrations/rest-api).
