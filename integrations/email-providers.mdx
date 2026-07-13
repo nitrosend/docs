@@ -1,0 +1,58 @@
+---
+title: Email providers (BYO)
+description: Bring your own email provider — send Nitrosend campaigns, flows, and transactional email through SendGrid, Postmark, Resend, Mailgun, or Amazon SES
+---
+
+# Email providers (BYO)
+
+By default, Nitrosend sends your email through its managed infrastructure — no setup required. On paid plans you can instead bring your own provider (BYO): Nitrosend keeps handling composition, audiences, automation, tracking, and suppression, while your own provider account transports the mail.
+
+## Supported providers
+
+| Provider | Credentials needed |
+| --- | --- |
+| [SendGrid](/integrations/sendgrid) | API key |
+| [Postmark](/integrations/postmark) | Server token + account token |
+| [Resend](/integrations/resend) | API key |
+| [Mailgun](/integrations/mailgun) | API key + sending domain |
+| [Amazon SES](/integrations/ses) | Access key ID + secret access key + region |
+
+<Info>
+  BYO sending keys are available on paid plans. On the Free plan you can review the provider screens, but credentials cannot be saved.
+</Info>
+
+## Two ways to connect
+
+**Dashboard:** go to **Integrations**, choose your provider, and enter the credentials. Nitrosend runs a connection test when you save a new integration, and you can re-run **Test connection** from the integration's page at any time.
+
+**MCP (agents):** call `nitro_configure_providers` with `operation: "configure"`. This stores the credentials — it does not test them. To test credentials against the provider, run **Test connection** in the dashboard or call `POST /v1/my/integrations/{id}/test` via the REST API.
+
+```json
+{ "operation": "status" }
+```
+
+`operation: "status"` reports the stored configuration of the brand's **active (primary)** provider — plan gating, domain verification, and sending mode. It does not contact the provider, verify connection health, and it won't show a newly configured provider until that provider is set as primary.
+
+Credentials are stored encrypted and are never returned in tool responses or API payloads.
+
+## Configured, connected, usable
+
+- **Configured** — credentials are saved on the brand's active (primary) integration. Reported by `operation: "status"`.
+- **Connected** — the most recent connection test passed. Shown on the integration's page in the dashboard (and returned by the REST test endpoint).
+- **Usable** — your plan permits BYO sending and nothing blocks it. Reported by `operation: "status"`. It does not check domain verification or connection health.
+
+## Making it the active provider
+
+Your first BYO integration automatically becomes the brand's active email provider. If you connect a second provider (or reconnect after switching), it does **not** take over automatically — open the integration's page and choose **Set as primary** to switch sending to it.
+
+## Sending domains under BYO
+
+Each BYO provider issues its own DNS records for domain authentication. Add and verify your sending domain from **Domains** in the dashboard or with the `nitro_manage_domains` MCP tool — the records returned come from your provider.
+
+<Warning>
+  Changing or rotating a provider's credentials resets that integration's verified sending domains to pending. You'll need to re-verify them before sending resumes on those domains.
+</Warning>
+
+## Which provider?
+
+If you don't have an existing provider relationship, you don't need one — Nitrosend's managed sending works out of the box with automatic warmup. BYO is for teams that already have reputation, volume pricing, or compliance requirements tied to an existing provider account.

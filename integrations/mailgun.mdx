@@ -1,0 +1,57 @@
+---
+title: Mailgun
+description: Send Nitrosend email through your own Mailgun account — BYO Mailgun API key and sending domain setup
+---
+
+# Mailgun
+
+Use your Mailgun account as the sending provider for Nitrosend campaigns, flows, and transactional email. See [Email providers](/integrations/email-providers) for how BYO sending works, plan requirements, and status semantics.
+
+## What you need
+
+- Your Mailgun **API key** (private API key from the Mailgun dashboard).
+- Your Mailgun **sending domain** (the domain you send from in Mailgun, e.g. `mail.yourdomain.com`).
+
+Nitrosend connects to Mailgun's US API endpoint and validates the key by listing your Mailgun domains when it tests the connection.
+
+<Warning>
+  EU-hosted Mailgun accounts are not currently supported — connections use Mailgun's US endpoint.
+</Warning>
+
+## Connect from the dashboard
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Mailgun**.
+3. Enter the API key and sending domain, then save. Nitrosend tests the connection as part of saving a new integration.
+
+## Connect via MCP
+
+<Info>
+  In the MCP tool, the `region` argument carries the Mailgun **sending domain** — not a geographic region.
+</Info>
+
+```json
+{
+  "operation": "configure",
+  "provider": "mailgun",
+  "api_key": "<MAILGUN_API_KEY>",
+  "region": "mail.yourdomain.com"
+}
+```
+
+<Warning>
+  The MCP call stores the credentials without testing them. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the Mailgun integration page in the dashboard, or call `POST /v1/my/integrations/{id}/test` via the REST API.
+</Warning>
+
+## Making it the active provider
+
+If this is your first BYO provider, it becomes the brand's active email provider automatically. If you already had another provider connected, open the integration's page and choose **Set as primary** to switch sending to it.
+
+## Sending domains
+
+After connecting, add your sending domain from **Domains** (or `nitro_manage_domains`). The DNS records returned come from Mailgun's domain verification.
+
+## Troubleshooting
+
+- **Connection test fails** — confirm you're using the private API key, that the key's account can list domains, and that your Mailgun account is US-hosted.
+- **Rotated your key?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.

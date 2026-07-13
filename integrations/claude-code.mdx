@@ -74,7 +74,7 @@ Once connected, Claude Code has access to these tools:
 | `nitro_configure_account` | Sender defaults and test email recipients |
 | `nitro_get_insights` | Email analytics with trends and benchmarks |
 | `nitro_manage_billing` | Plan status and upgrades |
-| `nitro_configure_providers` | BYO email provider (Mailgun, SES) |
+| `nitro_configure_providers` | Configure a [BYO email provider](/integrations/email-providers) or check provider status |
 | `nitro_request_support` | Submit a support request to the Nitrosend team |
 
 For accounts with multiple brands, ask Claude to check `nitro_get_status` first. OAuth sessions can use `nitro_select_brand` to persist the selected brand for this user, OAuth application, and account. API keys are pinned to their key's brand, and `nitro_set_brand_kit` edits Brand Kit identity rather than switching context.

@@ -53,6 +53,26 @@ export default defineConfig({
             pages: ["integrations/rest-api", "integrations/api-reference", "cli/overview", "integrations/vercel-ai-sdk", "integrations/vercel-marketplace"],
           },
           {
+            group: "Email Providers",
+            pages: [
+              "integrations/email-providers",
+              "integrations/sendgrid",
+              "integrations/postmark",
+              "integrations/resend",
+              "integrations/mailgun",
+              "integrations/ses",
+            ],
+          },
+          {
+            group: "Data & Commerce",
+            pages: [
+              "integrations/mailchimp",
+              "integrations/attio",
+              "integrations/hubspot",
+              "integrations/shopify",
+            ],
+          },
+          {
             group: "Guides",
             pages: [
               "guides/sending-emails",

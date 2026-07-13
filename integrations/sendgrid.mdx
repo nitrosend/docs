@@ -1,0 +1,50 @@
+---
+title: SendGrid
+description: Send Nitrosend email through your own SendGrid account — BYO SendGrid API key setup
+---
+
+# SendGrid
+
+Use your SendGrid account as the sending provider for Nitrosend campaigns, flows, and transactional email. See [Email providers](/integrations/email-providers) for how BYO sending works, plan requirements, and status semantics.
+
+## What you need
+
+- A SendGrid API key. Use a **Full Access** key, or a restricted key with **Mail Send**, **Sender Authentication**, and **Inbound Parse** permissions — Nitrosend uses SendGrid's domain authentication and Inbound Parse APIs when you add a sending domain.
+
+<Info>
+  A Mail Send-only key passes the connection test (Nitrosend validates keys against SendGrid's scopes endpoint), but it cannot complete sending-domain setup.
+</Info>
+
+## Connect from the dashboard
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **SendGrid**.
+3. Paste your API key and save. Nitrosend tests the connection as part of saving a new integration.
+
+## Connect via MCP
+
+```json
+{
+  "operation": "configure",
+  "provider": "sendgrid",
+  "api_key": "<SENDGRID_API_KEY>"
+}
+```
+
+<Warning>
+  The MCP call stores the key without testing it. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the SendGrid integration page in the dashboard, or call `POST /v1/my/integrations/{id}/test` via the REST API.
+</Warning>
+
+## Making it the active provider
+
+If this is your first BYO provider, it becomes the brand's active email provider automatically. If you already had another provider connected, open the integration's page and choose **Set as primary** to switch sending to it.
+
+## Sending domains
+
+After connecting, add your sending domain from **Domains** (or `nitro_manage_domains`). The DNS records returned come from SendGrid's domain authentication.
+
+## Troubleshooting
+
+- **"SendGrid API key is invalid"** — the key was rejected by SendGrid. Generate a new key from Settings → API Keys in SendGrid.
+- **Domain setup fails after connecting** — your key is missing the Sender Authentication or Inbound Parse permission. Use a Full Access key or add those scopes.
+- **Rotated your key?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.

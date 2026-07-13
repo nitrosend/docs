@@ -1,0 +1,63 @@
+---
+title: Amazon SES
+description: Send Nitrosend email through your own Amazon SES account — BYO AWS access keys and region setup
+---
+
+# Amazon SES
+
+Use your own Amazon SES account as the sending provider for Nitrosend campaigns, flows, and transactional email. See [Email providers](/integrations/email-providers) for how BYO sending works, plan requirements, and status semantics.
+
+## Managed SES vs BYO SES
+
+Nitrosend's default managed sending already runs on SES — you don't need this integration to use Nitrosend. BYO SES is for teams that want mail to flow through **their own AWS account**: your quotas, your reputation, your region.
+
+## What you need
+
+- An AWS IAM **access key ID** and **secret access key**.
+- The AWS **region** your SES account sends from (e.g. `us-east-1`).
+
+Attach the `AmazonSESFullAccess` and `AmazonSNSFullAccess` managed policies to the IAM user — this is the documented, working setup.
+
+The connection test does more than read your send quota: it also provisions the integration's bounce and complaint feedback pipeline (an SNS topic and an SES configuration set, including reading, updating, and subscribing to the topic), so the IAM user needs SES and SNS management permissions from the very first **Test connection**. Adding a sending domain additionally creates and verifies SES identities.
+
+<Warning>
+  Nitrosend does not publish a least-privilege IAM policy for BYO SES — the integration provisions and manages infrastructure across both SES and SNS, and a hand-trimmed policy will fail the connection test or domain setup in non-obvious ways. Use the managed policies above.
+</Warning>
+
+## Connect from the dashboard
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Amazon SES**.
+3. Enter the access key ID, secret access key, and region, then save. Nitrosend tests the connection as part of saving a new integration.
+
+## Connect via MCP
+
+The tool's generic credential arguments map to the AWS keypair:
+
+```json
+{
+  "operation": "configure",
+  "provider": "ses",
+  "api_key": "<AWS_ACCESS_KEY_ID>",
+  "api_secret": "<AWS_SECRET_ACCESS_KEY>",
+  "region": "us-east-1"
+}
+```
+
+<Warning>
+  The MCP call stores the credentials without testing them. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the SES integration page in the dashboard, or call `POST /v1/my/integrations/{id}/test` via the REST API.
+</Warning>
+
+## Making it the active provider
+
+If this is your first BYO provider, it becomes the brand's active email provider automatically. If you already had another provider connected, open the integration's page and choose **Set as primary** to switch sending to it.
+
+## Sending domains
+
+After connecting, add your sending domain from **Domains** (or `nitro_manage_domains`). The DNS records returned come from SES identity verification in your AWS account.
+
+## Troubleshooting
+
+- **Connection test fails** — the test reads your send quota and provisions feedback infrastructure, so confirm the IAM user carries the policies above and the region matches where your SES identities live. New AWS accounts start in the SES sandbox with restricted sending; request production access in the SES console.
+- **Domain setup fails after connecting** — the IAM policy is missing SES identity permissions (see above).
+- **Rotated your keys?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.
