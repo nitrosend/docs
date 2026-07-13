@@ -1,0 +1,41 @@
+---
+title: Resend
+description: Send Nitrosend email through your own Resend account — BYO Resend API key setup
+---
+
+# Resend
+
+Use your Resend account as the sending provider for Nitrosend campaigns, flows, and transactional email. See [Email providers](/integrations/email-providers) for how BYO sending works, plan requirements, and status semantics.
+
+## What you need
+
+- A Resend API key (from the Resend dashboard → API Keys). The key needs permission to read domains and send email — Nitrosend validates it against Resend's domains endpoint when testing the connection.
+
+## Connect from the dashboard
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Resend**.
+3. Paste your API key and save. Nitrosend tests the connection as part of saving a new integration.
+
+## Connect via MCP
+
+```json
+{
+  "operation": "configure",
+  "provider": "resend",
+  "api_key": "<RESEND_API_KEY>"
+}
+```
+
+<Warning>
+  The MCP call stores the key without testing it. Verify with `{"operation": "status"}` or run **Test connection** from the Resend integration page in the dashboard.
+</Warning>
+
+## Sending domains
+
+After connecting, add your sending domain from **Domains** (or `nitro_manage_domains`). The DNS records returned come from Resend's domain verification.
+
+## Troubleshooting
+
+- **"Resend API key is invalid"** — the key was rejected by Resend. Generate a fresh key with full access (a send-only key can fail the domains check used by the connection test).
+- **Rotated your key?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.

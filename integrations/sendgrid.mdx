@@ -1,0 +1,41 @@
+---
+title: SendGrid
+description: Send Nitrosend email through your own SendGrid account — BYO SendGrid API key setup
+---
+
+# SendGrid
+
+Use your SendGrid account as the sending provider for Nitrosend campaigns, flows, and transactional email. See [Email providers](/integrations/email-providers) for how BYO sending works, plan requirements, and status semantics.
+
+## What you need
+
+- A SendGrid API key. A restricted key with only the **Mail Send** permission is enough — Nitrosend validates keys against SendGrid's scopes endpoint, so least-privilege keys pass the connection test.
+
+## Connect from the dashboard
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **SendGrid**.
+3. Paste your API key and save. Nitrosend tests the connection as part of saving a new integration.
+
+## Connect via MCP
+
+```json
+{
+  "operation": "configure",
+  "provider": "sendgrid",
+  "api_key": "<SENDGRID_API_KEY>"
+}
+```
+
+<Warning>
+  The MCP call stores the key without testing it. Verify with `{"operation": "status"}` or run **Test connection** from the SendGrid integration page in the dashboard.
+</Warning>
+
+## Sending domains
+
+After connecting, add your sending domain from **Domains** (or `nitro_manage_domains`). The DNS records returned come from SendGrid's domain authentication.
+
+## Troubleshooting
+
+- **"SendGrid API key is invalid"** — the key was rejected by SendGrid. Generate a new key (Settings → API Keys in SendGrid) with at least Mail Send permission.
+- **Rotated your key?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.

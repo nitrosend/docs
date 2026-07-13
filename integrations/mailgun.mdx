@@ -1,0 +1,50 @@
+---
+title: Mailgun
+description: Send Nitrosend email through your own Mailgun account — BYO Mailgun API key and sending domain setup
+---
+
+# Mailgun
+
+Use your Mailgun account as the sending provider for Nitrosend campaigns, flows, and transactional email. See [Email providers](/integrations/email-providers) for how BYO sending works, plan requirements, and status semantics.
+
+## What you need
+
+- Your Mailgun **API key** (private API key from the Mailgun dashboard).
+- Your Mailgun **sending domain** (the domain you send from in Mailgun, e.g. `mail.yourdomain.com`).
+- Optional, dashboard only: the Mailgun **EU region** if your Mailgun account lives in the EU.
+
+Nitrosend validates the key by listing your Mailgun domains when it tests the connection.
+
+## Connect from the dashboard
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Mailgun**.
+3. Enter the API key and sending domain (and select the EU region if applicable), then save. Nitrosend tests the connection as part of saving a new integration.
+
+## Connect via MCP
+
+<Info>
+  In the MCP tool, the `region` argument carries the Mailgun **sending domain** — not an AWS-style region. The optional EU region setting is only configurable from the dashboard.
+</Info>
+
+```json
+{
+  "operation": "configure",
+  "provider": "mailgun",
+  "api_key": "<MAILGUN_API_KEY>",
+  "region": "mail.yourdomain.com"
+}
+```
+
+<Warning>
+  The MCP call stores the credentials without testing them. Verify with `{"operation": "status"}` or run **Test connection** from the Mailgun integration page in the dashboard.
+</Warning>
+
+## Sending domains
+
+After connecting, add your sending domain from **Domains** (or `nitro_manage_domains`). The DNS records returned come from Mailgun's domain verification.
+
+## Troubleshooting
+
+- **Connection test fails** — confirm you're using the private API key, and that the key's account can list domains. EU-hosted accounts must set the EU region in the dashboard.
+- **Rotated your key?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.
