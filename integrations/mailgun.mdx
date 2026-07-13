@@ -40,7 +40,7 @@ Nitrosend connects to Mailgun's US API endpoint and validates the key by listing
 ```
 
 <Warning>
-  The MCP call stores the credentials without testing them. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the Mailgun integration page in the dashboard.
+  The MCP call stores the credentials without testing them. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the Mailgun integration page in the dashboard, or call `POST /v1/my/integrations/{id}/test` via the REST API.
 </Warning>
 
 ## Making it the active provider

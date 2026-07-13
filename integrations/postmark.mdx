@@ -34,7 +34,7 @@ The tool's generic credential arguments map to Postmark's two tokens:
 ```
 
 <Warning>
-  The MCP call stores the tokens without testing them. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the Postmark integration page in the dashboard.
+  The MCP call stores the tokens without testing them. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the Postmark integration page in the dashboard, or call `POST /v1/my/integrations/{id}/test` via the REST API.
 </Warning>
 
 ## Making it the active provider

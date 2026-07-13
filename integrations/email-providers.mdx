@@ -25,21 +25,21 @@ By default, Nitrosend sends your email through its managed infrastructure — no
 
 **Dashboard:** go to **Integrations**, choose your provider, and enter the credentials. Nitrosend runs a connection test when you save a new integration, and you can re-run **Test connection** from the integration's page at any time.
 
-**MCP (agents):** call `nitro_configure_providers` with `operation: "configure"`. This stores the credentials — it does not test them. The only way to test credentials against the provider is **Test connection** in the dashboard.
+**MCP (agents):** call `nitro_configure_providers` with `operation: "configure"`. This stores the credentials — it does not test them. To test credentials against the provider, run **Test connection** in the dashboard or call `POST /v1/my/integrations/{id}/test` via the REST API.
 
 ```json
 { "operation": "status" }
 ```
 
-`operation: "status"` reports the stored configuration — which provider is set up, plan gating, domain verification, and sending mode. It does not contact the provider or verify connection health.
+`operation: "status"` reports the stored configuration of the brand's **active (primary)** provider — plan gating, domain verification, and sending mode. It does not contact the provider, verify connection health, and it won't show a newly configured provider until that provider is set as primary.
 
 Credentials are stored encrypted and are never returned in tool responses or API payloads.
 
 ## Configured, connected, usable
 
-- **Configured** — credentials are saved on the integration. Reported by `operation: "status"`.
-- **Connected** — the most recent connection test passed. Shown on the integration's page in the dashboard.
-- **Usable** — the provider resolves as your active sending path (plan allows BYO, no blockers). Reported by `operation: "status"`.
+- **Configured** — credentials are saved on the brand's active (primary) integration. Reported by `operation: "status"`.
+- **Connected** — the most recent connection test passed. Shown on the integration's page in the dashboard (and returned by the REST test endpoint).
+- **Usable** — your plan permits BYO sending and nothing blocks it. Reported by `operation: "status"`. It does not check domain verification or connection health.
 
 ## Making it the active provider
 
