@@ -11,20 +11,23 @@ Use your Mailgun account as the sending provider for Nitrosend campaigns, flows,
 
 - Your Mailgun **API key** (private API key from the Mailgun dashboard).
 - Your Mailgun **sending domain** (the domain you send from in Mailgun, e.g. `mail.yourdomain.com`).
-- Optional, dashboard only: the Mailgun **EU region** if your Mailgun account lives in the EU.
 
-Nitrosend validates the key by listing your Mailgun domains when it tests the connection.
+Nitrosend connects to Mailgun's US API endpoint and validates the key by listing your Mailgun domains when it tests the connection.
+
+<Warning>
+  EU-hosted Mailgun accounts are not currently supported — connections use Mailgun's US endpoint.
+</Warning>
 
 ## Connect from the dashboard
 
 1. Go to **Integrations** in Nitrosend.
 2. Choose **Mailgun**.
-3. Enter the API key and sending domain (and select the EU region if applicable), then save. Nitrosend tests the connection as part of saving a new integration.
+3. Enter the API key and sending domain, then save. Nitrosend tests the connection as part of saving a new integration.
 
 ## Connect via MCP
 
 <Info>
-  In the MCP tool, the `region` argument carries the Mailgun **sending domain** — not an AWS-style region. The optional EU region setting is only configurable from the dashboard.
+  In the MCP tool, the `region` argument carries the Mailgun **sending domain** — not a geographic region.
 </Info>
 
 ```json
@@ -50,5 +53,5 @@ After connecting, add your sending domain from **Domains** (or `nitro_manage_dom
 
 ## Troubleshooting
 
-- **Connection test fails** — confirm you're using the private API key, and that the key's account can list domains. EU-hosted accounts must set the EU region in the dashboard.
+- **Connection test fails** — confirm you're using the private API key, that the key's account can list domains, and that your Mailgun account is US-hosted.
 - **Rotated your key?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.
