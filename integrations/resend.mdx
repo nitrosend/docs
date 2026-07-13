@@ -28,8 +28,12 @@ Use your Resend account as the sending provider for Nitrosend campaigns, flows, 
 ```
 
 <Warning>
-  The MCP call stores the key without testing it. Verify with `{"operation": "status"}` or run **Test connection** from the Resend integration page in the dashboard.
+  The MCP call stores the key without testing it. `{"operation": "status"}` reports stored configuration only — to actually test the credentials, run **Test connection** from the Resend integration page in the dashboard.
 </Warning>
+
+## Making it the active provider
+
+If this is your first BYO provider, it becomes the brand's active email provider automatically. If you already had another provider connected, open the integration's page and choose **Set as primary** to switch sending to it.
 
 ## Sending domains
 

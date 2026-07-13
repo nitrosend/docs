@@ -25,19 +25,25 @@ By default, Nitrosend sends your email through its managed infrastructure — no
 
 **Dashboard:** go to **Integrations**, choose your provider, and enter the credentials. Nitrosend runs a connection test when you save a new integration, and you can re-run **Test connection** from the integration's page at any time.
 
-**MCP (agents):** call `nitro_configure_providers` with `operation: "configure"`. This stores the credentials — it does not test them. To confirm the provider is healthy, run **Test connection** in the dashboard, or check `operation: "status"` for the current configuration state.
+**MCP (agents):** call `nitro_configure_providers` with `operation: "configure"`. This stores the credentials — it does not test them. The only way to test credentials against the provider is **Test connection** in the dashboard.
 
 ```json
 { "operation": "status" }
 ```
 
+`operation: "status"` reports the stored configuration — which provider is set up, plan gating, domain verification, and sending mode. It does not contact the provider or verify connection health.
+
 Credentials are stored encrypted and are never returned in tool responses or API payloads.
 
 ## Configured, connected, usable
 
-- **Configured** — credentials are saved on the integration.
-- **Connected** — the most recent connection test passed.
-- **Usable** — the provider resolves as your active sending path (verified domain, plan allows BYO, no blockers). `operation: "status"` reports all three.
+- **Configured** — credentials are saved on the integration. Reported by `operation: "status"`.
+- **Connected** — the most recent connection test passed. Shown on the integration's page in the dashboard.
+- **Usable** — the provider resolves as your active sending path (plan allows BYO, no blockers). Reported by `operation: "status"`.
+
+## Making it the active provider
+
+Your first BYO integration automatically becomes the brand's active email provider. If you connect a second provider (or reconnect after switching), it does **not** take over automatically — open the integration's page and choose **Set as primary** to switch sending to it.
 
 ## Sending domains under BYO
 

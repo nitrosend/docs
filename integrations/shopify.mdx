@@ -22,7 +22,7 @@ Nitrosend honours the marketing consent recorded in Shopify: customers who opted
 
 ## Store event webhooks
 
-When you connect, Nitrosend automatically registers webhooks on your store for order, refund, product, and customer changes. That activity flows into your contacts' event history, where segments and flow triggers can use it. Nitrosend also handles Shopify's mandatory privacy webhooks (customer data requests and redaction).
+When you connect, Nitrosend automatically registers webhooks on your store for order creation and payment, refunds, product creation/updates/deletion, and customer creation/updates. Every webhook is verified against Shopify's HMAC signature before it is processed. That activity flows into your contacts' event history, where segments and flow triggers can use it. Nitrosend also handles Shopify's mandatory privacy webhooks (customer data requests and redaction).
 
 ## Storefront Web Pixel (optional)
 
@@ -35,7 +35,7 @@ For storefront browsing activity, the integration page shows a read-only **Web P
 3. Click **Connect** and complete the Shopify OAuth flow.
 4. Return to Nitrosend and run **Sync customers**.
 
-The sync runs in the background. You can leave the page while it imports customers, and return to the integration detail page to check progress. Store webhooks keep commerce activity flowing after the initial sync.
+The sync runs in the background — the sync progress tray keeps you updated anywhere in the dashboard, or return to the integration detail page for details. Store webhooks keep commerce activity flowing after the initial sync.
 
 ## After import
 
