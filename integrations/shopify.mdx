@@ -1,0 +1,49 @@
+---
+title: Shopify
+description: Sync Shopify customers into Nitrosend and receive store commerce events for segments and flows
+---
+
+# Shopify
+
+Connect your Shopify store to import customers into Nitrosend and receive commerce activity you can use in segments and automation flows.
+
+## Customer import
+
+The Shopify connector imports:
+
+- Shopify customers as Nitrosend contacts (email and phone where present)
+- Shopify source metadata on the contact
+
+Customers are imported as contacts only — Shopify sync does not create contact lists. Use [segments](/concepts/segments) to build audiences from imported customers and their activity.
+
+## Consent handling
+
+Nitrosend honours the marketing consent recorded in Shopify: customers who opted in to email or SMS marketing in your store are imported as subscribed on that channel; everyone else is imported **unsubscribed by default**.
+
+## Store event webhooks
+
+When you connect, Nitrosend automatically registers webhooks on your store for order, refund, product, and customer changes. That activity flows into your contacts' event history, where segments and flow triggers can use it. Nitrosend also handles Shopify's mandatory privacy webhooks (customer data requests and redaction).
+
+## Storefront Web Pixel (optional)
+
+For storefront browsing activity, the integration page shows a read-only **Web Pixel collector key**. Use this public key as the `collectorKey` setting in the Shopify Web Pixel extension to send storefront events to Nitrosend.
+
+## Connect Shopify
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Shopify** and enter your store domain.
+3. Click **Connect** and complete the Shopify OAuth flow.
+4. Return to Nitrosend and run **Sync customers**.
+
+The sync runs in the background. You can leave the page while it imports customers, and return to the integration detail page to check progress. Store webhooks keep commerce activity flowing after the initial sync.
+
+## After import
+
+- Review imported customers in **Contacts**.
+- Use [segments](/concepts/segments) to build audiences from customer fields and commerce events.
+- Build [flows](/concepts/flows) triggered by store activity.
+- Send only to contacts who are subscribed in Nitrosend.
+
+<Warning>
+  Shopify sync imports customers and receives store events. It does not migrate your Shopify email templates or discount codes, and it does not write data back to Shopify.
+</Warning>

@@ -1,0 +1,41 @@
+---
+title: HubSpot
+description: Sync HubSpot CRM contacts and lists into Nitrosend
+---
+
+# HubSpot
+
+Connect HubSpot to keep CRM contacts and lists synchronized with Nitrosend.
+
+## What syncs
+
+The HubSpot connector imports:
+
+- HubSpot contacts as Nitrosend contacts
+- HubSpot lists as Nitrosend list membership
+- HubSpot source metadata on the contact
+
+HubSpot deals, companies, tickets, and marketing assets are not imported.
+
+## Consent handling
+
+Nitrosend imports HubSpot contacts conservatively: the email channel is **unsubscribed by default**. Keep the CRM record without widening your sendable audience — opt contacts in through your own consent flow before sending marketing email.
+
+## Connect HubSpot
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **HubSpot**.
+3. Click **Connect** and complete the HubSpot OAuth flow.
+4. Return to Nitrosend and run **Sync contacts**.
+
+The sync runs in the background. You can leave the page while it imports contacts and lists, and return to the integration detail page to check progress. Run **Sync contacts** again any time to refresh.
+
+## After import
+
+- Review imported lists in **Contacts > Lists**.
+- Use [segments](/concepts/segments) to build audiences from HubSpot lists and contact fields.
+- Send only to contacts who are subscribed in Nitrosend.
+
+<Warning>
+  HubSpot sync imports contacts and lists. It does not send campaigns, activate automations, or write data back to HubSpot.
+</Warning>

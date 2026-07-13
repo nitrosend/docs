@@ -1,0 +1,41 @@
+---
+title: Attio
+description: Sync Attio people and list membership into Nitrosend
+---
+
+# Attio
+
+Connect Attio to keep people and list membership from your CRM synchronized with Nitrosend.
+
+## What syncs
+
+The Attio connector imports:
+
+- Attio people as Nitrosend contacts (email and phone where present)
+- Attio list membership as Nitrosend list membership
+- Attio source metadata on the contact
+
+Attio notes, tasks, deals, and custom objects are not imported.
+
+## Consent handling
+
+Attio is a CRM, not a marketing-consent system, so Nitrosend imports Attio people conservatively: email and phone channels are **unsubscribed by default**. Keep the contact data without widening your sendable audience — opt contacts in through your own consent flow before sending marketing email.
+
+## Connect Attio
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Attio**.
+3. Click **Connect** and complete the Attio OAuth flow.
+4. Return to Nitrosend and run **Sync contacts**.
+
+The sync runs in the background. You can leave the page while it imports people and list membership, and return to the integration detail page to check progress. Run **Sync contacts** again any time to refresh.
+
+## After import
+
+- Review imported lists in **Contacts > Lists**.
+- Use [segments](/concepts/segments) to build audiences from Attio lists and contact fields.
+- Send only to contacts who are subscribed in Nitrosend.
+
+<Warning>
+  Attio sync imports people and list membership. It does not send campaigns, activate automations, or write data back to Attio.
+</Warning>
