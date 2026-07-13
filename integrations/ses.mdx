@@ -18,7 +18,11 @@ Nitrosend's default managed sending already runs on SES — you don't need this 
 
 Attach the `AmazonSESFullAccess` and `AmazonSNSFullAccess` managed policies to the IAM user — this is the documented, working setup.
 
-The connection test does more than read your send quota: it also provisions the integration's bounce and complaint feedback pipeline (an SNS topic and an SES configuration set), so the IAM user needs SES and SNS management permissions from the very first **Test connection**. Adding a sending domain additionally creates and verifies SES identities. A least-privilege policy is possible, but it must cover quota reads, sending, identity creation and verification, configuration-set management, and SNS topic creation and subscription — anything narrower fails either the connection test or domain setup.
+The connection test does more than read your send quota: it also provisions the integration's bounce and complaint feedback pipeline (an SNS topic and an SES configuration set, including reading, updating, and subscribing to the topic), so the IAM user needs SES and SNS management permissions from the very first **Test connection**. Adding a sending domain additionally creates and verifies SES identities.
+
+<Warning>
+  Nitrosend does not publish a least-privilege IAM policy for BYO SES — the integration provisions and manages infrastructure across both SES and SNS, and a hand-trimmed policy will fail the connection test or domain setup in non-obvious ways. Use the managed policies above.
+</Warning>
 
 ## Connect from the dashboard
 
