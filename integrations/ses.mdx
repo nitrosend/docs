@@ -16,7 +16,9 @@ Nitrosend's default managed sending already runs on SES — you don't need this 
 - An AWS IAM **access key ID** and **secret access key**.
 - The AWS **region** your SES account sends from (e.g. `us-east-1`).
 
-The IAM user needs more than send permission: Nitrosend reads your send quota to test the connection, creates and verifies SES identities when you add a sending domain, manages an SES configuration set for the integration, and creates and subscribes an SNS topic for bounce and complaint feedback. The simplest working policy is `AmazonSESFullAccess` plus `AmazonSNSFullAccess`; a scoped-down policy must cover SES sending, quota, identity, and configuration-set operations along with SNS topic create/subscribe.
+Attach the `AmazonSESFullAccess` and `AmazonSNSFullAccess` managed policies to the IAM user — this is the documented, working setup.
+
+The connection test does more than read your send quota: it also provisions the integration's bounce and complaint feedback pipeline (an SNS topic and an SES configuration set), so the IAM user needs SES and SNS management permissions from the very first **Test connection**. Adding a sending domain additionally creates and verifies SES identities. A least-privilege policy is possible, but it must cover quota reads, sending, identity creation and verification, configuration-set management, and SNS topic creation and subscription — anything narrower fails either the connection test or domain setup.
 
 ## Connect from the dashboard
 
@@ -52,6 +54,6 @@ After connecting, add your sending domain from **Domains** (or `nitro_manage_dom
 
 ## Troubleshooting
 
-- **Connection test fails** — confirm the IAM user can read the SES send quota and the region matches where your SES identities live. New AWS accounts start in the SES sandbox with restricted sending; request production access in the SES console.
-- **Domain or feedback setup fails after connecting** — the IAM policy is missing SES identity/configuration-set or SNS topic permissions (see above).
+- **Connection test fails** — the test reads your send quota and provisions feedback infrastructure, so confirm the IAM user carries the policies above and the region matches where your SES identities live. New AWS accounts start in the SES sandbox with restricted sending; request production access in the SES console.
+- **Domain setup fails after connecting** — the IAM policy is missing SES identity permissions (see above).
 - **Rotated your keys?** Re-entering credentials resets this integration's verified domains to pending — re-verify them from **Domains**.
