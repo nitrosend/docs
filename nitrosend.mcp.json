@@ -1858,7 +1858,7 @@
     {
       "uri": "nitro://providers",
       "name": "providers",
-      "description": "Current email provider configuration and health. Shows whether the account uses Nitrosend's managed SES or a BYO provider (Mailgun, SES), domain verification status for each sending domain, and the active sending mode (sandbox vs production)."
+      "description": "Current email provider configuration and health. Shows whether the account uses Nitrosend's managed SES or a BYO provider (Mailgun, SES, Postmark, Resend, SendGrid), domain verification status for each sending domain, and the active sending mode (sandbox vs production)."
     },
     {
       "uri": "nitro://config",
