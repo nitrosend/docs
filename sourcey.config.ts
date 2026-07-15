@@ -80,6 +80,8 @@ export default defineConfig({
               "guides/managing-contacts",
               "guides/building-flows",
               "guides/creating-campaigns",
+              "guides/agent-inbox",
+              "guides/outreach",
             ],
           },
           {
@@ -90,6 +92,8 @@ export default defineConfig({
               "concepts/flows",
               "concepts/campaigns",
               "concepts/segments",
+              "concepts/agent-inbox",
+              "concepts/outreach",
             ],
           },
         ],

@@ -1,0 +1,49 @@
+---
+title: Agent Inbox
+description: Two-way email on your own domain, answered by your AI agent and your team together
+---
+
+# Agent Inbox
+
+An agent inbox is a real email address on your own domain, like `support@yourcompany.com`, where Nitrosend receives mail, triages it, and lets your AI agent and your team answer it together. Campaigns and flows send email; the inbox is where email comes back.
+
+## Your domain, your existing mail untouched
+
+Inboxes run on your top-level domain, not a subdomain. You point your domain's MX records at Nitrosend, and Nitrosend receives mail for the addresses you claim. Everything else forwards to your existing mail provider untouched: Gmail, Google Workspace, Outlook, Zoho, whatever you use today keeps working exactly as before.
+
+The exact DNS records for your domain are shown in **Settings > Domains**. Once the records verify, your claimed addresses start receiving.
+
+## The action queue
+
+Every inbound message lands in the action queue in one of four states:
+
+- **Needs you** — a human should look at this. Mail lands here when it needs judgment: a mismatched reply-to address, a provider spam flag, or suspicious content in the body.
+- **Agent ready** — clean mail your agent can answer. Passed spam, virus, and authentication checks.
+- **Handled** — resolved items, kept as an audit trail.
+- **Quarantine** — mail that failed security checks or arrived on a disabled inbox. Quarantined mail that failed a virus check can never be released to the agent.
+
+Nitrosend checks every inbound message against provider spam, virus, SPF, DKIM, and DMARC verdicts, and scans the body for prompt-injection attempts aimed at your agent. Flagged content is marked in the queue so a human sees exactly why an item needs attention.
+
+## Inbox vs Campaigns
+
+- **Campaigns and flows** — designed, on-brand email to many people. Templates, sections, pixel-perfect layout.
+- **Inbox** — plain 1:1 human email. No templates, no designer. A reply from your inbox reads like a person wrote it, because the recipient should never feel like a campaign target mid-conversation.
+
+## Replies and new messages
+
+Reply to any thread, or compose a new message from an inbox address. Compose supports multiple To recipients plus Cc and Bcc. Replies thread correctly with the original message, and every outbound message goes through the same sending checks as the rest of your account.
+
+Sending to an address that already has an open conversation continues that thread instead of starting a new one.
+
+## Agent and human, together
+
+Your agent works the queue over MCP:
+
+- `nitro_inbox` — read the queue and mailbox: `list_queue`, `get_item`, `list_mailbox`, `get_thread`, `validate_reply`
+- `nitro_inbox_action` — act on items: `send_reply`, `mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`
+
+The agent answers what it can and escalates with `request_human` when it should not decide alone. Your team works the same queue in the dashboard under **Inbox**, with the same actions. Every disposition is recorded, whoever made it.
+
+## Message source
+
+Every message has a source view: the full stored header map, authentication results (SPF, DKIM, DMARC, spam, virus), and the raw text and HTML content. Open it from any message in a thread when you need to debug delivery or verify where a message really came from.

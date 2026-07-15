@@ -1,0 +1,85 @@
+---
+title: Using the Agent Inbox
+description: Set up an inbox on your domain, triage the queue, reply, and connect your agent
+---
+
+# Using the Agent Inbox
+
+This guide takes you from a verified domain to a working inbox your agent and your team answer together. For what the inbox is and how the queue works, see [Agent Inbox](/concepts/agent-inbox).
+
+## Create an inbox
+
+1. Verify your domain under **Settings > Domains** if you haven't already.
+2. Add the receiving DNS records shown for your domain. Your existing mail keeps flowing to your current provider; Nitrosend only takes the addresses you claim.
+3. Create the inbox: choose the address (for example `support@`) and a display name.
+
+Once DNS verifies, mail to that address lands in your queue.
+
+## Triage the queue
+
+Open **Inbox** in the dashboard. Tabs split the queue by state: **Needs you**, **Agent ready**, **Handled**, **Quarantine**, and **All threads**.
+
+The whole queue works from the keyboard:
+
+| Key | Action |
+|---|---|
+| `j` / `k` | Move down / up the list |
+| `Enter` | Open the thread |
+| `e` | Mark handled |
+| `r` | Reply to the open thread |
+| `c` | Compose a new message |
+| `Esc` | Close the thread |
+
+Each thread shows the conversation timeline, the item's state, and the available actions: **Mark handled**, **Needs human**, **Release to agent**, and **Quarantine**. Virus-flagged mail never offers release to agent.
+
+## Compose a new message
+
+Click **New message** (or press `c`). Choose the sending inbox, add recipients (To, Cc, and Bcc all accept multiple addresses; paste a comma-separated list and it splits into recipients), write a subject and a plain-text body, and send. `Cmd+Enter` sends from the keyboard. Drafts survive closing the composer.
+
+If the recipient already has an open conversation with that inbox, your message continues the existing thread.
+
+## View a message's source
+
+Hover any message in a thread and click the source icon to see the full stored headers, authentication results, and raw text and HTML content.
+
+## Connect your agent
+
+Agents work the queue over MCP with two tools:
+
+```text
+nitro_inbox         list_queue | get_item | list_mailbox | get_thread | validate_reply
+nitro_inbox_action  send_reply | mark_handled | request_human | release_to_agent | mark_quarantine
+```
+
+A typical loop: `list_queue` with `state: "agent_ready"`, `get_item` for the thread, `validate_reply` to check the draft, `send_reply` to answer, and `request_human` for anything the agent should not decide alone.
+
+## REST API
+
+Everything the dashboard does is available over REST:
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /v1/my/inbox_action_items` | List the queue (`state`, `inbox_id` filters) |
+| `POST /v1/my/inbox_action_items/:id/act` | Apply a verb (`mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`) |
+| `GET /v1/my/conversations` | List threads (`mailbox=true`, `inbox_id`, `query`) |
+| `GET /v1/my/conversations/:id` | Thread with messages |
+| `POST /v1/my/conversations` | Compose a new message (`inbox_id`, `to[]`, `cc[]`, `bcc[]`, `subject`, `body`) |
+| `POST /v1/my/conversations/:id/reply` | Reply to a thread |
+| `GET /v1/my/conversations/:id/messages/:message_id/source` | Full headers and source for one message |
+
+Mutating requests take an `Idempotency-Key` header, so a retried request never sends twice:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/conversations \
+  -H "Authorization: Bearer nskey_live_..." \
+  -H "Idempotency-Key: 4f7c1e2a-..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "conversation": {
+      "inbox_id": 12,
+      "to": ["dana@example.com"],
+      "subject": "Kicking off your onboarding",
+      "body": "Hi Dana, welcome aboard. Want me to walk you through your first campaign this week?"
+    }
+  }'
+```
