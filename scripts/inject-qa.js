@@ -51,7 +51,8 @@ const WIDGET_SOURCE = `(function (w, d) {
   'use strict';
 
   var API_BASE = 'https://api.nitrosend.com';
-  var ASK_BASE = 'https://app.nitrosend.com/learning/community/ask';
+  // Learning Centre route (route name my-learn); ask=1 opens the ask flow.
+  var ASK_BASE = 'https://app.nitrosend.com/my/learn';
   var PAGE_KEY_RE = /^\\/[a-z0-9\\-\\/]{0,120}$/;
 
   var CSS = '' +
@@ -107,7 +108,7 @@ const WIDGET_SOURCE = `(function (w, d) {
     var a = el('a', 'nitro-qa-ask', label);
     // pageKey is charset-validated above and URL-encoded here; no other
     // dynamic value ever reaches an attribute.
-    a.href = ASK_BASE + '?page_key=' + encodeURIComponent(pageKey);
+    a.href = ASK_BASE + '?ask=1&page_key=' + encodeURIComponent(pageKey);
     return a;
   }
 

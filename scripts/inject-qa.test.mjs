@@ -309,7 +309,10 @@ test('widget URL-encodes the page_key into the Ask deep link only', async () => 
 
   const links = elementNodes(parts.body).filter((element) => element.tagName === 'A');
   assert.equal(links.length, 1, 'quiet empty state renders exactly one ask link');
-  assert.ok(links[0].href.endsWith('?page_key=' + encodeURIComponent('/guides/sending-emails')), links[0].href);
+  assert.equal(
+    links[0].href,
+    'https://app.nitrosend.com/my/learn?ask=1&page_key=' + encodeURIComponent('/guides/sending-emails')
+  );
 });
 
 test('widget page_key normalization matrix matches the API', async () => {
@@ -326,8 +329,9 @@ test('widget page_key normalization matrix matches the API', async () => {
     await runWidget(parts);
     const links = elementNodes(parts.body).filter((element) => element.tagName === 'A');
     assert.equal(links.length, 1, `${pathname} mounts`);
-    assert.ok(
-      links[0].href.endsWith('?page_key=' + encodeURIComponent(expected)),
+    assert.equal(
+      links[0].href,
+      'https://app.nitrosend.com/my/learn?ask=1&page_key=' + encodeURIComponent(expected),
       `${pathname} -> ${expected} (got ${links[0].href})`
     );
   }
