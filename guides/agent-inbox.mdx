@@ -47,11 +47,11 @@ Hover any message in a thread and click the source icon to see the full stored h
 Agents work the queue over MCP with two tools:
 
 ```text
-nitro_inbox         list_queue | get_item | list_mailbox | get_thread | validate_reply
-nitro_inbox_action  send_reply | mark_handled | request_human | release_to_agent | mark_quarantine
+nitro_inbox         list_queue | get_item | list_mailbox | get_thread | get_thread_page | get_message_body | validate_reply
+nitro_inbox_action  send_reply | send_reply_test | mark_handled | request_human | release_to_agent | mark_quarantine
 ```
 
-A typical loop: `list_queue` with `state: "agent_ready"`, `get_item` for the thread, `validate_reply` to check the draft, `send_reply` to answer, and `request_human` for anything the agent should not decide alone.
+A typical loop: `list_queue` with `state: "agent_ready"`, `get_item` for the thread, follow `get_thread_page` or `get_message_body` when the response provides those continuation calls, `validate_reply` to check the draft, `send_reply_test` to verify an explicit test recipient when needed, `send_reply` to answer, and `request_human` for anything the agent should not decide alone.
 
 ## REST API
 

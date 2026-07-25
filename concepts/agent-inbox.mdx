@@ -43,8 +43,8 @@ Sending to an address that already has an open conversation continues that threa
 
 Your agent works the queue over MCP:
 
-- `nitro_inbox` — read the queue and mailbox: `list_queue`, `get_item`, `list_mailbox`, `get_thread`, `validate_reply`
-- `nitro_inbox_action` — act on items: `send_reply`, `mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`
+- `nitro_inbox` — read the queue and mailbox: `list_queue`, `get_item`, `list_mailbox`, `get_thread`, `get_thread_page`, `get_message_body`, `validate_reply`
+- `nitro_inbox_action` — act on items: `send_reply`, `send_reply_test`, `mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`
 
 The agent answers what it can and escalates with `request_human` when it should not decide alone. Your team works the same queue in the dashboard under **Inbox**, with the same actions. Every disposition is recorded, whoever made it.
 
