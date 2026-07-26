@@ -61,9 +61,11 @@ Some fields are deliberately not mergeable and come back with `merge_tag: null`:
 
 ### Fallbacks and filters
 
-A tag with no value is an error, not a blank: the send fails for that recipient
-rather than delivering "Hi ," to them. Give any field that is not fully populated a
-fallback:
+What happens when a tag has no value depends on the namespace. A `data.*` tag
+with no value is an error, not a blank: the send fails for that recipient rather
+than delivering broken copy. A built-in `contact.*` tag renders as an empty
+string instead — which is how "Hi ," ships. Either way, the answer is the same:
+give any field that is not fully populated a fallback:
 
 ```
 Hi {{ contact.first_name | default: "there" }},
