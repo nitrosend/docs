@@ -31,5 +31,11 @@ curl https://api.nitrosend.com/v1/my/account \
 ```
 
 <Warning>
-  Keep your API keys secret. Never expose them in client-side code or commit them to version control.
+  Keep your secret keys (`nskey_live_…`) secret. Never expose them in client-side code or commit them to version control.
 </Warning>
+
+## Public keys for website forms
+
+There is a second, restricted key type prefixed `wpkey_live_…`. Unlike a secret key, a public key can only create contacts and add them to your lists, so it is safe to embed directly in website source. Use it to collect signups from your site with no server and no exposed secret.
+
+See [Website Signup Forms](/guides/website-signup-forms) for the full setup.

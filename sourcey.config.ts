@@ -78,6 +78,7 @@ export default defineConfig({
               "guides/sending-emails",
               "guides/sending-domains",
               "guides/managing-contacts",
+              "guides/website-signup-forms",
               "guides/building-flows",
               "guides/creating-campaigns",
               "guides/agent-inbox",

@@ -1,0 +1,121 @@
+---
+title: Website Signup Forms
+description: Collect signups from your website straight into a list, with no server and no exposed secret key
+---
+
+# Website Signup Forms
+
+Nitrosend has a built-in website signup form. You copy a snippet, paste it on any website (including no-code site builders like Bandzoogle, Squarespace, or Webflow), and visitor signups land directly on a Nitrosend list. Because the list membership fires your `list_add` flows, a new signup can enter a welcome sequence automatically.
+
+There is no server to build and no secret key to expose. The form authenticates with a **public key** that is designed to live in your website source.
+
+<Info>
+  This is the officially supported way to collect website signups. You do **not** need Zapier, a serverless proxy, or a third-party form tool.
+</Info>
+
+## Where to find it
+
+1. Go to **Contacts** and open the list you want signups to land on (for example, `Newsletter`).
+2. Edit the list. Below the contact toolbar there is a **Website signup form** panel.
+3. On first use the panel auto-creates a public key named `Website Forms` for the brand and reveals it, so the snippet works immediately.
+
+## Public keys vs secret keys
+
+Nitrosend has two kinds of API key. Using the right one is the whole safety story for embedding a form.
+
+| Key | Prefix | Where it belongs | What it can do |
+| --- | --- | --- | --- |
+| **Public (website) key** | `wpkey_live_…` | Safe to ship in website source | Create contacts and add them to your lists, nothing else |
+| **Secret key** | `nskey_live_…` | Server-side only, never in a browser | Full read/write access to your account |
+
+<Warning>
+  Never put a secret key (`nskey_live_…`) in website code. The signup endpoint rejects secret keys on purpose, and the drop-in script and browser SDK both refuse to send with one. Always use the public `wpkey_live_…` key from the Website signup form panel.
+</Warning>
+
+## Copy a snippet
+
+The panel offers three snippet styles. Pick whichever fits your site.
+
+### HTML form + drop-in script
+
+A complete, ready-to-paste form. Good for a plain HTML block on a site builder.
+
+```html
+<!-- Nitrosend signup form -->
+<form data-nitro-form data-list-id="123">
+  <label>Email
+    <input type="email" name="email" required>
+  </label>
+  <label>First name
+    <input type="text" name="first_name">
+  </label>
+  <!-- Honeypot: leave hidden, do not remove -->
+  <input type="text" name="company" tabindex="-1" autocomplete="off"
+         style="position:absolute;left:-9999px" aria-hidden="true">
+  <button type="submit">Subscribe</button>
+  <p data-nitro-message hidden></p>
+</form>
+<script src="https://api.nitrosend.com/nitrosend-forms.js"
+        data-public-key="wpkey_live_…" defer></script>
+```
+
+### Drop-in JS only
+
+Already have your own form markup? Add `data-nitro-form` and `data-list-id="…"` to it, then include just the script tag:
+
+```html
+<script src="https://api.nitrosend.com/nitrosend-forms.js"
+        data-public-key="wpkey_live_…" defer></script>
+```
+
+The script auto-binds any form on the page that carries `data-nitro-form` plus `data-list-id`. It collects the `email`, `first_name`, `last_name`, and `phone` inputs by `name`. Any input with `data-nitro-field="key"` is sent as custom `data[key]`.
+
+### Browser SDK
+
+For React, Vue, or anywhere you bundle JavaScript, use [`@nitrosend/sdk/browser`](/integrations/rest-api):
+
+```ts
+import { createNitrosendPublicClient } from "@nitrosend/sdk/browser";
+
+const nitro = createNitrosendPublicClient({
+  publicKey: "wpkey_live_…",
+});
+
+await nitro.contacts.signup({
+  listId: "123",
+  email,
+  firstName,
+});
+```
+
+## Restrict the form to your domain
+
+Use the **Allowed origins** field in the panel to lock a key to your own site. Enter a comma-separated list of origins, for example:
+
+```
+https://yourdomain.com, https://www.yourdomain.com
+```
+
+Submissions from any other origin are rejected. Leave the field blank to accept signups from any site. You can change origins any time from the panel or the API key edit screen.
+
+## Trigger a welcome sequence
+
+A signup adds the contact to the list you chose, which fires the same `list_add` flow trigger as any other membership change. To greet new subscribers automatically:
+
+1. Build a flow (see [Building Flows](/guides/building-flows)).
+2. Set its trigger to **Add to list** (`list_add`) filtered to your signup list.
+3. Set it live.
+
+Every website signup now enters that flow on its own. No extra wiring.
+
+## Test it
+
+The panel has a **Send a test submission** button. It posts a real entry to the list exactly the way a visitor's browser would, so you can confirm the whole path end to end. Use a throwaway email to avoid polluting your list; the contact appears in the app within seconds.
+
+## Spam protection
+
+Each generated form includes a hidden honeypot field. Bots that fill it are silently dropped, so no contact is created and no flow fires, while real submissions pass through untouched. The endpoint is also rate limited per IP and per key. Leave the hidden honeypot input in place; do not remove it.
+
+## Reference
+
+Under the hood, forms post to `POST /v1/public/contacts` with the public key as a bearer token. `email` and `list_id` are required; `first_name`, `last_name`, `phone`, `source`, and `data` are optional. See the [API Reference](/api) for the full schema and responses.
