@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.3.1"
+    "version": "1.4.0"
   },
   "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
   "capabilities": {
@@ -27,6 +27,7 @@
       "name": "nitro_get_status",
       "description": "Get current account context, sender identity, dashboard links, readiness, onboarding status, and recommendations.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {}
       },
@@ -39,8 +40,9 @@
     },
     {
       "name": "nitro_select_account",
-      "description": "Switch the current Nitrosend account for this OAuth MCP connection. Use when the task is for a different account than the one shown in nitro_get_status. The switch takes effect on the next tool call. API-key connections are pinned to their key's account and cannot switch.",
+      "description": "Switch the current Nitrosend account for this OAuth MCP connection. Use when the task is for a different account than the one shown in nitro_get_status. The switch takes effect on the next tool call. Credential-authenticated connections are pinned to one account and cannot switch.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "account_id": {
@@ -62,8 +64,9 @@
     },
     {
       "name": "nitro_select_brand",
-      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. API-key connections are pinned to one brand and cannot switch.",
+      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. Credential-authenticated connections are pinned to one brand and cannot switch.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "brand_sid": {
@@ -88,6 +91,7 @@
       "name": "nitro_query",
       "description": "Query any Nitrosend entity. Returns paginated results.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "entity": {
@@ -110,7 +114,7 @@
           },
           "filters": {
             "type": "object",
-            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\n\n- **flows** — status (draft/active/paused/archived), campaign_id (integer|null), trigger_event (string), search (string)\n- **campaigns** — status (draft/active/paused/completed), search (string)\n- **templates** — subject (string, ILIKE match on subject line)\n- **segments** — name (string, ILIKE match)\n- **contacts** — query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\n- **lists** — name (string, ILIKE match)\n- **events** — name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\n- **imports** — status (pending/processing/completed/failed)\n- **messages** — channel (email/sms), status (queued/sent/failed), to (string, recipient address)\n- **suppressions** — email, reason (hard_bounce/soft_bounce/complaint/manual/admin), source_provider, active (boolean)\n- **history** — source (notification/tool), event_type, tool, actor, correlation_id, resource_uri, from, to\n- **products** — status (active/draft/archived/deleted), query (string, title/handle match)"
+            "description": "Entity-specific filters. All entities support id (integer) to fetch a single record.\n\n- **flows** — status (draft/live/paused/archived/cancelled), campaign_id (integer|null), trigger_event (string), search (string)\n- **campaigns** — status (draft/scheduled/live/paused/completed/cancelled/archived), search (string)\n- **templates** — subject (string, ILIKE match on subject line)\n- **segments** — name (string, ILIKE match)\n- **contacts** — query (string, full-text search), subscribed_email (boolean), subscribed_phone (boolean), list_id (integer)\n- **lists** — name (string, ILIKE match)\n- **events** — name (string, exact event type), from (ISO 8601 datetime), to (ISO 8601 datetime)\n- **imports** — status (pending/processing/complete/failed/canceled/contact_us)\n- **messages** — channel (email/sms), status (queued/sent/failed), to (string, recipient address)\n- **suppressions** — email, reason (hard_bounce/soft_bounce/complaint/manual/admin), source_provider, active (boolean)\n- **history** — source (notification/tool), event_type, tool, actor, correlation_id, resource_uri, from, to\n- **products** — status (active/draft/archived/deleted), query (string, title/handle match)"
           },
           "page": {
             "type": "integer",
@@ -137,6 +141,7 @@
       "name": "nitro_search_contacts",
       "description": "Search contacts by email, name, or phone. Returns summary list or full profile.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "query": {
@@ -174,8 +179,9 @@
     },
     {
       "name": "nitro_set_brand_kit",
-      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). For local logo files, upload via nitro_ingest first and pass the returned media_url/image_url as logo_url. Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') runs scraping in the background — use when deferred completion is acceptable.",
+      "description": "Set up Brand Kit identity from website URL or direct fields. Provide url to auto-scrape brand colors/fonts, or fields to set values directly, or both (fields override scraped values). For local logo files, upload via nitro_ingest first and pass the returned media_url/image_url as logo_url. Sync mode (default) returns results immediately — best when you need Brand Kit data now for composing. Async mode (mode: 'async') accepts url only and runs scraping in the background — use when deferred completion is acceptable.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "url": {
@@ -218,7 +224,7 @@
               },
               "radius": {
                 "type": "integer",
-                "description": "Global brand corner radius in pixels, 0-64"
+                "description": "Global brand corner radius in pixels, 0-64. Defaults to 8; set 0 for square corners across every eligible layer."
               },
               "spacing_density": {
                 "type": "string",
@@ -260,7 +266,8 @@
           },
           "idempotency_key": {
             "type": "string",
-            "description": "Optional dedup key"
+            "maxLength": 128,
+            "description": "Required for non-dry-run URL scraping or remote logo fetches. Reuse the same key only for an exact retry. Direct fields/document updates may omit it."
           }
         },
         "additionalProperties": false
@@ -276,6 +283,7 @@
       "name": "nitro_ingest",
       "description": "Ingest a local or remote asset into Nitrosend-hosted storage and return URLs you can place directly into email design fields.\nV1 supports kind=image only. Use image_data only for small local/chat-attached images. For larger local image files, call this tool with upload={kind: 'image', filename, content_type, byte_size, checksum} to create a direct upload reservation, PUT bytes to the returned direct_upload.url, then call this tool again with signed_id. Public remote image URLs can be used directly in compose tools when permanence is not required, or passed as image_url here when Nitro-hosted permanence is desired.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "kind": {
@@ -293,6 +301,10 @@
           "signed_id": {
             "type": "string",
             "description": "Upload signed_id returned by this tool's upload reservation after PUTing image bytes to direct_upload.url."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the picture shows, e.g. 'Swimmer at dawn on St Kilda pier, cold light'. Stored with the image so later campaigns can choose it from the brand library, and used as its alt text. Applies to image_data, image_url, signed_id, and upload reservation sources."
           },
           "upload": {
             "type": "object",
@@ -349,21 +361,23 @@
     },
     {
       "name": "nitro_manage_audience",
-      "description": "Create contacts, manage subscriptions, lists, events, segments, and tags.",
+      "description": "Create or update contacts, manage subscriptions, lists, events, segments, and tags. Custom contact fields belong in attributes.data. For more than 100 contact writes, use nitro_import_contacts with CSV.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "operation": {
             "type": "string",
             "enum": [
               "create_contact",
+              "update_contact",
               "set_subscription",
               "manage_list",
               "record_event",
               "delete_segment",
               "bulk_tag"
             ],
-            "description": "Which audience operation to perform. Each operation expects specific params:\n\n- **create_contact** — params: {email (string), phone (string), opt_in (boolean, recommended: true), attributes: {first_name, last_name, country_code, source}}\n- **set_subscription** — params: {contact_id (required), kind: \"email\"|\"phone\" (required), opt_in (boolean), opt_out (boolean), unsubscribe_all (boolean)}. Value auto-resolved from contact.\n- **manage_list** — params: {action: \"create\"|\"rename\"|\"delete\"|\"add_contacts\"|\"remove_contacts\" (required), list_id (integer), name (string), contact_ids (integer[]) or emails (string[])}\n- **record_event** — params: {contact_id or contact_email (one required), event (required, custom names allowed e.g. order_confirmed), data (object, max 32KB), resource_uid, resource_name, resource_url, amount}\n- **delete_segment** — params: {segment_id (required), force (boolean)}. Requires confirm: true.\n- **bulk_tag** — params: {contact_ids (integer[], required), tags (string[], required), tag_action: \"add\"|\"remove\"|\"set\" (default: \"add\")}"
+            "description": "Which audience operation to perform. Each operation expects specific params:\n\n- **create_contact** — params: {email (string), phone (string), opt_in (boolean, recommended: true), attributes: {first_name, last_name, country_code, source, data: {custom_field: value}}}\n- **update_contact** — params: {contact_id or contact_email (exactly one), attributes: {first_name, last_name, country_code, source, data: {custom_field: value}}}. Custom data is merged; omitted, null, and empty-string values do not erase existing values.\n- **set_subscription** — params: {contact_id (required), kind: \"email\"|\"phone\" (required), opt_in (boolean), opt_out (boolean), unsubscribe_all (boolean)}. Value auto-resolved from contact.\n- **manage_list** — params: {action: \"create\"|\"rename\"|\"delete\"|\"add_contacts\"|\"remove_contacts\" (required), list_id (integer), name (string), contact_ids (integer[]) or emails (string[])}\n- **record_event** — params: {contact_id or contact_email (one required), event (required, custom names allowed e.g. order_confirmed), data (object, max 32KB), resource_uid, resource_name, resource_url, amount}\n- **delete_segment** — params: {segment_id (required), force (boolean)}. Requires confirm: true.\n- **bulk_tag** — params: {contact_ids (integer[], required), tags (string[], required), tag_action: \"add\"|\"remove\"|\"set\" (default: \"add\")}"
           },
           "params": {
             "type": "object",
@@ -398,9 +412,233 @@
       }
     },
     {
+      "name": "nitro_manage_outreach",
+      "description": "Plan and operate person-first outreach discovery through one provider-neutral surface.\nStart with action='intent': it returns the full current brand, voice, memory, audience, safety, and target-profile contract. Fill that scaffold, then use estimate before start.\nDiscovery always resolves named people. Companies are targeting and evidence context, never outreach recipients. Provider names, keys, native filters, and cursors are not inputs.\naction='start' requires a stable idempotency_key, qualified-lead target, and maximum USD-cent charge; it creates one campaign and starts its bounded background pipeline. Reusing the same key with changed input is rejected.\nstatus returns a bounded summary and a nitro:// resource for criterion coverage, source progress, spend, funnel, and ready inventory.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "intent",
+              "estimate",
+              "start",
+              "status",
+              "pause",
+              "resume",
+              "cancel"
+            ],
+            "description": "intent, estimate, start, status, pause, resume, or cancel."
+          },
+          "goal": {
+            "type": "string",
+            "description": "Operator's outreach objective. Supply on intent so the returned scaffold is grounded in the actual task."
+          },
+          "name": {
+            "type": "string",
+            "description": "Campaign name. Required for start."
+          },
+          "target_profile": {
+            "type": "object",
+            "required": [
+              "criteria"
+            ],
+            "properties": {
+              "criteria": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "field"
+                  ],
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "Stable criterion name used in coverage and fit findings."
+                    },
+                    "subject": {
+                      "type": "string",
+                      "enum": [
+                        "prospect",
+                        "company",
+                        "signal"
+                      ],
+                      "default": "prospect",
+                      "description": "The evidence subject evaluated by this criterion."
+                    },
+                    "field": {
+                      "type": "string",
+                      "description": "Canonical profile field, such as title, seniority, organization_industry, or organization_employee_range."
+                    },
+                    "operator": {
+                      "type": "string",
+                      "enum": [
+                        "equals",
+                        "includes",
+                        "includes_any",
+                        "in",
+                        "range",
+                        "present"
+                      ],
+                      "default": "equals"
+                    },
+                    "value": {
+                      "description": "Expected scalar, list, or range. Omit only for the present operator."
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "A required unknown or mismatch prevents a person from matching."
+                    },
+                    "weight": {
+                      "type": "number",
+                      "default": 1.0,
+                      "description": "Relative weight for non-required fit ranking."
+                    },
+                    "minimum_confidence": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0
+                    },
+                    "maximum_age_days": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "description": "Optional freshness ceiling for evidence used by this criterion."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "capabilities": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "professional_profiles",
+                "connected_profiles",
+                "community_signals",
+                "hiring_activity"
+              ]
+            },
+            "description": "Optional outcome capabilities returned by intent. Omit to use current defaults. Required capabilities are always included."
+          },
+          "seeds": {
+            "type": "array",
+            "maxItems": 100,
+            "description": "Optional bounded first-party person or company seeds. Supplying a company never makes it an outreach recipient.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "domain": {
+                  "type": "string"
+                },
+                "website_url": {
+                  "type": "string"
+                },
+                "careers_url": {
+                  "type": "string"
+                },
+                "company_name": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "linkedin_url": {
+                  "type": "string"
+                },
+                "source_record_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "seed_artifacts": {
+            "type": "array",
+            "maxItems": 5,
+            "description": "Optional purpose-bound CSV seed manifests uploaded for the current account and brand.",
+            "items": {
+              "type": "object",
+              "required": [
+                "signed_id"
+              ],
+              "properties": {
+                "signed_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "exclusions": {
+            "type": "object",
+            "description": "Optional campaign-local company exclusions. Brand suppressions for customers, active deals, replies, opt-outs, and manual blocks always apply.",
+            "properties": {
+              "company_domains": {
+                "type": "array",
+                "maxItems": 100,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "target_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Maximum number of accepted qualified people to return."
+          },
+          "maximum_spend_cents": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Customer-authorized maximum charge in USD cents. Use the estimate quote unchanged unless the operator narrows the target."
+          },
+          "campaign_id": {
+            "type": "integer",
+            "description": "Required for status, pause, resume, and cancel."
+          },
+          "brand_context_ref": {
+            "type": "string",
+            "description": "Optional current ref returned by intent. A valid ref suppresses repeated inline context; a stale ref returns the fresh full context."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Required for start. Reuse only for an exact retry of the same campaign input."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true,
+        "readOnlyHint": false,
+        "title": "Manage outreach discovery"
+      }
+    },
+    {
       "name": "nitro_define_segment",
       "description": "Define a contact segment with explicit filters and preview. Defaults to preview_only: true (dry preview without saving). Set preview_only: false and provide a name to persist.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "$defs": {
           "filterNode": {
@@ -565,13 +803,14 @@
     },
     {
       "name": "nitro_import_contacts",
-      "description": "Import contacts from inline records (< 100), reserve an authorized CSV upload link, finalize an uploaded signed_id, or process an existing import_id. Email contacts are auto-subscribed by default. For SMS-only contacts, set opt_in: true explicitly (TCPA compliance). For large local CSVs, call this tool with upload={filename, content_type, byte_size, checksum}, PUT bytes to the returned direct_upload.url, then call this tool again with signed_id. Large CSV imports use the same async pipeline as app/API/CLI: up to 250k rows self-serve, with sends held for review above 20k; larger files return contact_sales.",
+      "description": "Import contacts and custom fields from inline records (< 100), reserve an authorized CSV upload link, finalize an uploaded signed_id, or process an existing import_id. New email contacts are auto-subscribed by default; existing subscription state is preserved unless opt_in is explicit. For SMS-only contacts, set opt_in: true explicitly (TCPA compliance). For large local CSVs, call this tool with upload={filename, content_type, byte_size, checksum}, PUT bytes to the returned direct_upload.url, then call this tool again with signed_id. Large CSV imports use the same async pipeline as app/API/CLI: up to 250k rows self-serve, with sends held for review above 20k; larger files return contact_sales.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "records": {
             "type": "array",
-            "description": "Array of contact objects (max 100): {email, phone, first_name, last_name, country_code, source, opt_in}",
+            "description": "Array of contact objects (max 100): {email, phone, first_name, last_name, country_code, source, opt_in, data}. For larger custom-field updates, use the CSV path with columns mapping.",
             "items": {
               "type": "object",
               "properties": {
@@ -593,9 +832,14 @@
                 "source": {
                   "type": "string"
                 },
+                "data": {
+                  "type": "object",
+                  "description": "Custom contact fields. Values use the same merge and field-catalog rules as REST contact writes.",
+                  "additionalProperties": true
+                },
                 "opt_in": {
                   "type": "boolean",
-                  "description": "Subscribe contact for delivery. Defaults to true for email contacts. Must be explicitly true for SMS (TCPA). Set false to import without subscribing."
+                  "description": "Explicitly set subscription state. New email contacts default to subscribed when omitted; existing contacts preserve their current state. Must be explicitly true for SMS (TCPA)."
                 }
               }
             }
@@ -684,8 +928,9 @@
     },
     {
       "name": "nitro_manage_template",
-      "description": "Create, update, or clone a reusable email template. Brand theme applied automatically.\nFor composing new emails to send, use nitro_compose_campaign instead.\nFor edits to existing sections, prefer section_updates: target by section id,\nuse text_patch for exact literal copy changes, and shallow-merge props/styles\nfor visual or non-copy attribute changes. Copy changes and full sections enter\nthe composition contract before persistence.\nNew copy and full redesigns always enter the composition contract before\npersistence. composition_mode=\"intent\" returns the current intent-scoped\nbrand, memory, source, binding, and design context; the calling agent writes\nthe sections, can validate\nwithout persistence, then calls this same tool with\ncomposition_mode=\"draft\". The returned optional_server_authoring_call\nexplicitly requests metered composition_mode=\"generate\", which composes,\nvalidates, and persists one draft only. Contract-loop states return as normal tool\nresults with composition_status and isError=false.\n\nModes (auto-detected):\n\n- **Create/redesign** — complete the returned authoring contract with subject and sections.\n- **Targeted update** — provide template_id + section_updates for an exact mechanical edit. Use if_version for optimistic concurrency.\n- **Clone unchanged** — provide based_on to copy an existing template. Creative overrides enter the authoring contract.\n\nMutation safety: every create, clone, targeted update, and full update\npersistence call requires idempotency_key.\nEvery contract draft next_call carries one stable persistence key; use\nit unchanged through draft repairs and exact persistence retries.\nValidate next_calls may carry rotating validation-round keys. Reuse a\ncontract-free caller key only for an exact retry.",
+      "description": "Create, update, or clone a reusable email template. Brand theme applied automatically.\nFor composing new emails to send, use nitro_compose_campaign instead.\nFor edits to existing sections, prefer section_updates: target by section id,\nuse text_patch for exact literal copy changes, and shallow-merge props/styles\nfor visual or non-copy attribute changes. Copy changes and full sections enter\nthe composition contract before persistence.\nNew copy and full redesigns always enter the composition contract before\npersistence. composition_mode=\"intent\" returns the current intent-scoped\nbrand, memory, source, binding, and design context; the calling agent writes\nthe sections, can validate\nwithout persistence, then calls this same tool with\ncomposition_mode=\"draft\". The returned optional_server_authoring_call\nexplicitly requests metered composition_mode=\"generate\", which composes,\nvalidates, and persists one draft only. Contract-loop states return as normal tool\nresults with composition_status and isError=false.\n\nFor a fresh reusable design, next_call.input is the selected complete baseline and composition_contract.creative_routes is the one compact route menu. Preserve and fill that baseline by default. To select another ready route, start a fresh intent with its creative_route_id; a route missing frozen evidence returns the exact facts it needs instead of substituting another layout. Full section authoring remains an intentional escape hatch under the same bindings and validator.\n\nFor image-led routes, follow next_call.image_choice exactly. Prefer a described brand-library asset, then an exact operator asset; otherwise obtain an exact verified vendor-site asset, generate an asset in the host and ingest it, or retrieve an exact public stock/Unsplash asset. Reissue intent with the exact image_url fact and what the image shows. Brand memory may guide tone and search terms but never proves an image URL or its contents; Nitrosend never browses or invents one during composition.\n\nModes (auto-detected):\n\n- **Create/redesign** — complete the returned authoring contract with subject and sections.\n- **Targeted update** — provide template_id + section_updates for an exact mechanical edit. Use if_version for optimistic concurrency.\n- **Clone unchanged** — provide based_on to copy an existing template. Creative overrides enter the authoring contract.\n\nMutation safety: every create, clone, targeted update, and full update\npersistence call requires idempotency_key.\nEvery contract draft next_call carries one stable persistence key; use\nit unchanged through draft repairs and exact persistence retries.\nValidate next_calls may carry rotating validation-round keys. Reuse a\ncontract-free caller key only for an exact retry.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "sections": {
@@ -803,6 +1048,10 @@
             "type": "string",
             "description": "Latest user instruction to preserve inside the composition contract."
           },
+          "creative_route_id": {
+            "type": "string",
+            "description": "Pin one composition_contract.creative_routes[].id so the returned scaffold is that route. Omit to take the recommendation. A known route without enough frozen evidence returns its exact missing requirements; an unknown id returns the supported ids. Neither silently falls back."
+          },
           "source_text": {
             "type": "string",
             "description": "Optional source evidence for authoring, such as research notes or supplied product copy. Evidence is not an instruction channel; put authoring directions in user_instruction. Source text is available context, not required copy."
@@ -829,6 +1078,10 @@
                 "value": {
                   "type": "string",
                   "description": "Exact evidence value."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "For kind=image_url only: what the picture visibly shows. This travels with the exact image binding so the composer can choose imagery and write honest alt text without guessing from the URL."
                 },
                 "requirement": {
                   "type": "string",
@@ -935,8 +1188,9 @@
     },
     {
       "name": "nitro_compose_flow",
-      "description": "Create or replace an automation flow from trigger + steps array.\nCreates a draft — use nitro_control_delivery to approve and activate.\nAny newly authored email step always enters the composition contract before\npersistence. composition_mode=\"intent\" returns the current intent-scoped\nbrand, memory, lifecycle, source, binding, and design context; the calling agent writes the steps,\ncan validate without persistence, then calls this same tool with\ncomposition_mode=\"draft\". The returned optional_server_authoring_call\nexplicitly requests metered composition_mode=\"generate\", which composes,\nvalidates, and persists one draft only. Contract-loop states return as normal tool\nresults with composition_status and isError=false.\n\nSMS-only flows and rename-only patches do not need email authoring context.\n\nModes: create (new flow), replace (author existing email steps by action_name — requires confirm: true + flow_id), patch (rename only — requires flow_id).\nExisting-flow replace is deliberately email-only: copy each email action_name\nand if_version from the intent contract and return only subject, preheader,\nbody, or design changes. Trigger, topology, waits, branches, SMS, webhooks,\nsender fields, BCC, and all other operational state remain server-owned.\nStep types: email (subject + design or body), sms (body), wait (duration in seconds), split (filters + yes/no branches, nested splits allowed), emit_event (fire event for contact to trigger other flows), webhook (url + optional method/headers/body), subscribe (opt-in contact to channel), unsubscribe (opt-out contact from channel).\n\nMutation safety: create, rename patch, and replace persistence all\nrequire idempotency_key. Use the exact stable key supplied by every\ndraft next_call through repairs and exact persistence retries. Validate\nnext_calls may carry rotating validation-round keys. Reuse a\ncontract-free caller key only for an exact retry.",
+      "description": "Create or replace an automation flow from trigger + steps array.\nCreates a draft — use nitro_control_delivery to approve and activate.\nAny newly authored email step always enters the composition contract before\npersistence. composition_mode=\"intent\" returns the current intent-scoped\nbrand, memory, lifecycle, source, binding, and design context; the calling agent writes the steps,\ncan validate without persistence, then calls this same tool with\ncomposition_mode=\"draft\". The returned optional_server_authoring_call\nexplicitly requests metered composition_mode=\"generate\", which composes,\nvalidates, and persists one draft only. Contract-loop states return as normal tool\nresults with composition_status and isError=false.\n\nFor fresh flow emails, each next_call.input email design uses the selected complete baseline and composition_contract.creative_routes is the one compact route menu. Preserve and fill those email baselines by default while authoring the required flow graph. To select another ready route, start a fresh intent with its creative_route_id; a route missing frozen evidence returns the exact facts it needs instead of substituting another layout. Full section authoring remains an intentional escape hatch under the same bindings and validator.\n\nFor image-led routes, follow next_call.image_choice exactly. Prefer a described brand-library asset, then an exact operator asset; otherwise obtain an exact verified vendor-site asset, generate an asset in the host and ingest it, or retrieve an exact public stock/Unsplash asset. Reissue intent with the exact image_url fact and what the image shows. Brand memory may guide tone and search terms but never proves an image URL or its contents; Nitrosend never browses or invents one during composition.\n\nSMS-only flows and rename-only patches do not need email authoring context.\n\nModes: create (author a complete new graph), replace (author the complete\ngraph of an existing draft; requires confirm, flow_id, and expected_draft_revision_id),\npatch (rename and/or update selected email actions by action_name + if_version).\nA patch preserves every unmentioned node and operational field. Create and\nreplace contracts expose a complete authorable graph: their lifecycle\nscaffold is guidance, not a frozen section count, cadence, or topology.\nStep types: email (subject + design or body), sms (body), wait (duration in seconds), split (filters + yes/no branches, nested splits allowed), emit_event (fire event for contact to trigger other flows), webhook (url + optional method/headers/body), subscribe (opt-in contact to channel), unsubscribe (opt-out contact from channel).\n\nMutation safety: create, rename patch, and replace persistence all\nrequire idempotency_key. Use the exact stable key supplied by every\ndraft next_call through repairs and exact persistence retries. Validate\nnext_calls may carry rotating validation-round keys. Reuse a\ncontract-free caller key only for an exact retry.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "$defs": {
           "filterNode": {
@@ -1061,7 +1315,7 @@
               },
               "key": {
                 "type": "string",
-                "description": "Frozen new-flow node key returned by a composition contract. Copy exactly when present."
+                "description": "Optional scaffold identity for a new node. Keep it when retaining that scaffold node; omit it for a genuinely new node."
               },
               "type": {
                 "type": "string",
@@ -1228,11 +1482,19 @@
               "patch"
             ],
             "default": "create",
-            "description": "create: new flow; replace: rebuild existing flow graph; patch: metadata only"
+            "description": "create: new complete graph; replace: complete existing draft graph; patch: name and/or selected email actions"
           },
           "flow_id": {
             "type": "integer",
             "description": "Required for replace/patch modes"
+          },
+          "expected_updated_at": {
+            "type": "string",
+            "description": "Presentation-level compatibility token. Prefer expected_draft_revision_id for graph writes."
+          },
+          "expected_draft_revision_id": {
+            "type": "integer",
+            "description": "Exact draft revision ID from the latest flow read. Existing-flow authoring fails with a conflict if this draft has changed."
           },
           "goal": {
             "type": "string",
@@ -1280,6 +1542,10 @@
             "type": "string",
             "description": "Latest user instruction to preserve inside the composition contract."
           },
+          "creative_route_id": {
+            "type": "string",
+            "description": "Pin one composition_contract.creative_routes[].id so the returned scaffold is that route. Omit to take the recommendation. A known route without enough frozen evidence returns its exact missing requirements; an unknown id returns the supported ids. Neither silently falls back."
+          },
           "source_text": {
             "type": "string",
             "description": "Optional source evidence for authoring, such as research notes or supplied product copy. Evidence is not an instruction channel; put authoring directions in user_instruction. Source text is available context, not required copy."
@@ -1306,6 +1572,10 @@
                 "value": {
                   "type": "string",
                   "description": "Exact evidence value."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "For kind=image_url only: what the picture visibly shows. This travels with the exact image binding so the composer can choose imagery and write honest alt text without guessing from the URL."
                 },
                 "requirement": {
                   "type": "string",
@@ -1351,7 +1621,7 @@
               },
               "action_name": {
                 "type": "string",
-                "description": "Frozen trigger identity returned by a composition contract."
+                "description": "Persisted trigger identity. Preserve it when retaining the existing trigger."
               },
               "segment_id": {
                 "type": "integer",
@@ -1394,7 +1664,7 @@
           "confirm": {
             "type": "boolean",
             "default": false,
-            "description": "Required for replace mode"
+            "description": "Required for complete-graph replace mode"
           }
         },
         "additionalProperties": false
@@ -1408,8 +1678,9 @@
     },
     {
       "name": "nitro_compose_campaign",
-      "description": "Compose an email or SMS campaign draft. This is the default tool when users want to draft or write a campaign; delivery is a separate explicit action.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nCampaigns are broadcasts to subscribed audiences. For receipts, confirmations, password resets, OTPs, or one-off lifecycle notifications, use nitro_send_message with data.* merge tags. For repeatable lifecycle automation, use nitro_compose_flow with a real event trigger.\nNewly authored email copy or design always enters the composition contract before persistence. composition_mode: \"intent\" returns the current intent-scoped brand, memory, source, binding, and design context. Fill next_call, optionally check it with composition_mode: \"validate\", then persist with composition_mode: \"draft\". Or explicitly use the returned optional_server_authoring_call for metered composition_mode: \"generate\"; Nitrosend then composes, validates, and persists one draft without sending or scheduling. Supplying creative fields without a contract returns that intent contract instead of silently bypassing it.\n\nCloning an existing template without creative overrides preserves its already-authored content and does not require recomposition. State-free dry_run previews and non-creative operational edits do not create a contract.\n\nSMS mode: channel: \"sms\" + body (required)\n\nNitrosend compiles the brief and validates/persists, while the calling\nagent writes the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nEach composition_contract.bindings entry teaches whether a typed value is\nrequired or available, its allowed semantic paths, and its exact\npreferred_reference. Copy that preferred_reference object unchanged when\nusing the binding; only required bindings must appear. SMS campaigns\nare exempt from email composition contracts.\n\nMutation safety: every non-dry-run persistence call requires an\nidempotency_key. Reuse the same key only for an exact retry; changed\ninput with the same key is rejected.",
+      "description": "Compose an email or SMS campaign draft. This is the default tool when users want to draft or write a campaign; delivery is a separate explicit action.\nCreates a draft — use nitro_control_delivery to approve and send.\nModes: create (new campaign), patch (update provided fields on an existing draft campaign), replace (replace draft campaign content/audience/schedule — requires confirm: true + campaign_id). Replace clears omitted audience and schedule instead of preserving stale targeting. Patch/replace cannot change the campaign channel; create a new campaign to switch between email and SMS.\nCampaigns are broadcasts to subscribed audiences. For receipts, confirmations, password resets, OTPs, or one-off lifecycle notifications, use nitro_send_message with data.* merge tags. For repeatable lifecycle automation, use nitro_compose_flow with a real event trigger.\nNewly authored email copy or design always enters the composition contract before persistence. composition_mode: \"intent\" returns the current intent-scoped brand, memory, source, binding, and design context. Fill next_call, optionally check it with composition_mode: \"validate\", then persist with composition_mode: \"draft\". Or explicitly use the returned optional_server_authoring_call for metered composition_mode: \"generate\"; Nitrosend then composes, validates, and persists one draft without sending or scheduling. Supplying creative fields without a contract returns that intent contract instead of silently bypassing it.\n\nFor fresh marketing email, next_call.input is the selected complete baseline and composition_contract.creative_routes is the one compact route menu. Preserve and fill that baseline by default. To select another ready route, start a fresh intent with its creative_route_id; a route missing frozen evidence returns the exact facts it needs instead of substituting another layout. Full section authoring remains an intentional escape hatch under the same bindings and validator.\n\nFor image-led routes, follow next_call.image_choice exactly. Prefer a described brand-library asset, then an exact operator asset; otherwise obtain an exact verified vendor-site asset, generate an asset in the host and ingest it, or retrieve an exact public stock/Unsplash asset. Reissue intent with the exact image_url fact and what the image shows. Brand memory may guide tone and search terms but never proves an image URL or its contents; Nitrosend never browses or invents one during composition.\n\nCloning an existing template without creative overrides preserves its already-authored content and does not require recomposition. State-free dry_run previews and non-creative operational edits do not create a contract.\n\nSMS mode: channel: \"sms\" + body (required)\n\nNitrosend compiles the brief and validates/persists, while the calling\nagent writes the draft. Contract-loop states return as normal tool results\nwith composition_status and isError=false.\nPreserve explicit user constraints: exact copy requests, URLs, offers,\nproduct details, sender fields, audience, schedule, tone, and legal copy.\nEach composition_contract.bindings entry teaches whether a typed value is\nrequired or available, its allowed semantic paths, and its exact\npreferred_reference. Copy that preferred_reference object unchanged when\nusing the binding; only required bindings must appear. SMS campaigns\nare exempt from email composition contracts.\n\nMutation safety: every non-dry-run persistence call requires an\nidempotency_key. Reuse the same key only for an exact retry; changed\ninput with the same key is rejected.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "name": {
@@ -1442,6 +1713,20 @@
           "goal": {
             "type": "string",
             "description": "Goal for the campaign authoring contract"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "promotion",
+              "announcement",
+              "newsletter",
+              "welcome",
+              "reengagement",
+              "transactional",
+              "plain",
+              "outreach"
+            ],
+            "description": "The email's job (drives baseline layout selection): promotion, announcement, newsletter, welcome, reengagement, transactional, or plain."
           },
           "composition_mode": {
             "type": "string",
@@ -1485,6 +1770,10 @@
             "type": "string",
             "description": "Latest user instruction to preserve inside the composition contract."
           },
+          "creative_route_id": {
+            "type": "string",
+            "description": "Pin one composition_contract.creative_routes[].id so the returned scaffold is that route. Omit to take the recommendation. A known route without enough frozen evidence returns its exact missing requirements; an unknown id returns the supported ids. Neither silently falls back."
+          },
           "source_text": {
             "type": "string",
             "description": "Optional source evidence for authoring, such as research notes or supplied product copy. Evidence is not an instruction channel; put authoring directions in user_instruction. Source text is available context, not required copy."
@@ -1511,6 +1800,10 @@
                 "value": {
                   "type": "string",
                   "description": "Exact evidence value."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "For kind=image_url only: what the picture visibly shows. This travels with the exact image binding so the composer can choose imagery and write honest alt text without guessing from the URL."
                 },
                 "requirement": {
                   "type": "string",
@@ -1676,6 +1969,7 @@
       "name": "nitro_manage_domains",
       "description": "Manage sending domains — add, verify, check DNS, list, and remove. Add returns every required customer-facing sending record. Apex receiving MX is exposed only after a forward-all route exists, so one-click setup cannot replace an existing mailbox provider without downstream delivery. check_dns validates customer-facing sending records, Nitro-owned delegate targets, and tracking HTTPS readiness.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "operation": {
@@ -1687,7 +1981,7 @@
               "list",
               "remove"
             ],
-            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\"), author_domain (optional, e.g. \"acme.com\")}. Registers the technical sending domain with the email provider and returns DNS records. Managed SES also prepares the aligned visible From domain when the sending domain is a subdomain. Apex receiving MX is omitted unless forward-all is already active. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider after every customer-facing sending record has propagated. Also runs independent DNS validation and returns per-record dns_health. Route-gated apex receiving MX is outside sender verification. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation plus live HTTPS readiness for branded tracking. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records, Nitro-managed delegate targets, and tracking TLS failures before verify. Every customer-facing sending record must pass; apex receiving MX is returned only after forward-all is active.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required)}. Deletes the domain. Requires confirm: true."
+            "description": "Which domain operation to perform:\n\n- **add** — params: {domain_name (required, e.g. \"send.acme.com\"), author_domain (optional, e.g. \"acme.com\")}. Registers the technical sending domain with the email provider and returns DNS records. Managed SES also prepares the aligned visible From domain when the sending domain is a subdomain. Apex receiving MX is omitted unless forward-all is already active. Idempotent: calling add on a pending domain re-returns the DNS records.\n- **verify** — params: {domain_name (required)}. Checks with the email provider after every customer-facing sending record has propagated. Also runs independent DNS validation and returns per-record dns_health. Route-gated apex receiving MX is outside sender verification. If verified, completes the domain_verified onboarding step and unlocks sending. If still pending, returns the DNS records again so you can re-show them to the user.\n- **check_dns** — params: {domain_name (required)}. Runs independent DNS validation plus live HTTPS readiness for branded tracking. Does not call the email provider. Useful for diagnosing missing or incorrect customer-facing records, Nitro-managed delegate targets, and tracking TLS failures before verify. Every customer-facing sending record must pass; apex receiving MX is returned only after forward-all is active.\n- **list** — no params needed. Returns all account domains with their verification status and DNS records. Includes dns_health, dmarc_policy, domain_limit (from tier), and domains_used count.\n- **remove** — params: {domain_name (required), unpair (optional)}. Deletes the domain. Requires confirm: true. If the domain is paired, the first attempt explains whether its counterpart will also be removed; ask the user to confirm that exact outcome, then retry with unpair: true."
           },
           "params": {
             "type": "object",
@@ -1700,6 +1994,10 @@
               "author_domain": {
                 "type": "string",
                 "description": "Optional visible From domain to authorize for managed SES (e.g. 'acme.com'). Must be the organizational domain of domain_name."
+              },
+              "unpair": {
+                "type": "boolean",
+                "description": "For remove only. After the paired-domain warning has been shown and its exact outcome confirmed, set true to remove the selected domain and tear down its identity pair."
               }
             },
             "additionalProperties": false
@@ -1726,6 +2024,7 @@
       "name": "nitro_configure_account",
       "description": "Read or configure sender defaults (from_name, from_email, reply_to) and test email recipients. Use nitro_get_status for account identity, dashboard links, readiness, and blockers. from_email must be authorized by a verified sending domain.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "from_name": {
@@ -1761,8 +2060,9 @@
     },
     {
       "name": "nitro_review_delivery",
-      "description": "Read-only review of email/SMS content and delivery readiness for templates, flows, and campaigns. Returns validation, spam score for email, SMS segment info, preflight checks, and editor/preview URLs. This never approves delivery and never sends test messages.",
+      "description": "Read-only review of email/SMS content and delivery readiness for templates, flows, and campaigns. Returns validation, spam score for email, SMS segment info, preflight checks, and editor/preview URLs. Flow review requires an exact revision_id. This never approves delivery and never sends test messages.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "target_type": {
@@ -1778,6 +2078,11 @@
             "type": "integer",
             "minimum": 1,
             "description": "Entity ID to review"
+          },
+          "revision_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Required for flows. Exact immutable flow revision to review."
           },
           "contact_id": {
             "type": "integer",
@@ -1802,6 +2107,7 @@
       "name": "nitro_send_test_message",
       "description": "Send a real test message for an existing template, campaign, or flow step.\nSupports email and SMS targets. This never sends to a campaign audience, never approves delivery, and never schedules or launches a campaign.\nFor the common \"send a test of the last campaign\" workflow, pass latest_campaign: true.\nIf a flow has multiple message steps, pass action_id or template_id from nitro_review_delivery review_steps.\nRetry safety: pass the same idempotency_key on retry to avoid duplicate test messages.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "target_type": {
@@ -1833,6 +2139,11 @@
             "minimum": 1,
             "description": "Flow action ID to test when a flow has multiple message steps."
           },
+          "revision_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Required for flow targets. Exact immutable flow revision to test."
+          },
           "channel": {
             "type": "string",
             "enum": [
@@ -1863,14 +2174,15 @@
           },
           "idempotency_key": {
             "type": "string",
-            "description": "Optional deduplication key for retry safety."
+            "minLength": 1,
+            "description": "Required for live test sends. Reuse the same stable key on retry to prevent duplicate delivery."
           }
         },
         "additionalProperties": false
       },
       "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
         "openWorldHint": true,
         "readOnlyHint": false,
         "title": "Send test message"
@@ -1878,8 +2190,9 @@
     },
     {
       "name": "nitro_control_delivery",
-      "description": "Manage delivery lifecycle for flows and campaigns. State: draft -> approve -> live/schedule <> pause, cancel -> archive. Use archive for cleanup history, or delete confirmed never-sent drafts.",
+      "description": "Manage delivery lifecycle for flows and campaigns. State: draft -> approve -> live/schedule <> pause, cancel -> archive. Flow approve/reject/live require exact revision_id; resume never publishes a draft. Use archive for cleanup history, or delete confirmed never-sent drafts.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "target_type": {
@@ -1916,6 +2229,11 @@
             "format": "date-time",
             "description": "Required for schedule operation (ISO 8601 datetime)"
           },
+          "revision_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Required for flow approve, reject, and live. Must be the exact current draft revision. Omit for pause/resume."
+          },
           "confirm_send_to_all": {
             "type": "boolean",
             "description": "Required when making a campaign live or scheduled with audience_type='all_contacts'. Forces an explicit all-subscribed-contacts confirmation."
@@ -1947,6 +2265,7 @@
       "name": "nitro_get_insights",
       "description": "Get email analytics with trends, benchmarks, and recommendations.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "scope": {
@@ -1991,6 +2310,7 @@
       "name": "nitro_configure_providers",
       "description": "Configure BYO email provider credentials or check provider status.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "operation": {
@@ -2041,6 +2361,7 @@
       "name": "nitro_set_memory",
       "description": "Read or update the AI memory document. Operations: read (get current), update (replace entirely), patch (replace a ## section by heading), append (add text to end).",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "operation": {
@@ -2070,7 +2391,9 @@
             "default": false
           },
           "idempotency_key": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 128,
+            "description": "Required for non-dry-run append. Reuse the same key only for an exact retry. Update and patch are set operations and may omit it."
           }
         },
         "required": [
@@ -2088,8 +2411,9 @@
     },
     {
       "name": "nitro_manage_billing",
-      "description": "Manage subscription billing — check plan status, start checkout, poll payment, list plans.\n\n- **status** — no params. Returns current subscription, plan, and account tier.\n- **checkout** — params: {plan_id (required)}. Creates a Stripe Checkout Session URL for the operator to complete payment. The agent CANNOT pay directly — tell the operator to open the URL.\n- **checkout_status** — no params. Poll whether subscription is active after checkout.\n- **plans** — no params. Lists available paid plans with pricing.",
+      "description": "Manage subscription billing and Nitrosend balance — check status, start a human checkout, poll payment, and list plans.\n\n- **status** — no params. Returns current subscription, plan, and account tier.\n- **checkout** — params: {plan_id (required)}. Creates the account provider's human approval URL. The agent CANNOT pay or approve directly — tell the operator to open the URL.\n- **checkout_status** — no params. Poll whether subscription is active after checkout.\n- **plans** — no params. Lists available paid plans with pricing.\n- **add_funds** — params: {amount_cents, currency, idempotency_key}. Creates a one-time checkout URL for the operator. It does not charge.\n- **funding_purchase_status** — params: {purchase_id}. Reads one local Add funds purchase.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "operation": {
@@ -2098,7 +2422,9 @@
               "status",
               "checkout",
               "checkout_status",
-              "plans"
+              "plans",
+              "add_funds",
+              "funding_purchase_status"
             ],
             "description": "Billing operation to perform"
           },
@@ -2109,6 +2435,22 @@
               "plan_id": {
                 "type": "integer",
                 "description": "Plan ID (required for checkout)"
+              },
+              "amount_cents": {
+                "type": "integer",
+                "description": "Integer amount in minor currency units"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Three-letter funding currency"
+              },
+              "idempotency_key": {
+                "type": "string",
+                "description": "Stable key for this Add funds request"
+              },
+              "purchase_id": {
+                "type": "integer",
+                "description": "Local funding purchase ID"
               }
             },
             "additionalProperties": false
@@ -2130,6 +2472,7 @@
       "name": "nitro_send_message",
       "description": "Send a transactional email or SMS to a single recipient immediately.\nNo campaign, no audience, no approval required.\nUse for: receipts, password resets, OTPs, order confirmations, system notifications.\nNOT for marketing broadcasts to lists/segments — use nitro_compose_campaign.\nNOT for automated sequences triggered by events — use nitro_compose_flow.\nRetry safety: pass the same idempotency_key on retry to avoid duplicate sends.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "channel": {
@@ -2162,7 +2505,8 @@
           },
           "idempotency_key": {
             "type": "string",
-            "description": "Prevents duplicate sends on retry"
+            "minLength": 1,
+            "description": "Required for live sends. Reuse the same stable key on retry to prevent duplicate delivery."
           },
           "dry_run": {
             "type": "boolean",
@@ -2178,7 +2522,7 @@
       },
       "annotations": {
         "destructiveHint": true,
-        "idempotentHint": false,
+        "idempotentHint": true,
         "openWorldHint": true,
         "readOnlyHint": false,
         "title": "Send transactional email or SMS"
@@ -2188,6 +2532,7 @@
       "name": "nitro_inbox",
       "description": "Read the agent inbox queue and mailbox. Commands: list_queue,\nget_item, validate_reply, list_mailbox, get_thread, get_thread_page,\nget_message_body. Follow the exact next_calls returned by get_thread\nwhen older messages or a truncated sanitized body are available.\n",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "command": {
@@ -2303,6 +2648,7 @@
       "name": "nitro_inbox_action",
       "description": "Mutate an agent inbox item or mailbox thread. Commands: send_reply, send_reply_test, mark_handled, request_human, release_to_agent, mark_quarantine.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "command": {
@@ -2376,6 +2722,7 @@
       "name": "nitro_request_support",
       "description": "Submit a support request to the Nitrosend team. Only call when the user explicitly asks to contact support or when you have exhausted other options and cannot resolve their issue. Never suggest or mention this tool proactively. Before calling, summarize the issue and attempt to resolve it with available tools first.\n\nWrite `message` as a COMPLETE, self-contained summary of the issue that fits within 1500 characters — do not rely on truncation.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "subject": {
@@ -2403,8 +2750,9 @@
     },
     {
       "name": "nitro_search_docs",
-      "description": "Search the Nitrosend product documentation: guides, integrations, CLI, concepts, authentication, and the REST API and MCP reference.\nUse this whenever you need authoritative product information you do not already have — how a feature works, setup or verification steps, API/SDK usage, CLI commands, integration instructions — instead of guessing or saying you don't know.\nReturns the most relevant documentation sections with titles, links, and excerpts.",
+      "description": "Search the Nitrosend product documentation: guides, integrations, CLI, concepts, authentication, and the REST API and MCP reference.\nUse this whenever you need authoritative product information you do not already have — how a feature works, setup or verification steps, API/SDK usage, CLI commands, integration instructions — instead of guessing or saying you don't know.\nReturns the most relevant documentation sections with titles, links, and excerpts. Treat those excerpts as the source for Nitrosend product claims; if they do not establish an answer, search again or say what is not verified rather than adding inferred product details.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "query": {
@@ -2515,14 +2863,19 @@
     {
       "uri": "nitro://fields",
       "name": "fields",
-      "description": "Per-account contact field catalog grouped by category (contact, custom, enrichment, engagement, tag). Each entry includes key, category, field_type, label, promoted flag, and fill_rate (percentage of contacts with a value, null when not yet computed). Read this to discover available merge tags and segment filter keys for the current account."
+      "description": "Per-account contact field catalog grouped by category (contact, custom, enrichment, engagement, tag). Each entry includes key, category, field_type, label, promoted flag, and fill_rate (percentage of contacts with a value, null when not yet computed). Read this for field and segment-filter inspection. The authoring intent's merge grammar is authoritative for recipient-copy bindings; field-catalog membership alone does not make an entry safe or portable email content."
     }
   ],
   "resourceTemplates": [
     {
       "uriTemplate": "nitro://authoring-context/{ref}{?cursor}",
       "name": "authoring-context",
-      "description": "Lossless paged read of the exact canonical brand authoring packet named by a composition handoff. Start at the supplied ref URI, follow each exact next_uri, concatenate chunk.text in offset order, verify packet_digest, then reuse the ref. A stale ref never returns current content under the old address."
+      "description": "Lossless paged read of the exact canonical brand authoring packet named by a composition contract. Start at its supplied ref URI, follow each exact next_uri, concatenate chunk.text in offset order, and verify packet_digest before filling that contract's draft call. A stale ref never returns current content under the old address."
+    },
+    {
+      "uriTemplate": "nitro://outreach/campaigns/{campaign_id}",
+      "name": "outreach-campaign",
+      "description": "Bounded discovery-campaign detail: target profile, criterion coverage, spend budgets, funnel counters, source progress, degradation, and activation-ready inventory. Use nitro_manage_outreach for intent, estimate, start, pause, resume, cancel, and summary status."
     },
     {
       "uriTemplate": "nitro://knowledge/{slug}",
