@@ -8,14 +8,14 @@ description: How an AI agent connects to Nitrosend and sends its first email —
 Nitrosend is built MCP-first, so an AI agent can run the whole email stack — campaigns, flows, contacts, transactional sends, deliverability — as native tools. This page is the human-readable overview. The full, machine-readable onboarding skill lives in a single file your agent can fetch and follow:
 
 <Card title="nitrosend.com/skill.md" icon="robot" href="https://nitrosend.com/skill.md">
-  The canonical agent onboarding skill: vocabulary, all 25 `nitro_*` tools, send modes, the response envelope, the delivery lifecycle, and the headless signup-to-send path. Point your agent here.
+  The canonical agent onboarding skill: vocabulary, every public `nitro_*` tool, send modes, the response envelope, the delivery lifecycle, and the headless signup-to-send path. Point your agent here.
 </Card>
 
 ## Two ways in
 
 <CardGroup cols={2}>
   <Card title="MCP (recommended)" icon="plug">
-    Connect the MCP server and the agent gets 25 native tools. Best for Claude, ChatGPT, Cursor, Codex, Gemini, and any MCP client.
+    Connect the MCP server and the agent gets the full public tool set. Best for Claude, ChatGPT, Cursor, Codex, Gemini, and any MCP client.
   </Card>
   <Card title="Headless REST" icon="terminal">
     For builder stacks with no MCP client (Replit, Lovable, v0, Bolt) or CI runners: sign up, mint a key, and send over plain HTTP.

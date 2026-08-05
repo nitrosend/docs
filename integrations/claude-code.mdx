@@ -9,7 +9,7 @@ description: Connect Nitrosend to Claude Code via MCP for terminal-based AI emai
 
 ## What is MCP?
 
-**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to 24 email marketing tools — no API wrappers, no middleware, no boilerplate.
+**MCP (Model Context Protocol)** is an open standard that lets AI tools connect to external services. When you add Nitrosend as an MCP server to Claude Code, Claude gets native access to the full public set of email marketing tools — no API wrappers, no middleware, no boilerplate.
 
 ## Setup
 
@@ -54,6 +54,8 @@ Once connected, Claude Code has access to these tools:
 | Tool | What it does |
 |------|-------------|
 | `nitro_get_status` | Account context, sender identity, readiness, and recommendations |
+| `nitro_search_docs` | Search the Nitrosend product documentation |
+| `nitro_select_account` | Switch the current account for OAuth MCP sessions |
 | `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
 | `nitro_ingest` | Ingest assets. V1 supports image via small inline data, public URL, upload reservation, or signed_id |
 | `nitro_manage_template` | Create, update, or clone reusable email templates |
