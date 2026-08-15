@@ -5,7 +5,7 @@
     "name": "nitro",
     "version": "1.5.0"
   },
-  "description": "Multi-channel marketing automation platform. Use nitro_get_status first for current account and brand context, readiness, blockers, warmup, and recommendations. OAuth connections can switch current brand with nitro_select_brand; API-key connections are pinned to their key's brand.",
+  "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -2715,7 +2715,7 @@
     {
       "uri": "nitro://guide",
       "name": "guide",
-      "description": "The platform guide your AI reads before doing anything. Covers Nitrosend vocabulary (contacts, channels, flows, campaigns, templates, segments), the two operating modes (tool-driven and goal-driven), the recommended workflow sequence, volume and tier constraints, and common pitfalls to avoid. Read this first."
+      "description": "Reference guide for unfamiliar Nitrosend vocabulary and workflows. Covers Nitrosend entities (contacts, channels, flows, campaigns, templates, segments), the two operating modes (tool-driven and goal-driven), the recommended workflow sequence, volume and tier constraints, and common pitfalls."
     },
     {
       "uri": "nitro://account",
