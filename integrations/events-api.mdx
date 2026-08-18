@@ -1,0 +1,106 @@
+---
+title: Events API
+description: Send product events to Nitrosend and use their data in automated flows
+---
+
+# Events API
+
+Use `POST /v1/my/events` when an action in your product should start or
+personalize a Nitrosend flow. Your application remains the source of truth:
+Nitrosend does not inspect your database or infer an event schema from
+Supabase, Postgres, or another data store.
+
+## Choose the event contract
+
+For a custom event, you choose the name and the JSON fields in `data`.
+Nitrosend accepts nested JSON objects and arrays; it does not require you to
+map custom attributes to a fixed Klaviyo-style schema.
+
+Keep each event contract stable once a flow uses it. For example, if a flow
+expects `event.order.total`, continue sending that path with the same meaning
+and value type.
+
+Event names must start with a lowercase letter, contain only lowercase
+letters, numbers, and underscores, and be at most 64 characters. The `data`
+object can be at most 32 KB.
+
+Some built-in events have required fields because their supplied flow recipes
+use them. For example:
+
+- `password_reset` requires `data.reset_url`.
+- `order_shipped` requires `data.tracking_url`; `data.carrier` and
+  `data.tracking_number` are optional.
+
+Custom events remain open: their fields are defined by your integration.
+
+## Send an event
+
+The contact must already exist in the current Nitrosend brand. Identify it by
+`contact_id` or `contact_email`, and always supply a stable idempotency key so a
+retry cannot start the same flow twice.
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/events \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: order_8472_paid" \
+  -d '{
+    "event": "order_paid",
+    "contact_email": "jane@example.com",
+    "data": {
+      "order": {
+        "id": "8472",
+        "total": 129.00,
+        "currency": "AUD"
+      },
+      "plan": "pro"
+    }
+  }'
+```
+
+On the first request Nitrosend returns `201 Created`. Replaying the same event
+name and idempotency key for the brand returns the existing event with `200 OK`.
+Use an immutable source event ID for the key; do not reuse a key for changed
+data.
+
+## Use event data in a flow
+
+A flow with the `order_paid` trigger can read the payload under `event`:
+
+```liquid
+Order {{ event.order.id }} for {{ event.order.total }} {{ event.order.currency }}
+```
+
+When a field may be absent, give the email a safe default:
+
+```liquid
+Plan: {{ event.plan | default: "standard" }}
+```
+
+Create and test the event contract before activating the flow. This keeps the
+producer and the email content aligned without requiring Nitrosend to own your
+application schema.
+
+## Supabase and other data stores
+
+Send the event from trusted server-side code after your application commits
+the underlying change. With Supabase, this can be an Edge Function, database
+webhook consumer, or application backend. Keep the Nitrosend API key on the
+server; do not expose it in browser code.
+
+The integration boundary is one explicit envelope:
+
+```json
+{
+  "event": "your_event_name",
+  "contact_id": 123,
+  "data": { "your": "schema" }
+}
+```
+
+Use `contact_email` instead of `contact_id` when your system stores email as
+the shared identifier. If the contact does not exist in the selected brand,
+create or import it before sending the event.
+
+See the [API Reference](/integrations/api-reference) for list, lookup, and
+filter operations on recorded events.
