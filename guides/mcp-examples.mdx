@@ -47,19 +47,29 @@ These examples show the full loop: what you say, what your AI calls, and what co
     },
     "available_brands_truncated": false,
     "account": {
-      "tier": "free",
-      "can_send": true,
-      "domain_verified": false,
-      "using_sandbox": true,
-      "contact_count": 45,
-      "flow_count": 1,
-      "campaign_count": 2
+      "tier": "free"
     },
     "brand": {
       "sid": "8f1e2d3c4b5a69788796a5b4",
       "name": "Acme Co",
       "setup_complete": false,
-      "company_name": "Acme Co"
+      "company_name": "Acme Co",
+      "can_send": false,
+      "domain_verified": false,
+      "contact_count": 45,
+      "flow_count": 1,
+      "campaign_count": 2
+    },
+    "brand_subdomain": {
+      "allocation_status": "active",
+      "status": "not_prepared",
+      "ready": false,
+      "preparation_required": true,
+      "fqdn": "acme-co.nitrosend.com",
+      "apex": "nitrosend.com",
+      "local_part": "hello",
+      "local_part_editable": false,
+      "fqdn_changeable": false
     },
     "billing": {
       "tier": "free",
@@ -69,24 +79,54 @@ These examples show the full loop: what you say, what your AI calls, and what co
         "ai": { "used": 3, "allowance": 20, "mode": "monthly" }
       }
     },
-    "warmup": {
-      "active": true,
-      "domain_age_days": 0,
-      "daily_limit": 50,
-      "sends_today": 0,
-      "remaining_today": 50
+    "delivery": {
+      "assessment_scope": "sender_capacity",
+      "admission_status": "denied",
+      "commercial_capacity": {
+        "status": "known",
+        "limit": 50,
+        "reserved": 0,
+        "accepted": 12,
+        "provider_unknown": 0,
+        "remaining": 38
+      },
+      "identity_capacity": {
+        "status": "unknown",
+        "limit": 0,
+        "reserved": 0,
+        "accepted": 0,
+        "provider_unknown": 0,
+        "remaining": 0
+      },
+      "brand_subdomain_capacity": {
+        "status": "not_applicable",
+        "limit": null,
+        "reserved": 0,
+        "accepted": 0,
+        "provider_unknown": 0,
+        "remaining": null
+      },
+      "pacing_state": {
+        "status": "ready",
+        "policy_version": "delivery-pacing-v2",
+        "scopes": []
+      },
+      "blocking_control": "sender_identity",
+      "reason_code": "sender_not_ready"
     },
     "issues": [
       {
-        "area": "brand_kit",
-        "severity": "warning",
-        "message": "Physical address not set — required for campaign approval (CAN-SPAM)",
-        "how_to_fix": "Use nitro_set_brand_kit to set physical_address"
+        "area": "domain",
+        "severity": "high",
+        "message": "No ready sending identity. Prepare your reserved Nitrosend brand subdomain, or verify a custom domain.",
+        "brand_subdomain_status": "not_prepared",
+        "brand_subdomain_preparation_required": true,
+        "blocks": "campaign approval and live sends"
       }
     ],
     "recommendations": [
       { "action": "Set physical address", "tool": "nitro_set_brand_kit" },
-      { "action": "Verify a sending domain", "tool": "nitro_manage_domains" }
+      { "action": "Prepare or verify a sending identity", "tool": "nitro_manage_domains" }
     ]
   },
   "meta": {
@@ -96,7 +136,12 @@ These examples show the full loop: what you say, what your AI calls, and what co
 }
 ```
 
-**What happens next:** The AI reads the issues and recommendations, then calls `nitro_set_brand_kit` to fix the physical address — no extra prompting needed.
+**What happens next:** The AI reads the structured identity state and asks to
+prepare the permanently reserved sender or connect a customer-owned domain. For
+the Nitrosend path it calls `nitro_manage_domains` with
+`operation: "prepare_brand_subdomain"`, polls status, and then calls
+`operation: "select_brand_subdomain"` to select the ready sender explicitly.
+Preparation retains no email.
 
 For accounts with multiple brands, switch context before making changes:
 

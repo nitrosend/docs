@@ -41,11 +41,14 @@ Call `nitro_get_status` first for account context, then read the `nitro://guide`
   <Step title="Mint an API key">
     `POST /v1/my/api_keys` with that JWT returns `nskey_live_...`. Store it as a secret.
   </Step>
-  <Step title="Send from the sandbox">
-    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. A new free account sends from the shared sandbox (`<brand>@nitr-o.com`) with no DNS, capped at 50 emails/month. The send is async — poll `GET /v1/my/messages/{id}` for `status`.
+  <Step title="Prepare the reserved sender">
+    Get the brand SID from `GET /v1/my/brands`, then call `POST /v1/my/brands/{sid}/prepare_sending`. Account creation reserves only the protected `<brand>.nitrosend.com` name; this explicit call creates its DNS, DKIM, provider identity, and tenant resources asynchronously. Poll the brand until `brand_subdomain.ready` is `true`, then select a From local part with `PATCH /v1/my/brands/{sid}` and `{ "sender_local_part": "hello" }`.
   </Step>
-  <Step title="Go to production">
-    Hand the user two links: a domain verify link (DNS) and the Stripe `checkout_url` from `POST /v1/my/subscription/checkout`. $0 plans need no card.
+  <Step title="Send once ready">
+    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. If an eligible first send starts preparation instead, the API returns a retryable `sender_identity_provisioning` response and stores no message; retry the same request only after readiness and explicit sender selection.
+  </Step>
+  <Step title="Choose optional production upgrades">
+    A customer-owned sending subdomain builds portable reputation and never consumes the reserved Nitrosend brand-subdomain sender. Paid plans and checkout remain optional; `$0` plans need no card.
   </Step>
 </Steps>
 

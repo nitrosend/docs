@@ -1,15 +1,33 @@
 ---
 title: Sending Domains
-description: Send from your own subdomain for the best inbox placement
+description: Prepare your reserved Nitrosend sender or connect a customer-owned sending subdomain
 ---
 
 # Sending Domains
 
-By default, Nitrosend sends your email from a shared sandbox domain — great for
-trying things out, but capped and not tied to your brand. Add a sending domain
-you own and your email goes out from **your** address, on Nitrosend's sending
-infrastructure, with higher limits and the best inbox placement. There's no
-separate email provider to wire up.
+Every brand permanently reserves one protected address under
+`<brand>.nitrosend.com`. Reserving the name is cheap: Nitrosend creates no DNS,
+DKIM, provider identity, tenant, or background job until you explicitly choose
+**Prepare sender** or make an eligible first API/MCP send attempt. That first
+attempt can start preparation, but it returns a retryable response and stores
+no email.
+
+You can instead add a sending domain you own. Your email then goes out from
+**your** address on Nitrosend's infrastructure, and the reputation you build is
+portable with your domain. There's no separate email provider to wire up.
+
+## Prepare the Nitrosend sender
+
+1. Go to **Brand → Domains**.
+2. Review the reserved `<brand>.nitrosend.com` address and choose **Prepare sender**.
+3. Wait while Nitrosend independently verifies DNS, DKIM, provider ownership,
+   and tenant association.
+4. When the identity is **Ready**, choose the visible local part, such as
+   `hello`, and explicitly select it.
+
+Preparation never selects a sender, queues a message, or sends email. The
+reserved FQDN cannot be renamed in this release. A Nitrosend brand-subdomain
+sender also does not consume your customer-domain allowance.
 
 ## Add a sending subdomain
 
@@ -78,3 +96,16 @@ the subdomain you send from.
 For example, send from `news@send.yourdomain.com` but have replies arrive at
 `hello@yourdomain.com`. The Reply-To can be any mailbox you actually monitor, on
 any domain.
+
+## How sending capacity grows
+
+Each effective sending identity has its own capacity history. Headroom grows
+only from matured, clean delivered volume on that exact identity—not from
+account age, subscription age, payment, list imports, validation, or time
+passing. A new customer domain therefore begins with its own observed history;
+volume from a `nitrosend.com` brand-subdomain sender is never transferred to it.
+
+Commercial plan capacity, identity capacity, provider limits, and delivery
+pacing are separate inputs to one admission decision. The API, MCP status, and
+review responses report the binding result; clients should not calculate a
+private limit from plan names.
