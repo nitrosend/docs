@@ -125,9 +125,12 @@ Prefer to set things up manually? Here's the traditional path.
 
 Sign up at [app.nitrosend.com](https://app.nitrosend.com) and complete the onboarding wizard. This sets up your brand colors, logo, and sending domain.
 
-### 2. Verify your domain
+### 2. Prepare a sender
 
-Add the DNS records shown in **Brand > Domains** to authenticate your sending domain. This ensures your emails land in the inbox, not spam.
+In **Brand > Domains**, prepare the protected Nitrosend address reserved for
+your brand, or add the DNS records for a customer-owned sending subdomain. The
+brand-subdomain address uses no provider resources until you choose **Prepare sender**.
+When it is ready, select its From address explicitly.
 
 ### 3. Import contacts
 
@@ -151,11 +154,19 @@ If you prefer to integrate programmatically, grab your API key from **Brand > AP
 curl -X POST https://api.nitrosend.com/v1/my/messages \
   -H "Authorization: Bearer nskey_live_..." \
   -H "Content-Type: application/json" \
+  -H "Idempotency-Key: welcome-user-123" \
   -d '{
     "channel": "email",
     "to": "user@example.com",
     "subject": "Hello from Nitrosend",
     "html": "<h1>Welcome!</h1>",
     "body": "Welcome!"
-  }'
+}'
 ```
+
+Live email requires one ready, selected sender. Prepare the reserved Nitrosend
+brand-subdomain sender with `POST /v1/my/brands/{sid}/prepare_sending`, or
+verify a domain you own. If an eligible first request starts brand-subdomain
+preparation, the API returns
+`sender_identity_provisioning` and stores no message; retry the same
+idempotency key after readiness and selection.

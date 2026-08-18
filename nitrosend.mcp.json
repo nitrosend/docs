@@ -356,7 +356,7 @@
     },
     {
       "name": "nitro_manage_audience",
-      "description": "Create or update contacts, manage subscriptions, lists, events, segments, and tags. Custom contact fields belong in attributes.data. For more than 100 contact writes, use nitro_import_contacts with CSV.",
+      "description": "Create or update contacts, manage subscriptions, lists, events, segments, tags, and explicit prepaid email validation. Custom contact fields belong in attributes.data. For more than 100 contact writes, use nitro_import_contacts with CSV.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -370,9 +370,10 @@
               "manage_list",
               "record_event",
               "delete_segment",
-              "bulk_tag"
+              "bulk_tag",
+              "validate"
             ],
-            "description": "create_contact: email/phone, attributes, opt_in; update_contact: contact_id/contact_email, attributes; set_subscription: contact_id, kind, opt_in/opt_out/unsubscribe_all; manage_list: action, list_id/name, contact_ids/emails; record_event: contact_id/contact_email, event, data; delete_segment: segment_id, force; bulk_tag: contact_ids, tags, tag_action. Deletion requires confirm."
+            "description": "Choose one audience operation. validate accepts exactly one of contact_channel_ids, contact_ids, list_id, or segment_id. Dry-run quotes without mutation; execution needs idempotency_key and prepaid funds. Deletion needs confirm."
           },
           "params": {
             "type": "object",
@@ -1900,7 +1901,7 @@
     },
     {
       "name": "nitro_manage_domains",
-      "description": "Add, verify, diagnose, list, or remove sending domains. Add returns customer DNS records; check_dns validates DNS and tracking HTTPS. Receiving MX appears only after forward-all exists, protecting the active mailbox provider.",
+      "description": "Prepare or select the Nitrosend brand-subdomain sender, or add, verify, diagnose, list, and remove customer sending domains. Receiving MX appears only after forward-all exists.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1908,13 +1909,15 @@
           "operation": {
             "type": "string",
             "enum": [
+              "prepare_brand_subdomain",
+              "select_brand_subdomain",
               "add",
               "verify",
               "check_dns",
               "list",
               "remove"
             ],
-            "description": "add, verify, check_dns, list, or remove; remove requires confirm."
+            "description": "prepare_brand_subdomain starts idempotent asynchronous preparation; poll nitro_get_status.\nselect_brand_subdomain selects a ready sender with optional local_part and apex.\nadd registers a customer domain and returns required DNS records.\nverify checks provider and DNS readiness. check_dns diagnoses DNS and tracking HTTPS only.\nlist returns domains, readiness, records, DMARC, and allowance use.\nremove requires domain_name and confirm; retry paired removal with unpair after showing its effect."
           },
           "params": {
             "type": "object",
@@ -1922,15 +1925,23 @@
             "properties": {
               "domain_name": {
                 "type": "string",
-                "description": "Technical sending domain to manage (e.g. 'send.acme.com'). Required for add, verify, remove."
+                "description": "Customer sending domain for add, verify, check_dns, or remove."
               },
               "author_domain": {
                 "type": "string",
-                "description": "Optional visible From domain to authorize for managed SES (e.g. 'acme.com'). Must be the organizational domain of domain_name."
+                "description": "Optional aligned visible From domain for Nitrosend SES."
+              },
+              "local_part": {
+                "type": "string",
+                "description": "Optional brand-subdomain From local part."
+              },
+              "apex": {
+                "type": "string",
+                "description": "Optional prepared Nitrosend sending apex."
               },
               "unpair": {
                 "type": "boolean",
-                "description": "For remove only. After the paired-domain warning has been shown and its exact outcome confirmed, set true to remove the selected domain and tear down its identity pair."
+                "description": "Confirm removal of the domain's identity pair."
               }
             },
             "additionalProperties": false
@@ -1956,7 +1967,7 @@
     },
     {
       "name": "nitro_configure_account",
-      "description": "Read or configure sender defaults and test recipients. Use nitro_get_status for readiness; from_email must be authorized by a verified sending domain.",
+      "description": "Read or configure sender defaults and test recipients. Use nitro_get_status for readiness; from_email explicitly selects an authorized, ready, brand-owned sending identity.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1967,7 +1978,7 @@
           },
           "from_email": {
             "type": "string",
-            "description": "Visible From address. May use the apex domain when an aligned sending subdomain authorizes it."
+            "description": "Exact visible From address to select. May use the apex when a ready aligned sending subdomain authorizes it."
           },
           "reply_to": {
             "type": "string",
@@ -2735,7 +2746,7 @@
     {
       "uri": "nitro://providers",
       "name": "providers",
-      "description": "Current email provider configuration and health. Shows whether the account uses Nitrosend's managed SES or a BYO provider (Mailgun, SES, Postmark, Resend, SendGrid), domain verification status for each sending domain, and the active sending mode (sandbox vs production)."
+      "description": "Current email transport configuration and health. Shows whether delivery uses Nitrosend SES or a connected provider (Mailgun, SES, Postmark, Resend, SendGrid), domain verification status for each sending domain, and the explicitly selected sending identity."
     },
     {
       "uri": "nitro://config",

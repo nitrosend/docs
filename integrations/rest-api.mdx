@@ -212,6 +212,43 @@ source feedback event.
 Common filters include `email`, `reason`, `source_provider`, and `active=false`
 for expired suppressions.
 
+## Delivery capacity
+
+`GET /v1/my/delivery/status` returns the current Brand's read-only delivery
+projection: commercial, exact-sender, and Nitrosend brand-subdomain capacity,
+plus pacing and a bounded public reason/remediation. This endpoint never
+authorizes or reserves a send. The actual send still passes through the single
+delivery authority, so clients must not calculate headroom from a plan name.
+
+## Explicit prepaid validation
+
+Email validation is never included or triggered by import, schedule, or send.
+Quote exactly one current-Brand audience first:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/validation_operations/quote \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"list_id": 42}'
+```
+
+After inspecting the candidate counts, funding state, and maximum prepaid
+charge, start the durable operation with a stable idempotency key:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/validation_operations \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: validation-list-42-2026-08" \
+  -d '{"list_id": 42}'
+```
+
+The request must contain exactly one of `contact_channel_ids`, `contact_ids`,
+`list_id`, or `segment_id`. Reusing the key with the same audience returns or
+resumes the same operation; changing the audience conflicts. Poll the operation
+and list its retained per-candidate items. Validation does not prove consent or
+increase sender capacity.
+
 ## Endpoint reference
 
 | Action | Method | Endpoint |
@@ -221,6 +258,13 @@ for expired suppressions.
 | List messages | `GET` | `/messages` |
 | **Suppressions** | | |
 | List suppressions | `GET` | `/suppressions` |
+| **Delivery** | | |
+| Get capacity and pacing status | `GET` | `/delivery/status` |
+| **Email validation** | | |
+| Quote validation | `POST` | `/validation_operations/quote` |
+| Start or resume validation | `POST` | `/validation_operations` |
+| Get validation operation | `GET` | `/validation_operations/{id}` |
+| List validation results | `GET` | `/validation_operations/{id}/items` |
 | **Campaigns** | | |
 | List campaigns | `GET` | `/campaigns` |
 | Create campaign | `POST` | `/campaigns` |
