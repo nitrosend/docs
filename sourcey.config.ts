@@ -88,6 +88,7 @@ export default defineConfig({
           {
             group: "Concepts",
             pages: [
+              "concepts/glossary",
               "concepts/contacts",
               "concepts/templates",
               "concepts/flows",

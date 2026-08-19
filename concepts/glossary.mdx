@@ -1,0 +1,240 @@
+---
+title: Glossary
+description: What every word in the Nitrosend dashboard means, grouped by where you find it
+---
+
+# Glossary
+
+Nitrosend has its own vocabulary, and you meet most of it in the left sidebar. This page defines those words in the order you run into them, so you can look up a screen you are staring at rather than guess a search term.
+
+Each entry says what the thing *is*. Where there is more to know, it links to the page that covers the behaviour in depth.
+
+If you drive Nitrosend through an AI agent, this page is also a translation table: the agent talks about campaigns, flows, lists and segments because those are the same objects you see on screen.
+
+## The sidebar
+
+These are the top-level areas, in the order they appear.
+
+| Term | What it is |
+| --- | --- |
+| **Home** | The dashboard landing screen: recent sending, quick stats, and what needs attention. |
+| **Setup** | A checklist that walks you through getting an account ready to send. It shows a percentage, moves down the sidebar as you progress, and disappears once complete. See [Setup Center](#setup-center). |
+| **Campaigns** | One-time sends to a chosen audience — a newsletter, an announcement, a reminder. More in [Campaigns](/concepts/campaigns). |
+| **Flows** | Automated sequences that run on a trigger rather than on a date, like a welcome series. More in [Flows](/concepts/flows). |
+| **Templates** | Reusable email designs you can start a campaign or flow step from. Carries a **New** chip. More in [Templates](/concepts/templates). |
+| **Inbox** | A shared mailbox where replies to your sending land and your AI agent can draft answers. Currently in beta, so the tab may show a **Beta** chip until it is switched on for your account. More in [Agent Inbox](/concepts/agent-inbox). |
+| **Outreach** | Finding new leads and sending them a sequence, as opposed to emailing people you already have. Marked **Soon** while it rolls out. More in [Outreach](/concepts/outreach). |
+| **Activity** | The record of what actually went out and what happened to it. See [Activity and the Send Log](#activity-and-the-send-log). |
+| **Contacts** | Everyone you can email, plus the ways of grouping them. See [Audiences](#audiences-contacts-lists-segments-and-saved-views). |
+| **Clients** | For agencies managing separate accounts on behalf of their own customers. Only appears if your account is set up for managed clients. |
+| **Brand** | Everything that defines who an email comes from and what it looks like. See [Brand](#brand-who-your-email-comes-from). |
+| **Integrations** | Connections to other tools — your email provider, CRM, or store. See [Integrations](#integrations). |
+| **Learning Center** | Guides and walkthroughs inside the app. |
+| **Affiliates** | Your referral dashboard. Only appears if you are on the affiliate program. |
+
+### Brand switcher
+
+The control at the top of the sidebar that swaps which **brand** you are working in. Everything below it — campaigns, contacts, templates, domains — belongs to the brand you have selected.
+
+### Setup Center
+
+The **Setup** entry, expanded. Five steps, tracked as a percentage:
+
+- Set up your Brand Kit
+- Verify your sending domain
+- Choose your plan
+- Connect your AI agent
+- Import your subscribers
+
+Setup moves around on purpose: it sits above Home while you are getting started, drops to the bottom of the sidebar once the essentials are done, and disappears once everything is complete.
+
+## Account, brand, plan
+
+**Account** is the thing that gets billed and that people log into. **Brand** sits inside an account: a separate sending identity with its own logo, colors, sending domain, contacts and campaigns. One account can hold several brands, which is how agencies keep clients apart.
+
+Your **plan** is shown as a label next to your name in the sidebar — **Free**, **Pro**, **Ultra**, or **Enterprise**. It governs your monthly email allowance and how many brands you can create.
+
+## Audiences: contacts, lists, segments and saved views
+
+This is the vocabulary people mix up most, because there are three different ways to group the same contacts and only two of them can be sent to.
+
+**Contact** — one person you can email. Contacts carry an email address, optional phone, and any extra data you have imported.
+
+**Contact list** — a group you put people into explicitly. Membership is a decision: someone is on the list because they were imported into it, signed up to it, or was added by hand. The Contacts sub-navigation labels this tab **Lists**; the page itself is titled **Contact Lists**. Same thing.
+
+**Segment** — a group defined by a *rule* rather than by membership, so it re-evaluates itself. "Everyone who opened something in the last 30 days" is a segment. Add a matching contact tomorrow and they are in it without you doing anything. More in [Segments](/concepts/segments).
+
+**Saved view** — a filter on the contacts *table*, saved so you can come back to it. This is the one that catches people out: a saved view is a way of looking at your contacts, not an audience. You cannot send to a saved view. If you want the same rules to become something you can send to, make it a segment. More in [Contacts](/concepts/contacts).
+
+**Tag** — a free-form label you stick on contacts, like `vip` or `july-workshop`. Tags are a common ingredient in segment rules.
+
+**Custom field** — any extra column you brought in with your contacts, usable in segment rules and in personalization.
+
+**Subscribed / unsubscribed** — whether a contact has opted in to hear from you on a channel. Unsubscribed contacts stay in your account but drop out of sending.
+
+**Suppressed** — an address Nitrosend will not send to, regardless of lists or segments, because sending to it would damage your deliverability. See [Deliverability words](#deliverability-words).
+
+## Campaigns and flows
+
+A **campaign** goes out once, to an audience you choose. A **flow** runs continuously, starting for each contact when something triggers it.
+
+Both share the same status words:
+
+- `draft` — still being written; nothing has gone out.
+- `scheduled` — queued for a future date and time. Campaigns only.
+- `live` — sending now, or in a flow's case, actively running for whoever triggers it.
+- `paused` — stopped part-way; can be resumed.
+- `completed` — finished sending. Campaigns only.
+- `cancelled` — stopped and not resumable.
+- `archived` — filed away, out of your normal lists.
+
+A flow you have edited but not yet published shows **unpublished changes** next to its status, meaning what is running is not what you are looking at. **Go Live** is the button that publishes and starts it.
+
+Campaign content locks once a campaign has sent, though you can always rename it. [Campaigns](/concepts/campaigns) covers exactly what stays editable at each status.
+
+### Flow steps
+
+Inside a flow, each box on the canvas is a **step**, added from **Add step**. Steps are grouped under two headings, **Actions** (things that happen) and **Logic** (things that control what happens next).
+
+Actions:
+
+| Step | What it does |
+| --- | --- |
+| **Email** | Sends an email. |
+| **SMS** | Sends a text message. Greyed out until the brand has a sending number. |
+| **Subscribe** | Opts the contact in. |
+| **Unsubscribe** | Opts the contact out. |
+| **Webhook** | Calls an external URL. |
+
+**Find Email** and **Verify Email** also appear in the palette, but they are signposts rather than steps you can add here: finding and checking addresses is lead-sourcing work, so clicking either card takes you to [Outreach](/concepts/outreach) instead of dropping a step into the flow.
+
+Logic:
+
+| Step | What it does |
+| --- | --- |
+| **Trigger** | What starts the flow for a contact. Every flow begins with one. |
+| **Wait** | Pauses before the next step. |
+| **Split** | Branches down different paths depending on a condition. |
+| **Emit Event** | Records an event you can trigger other things from. |
+
+## The email builder
+
+Emails are built from stacked **blocks**. The type of block decides what you can put in it, which matters because putting the wrong content in a block is a common way to get a design that will not save:
+
+The insert panel splits them into **Message** blocks, which carry your content, and **Structure** blocks, which shape the layout.
+
+Message:
+
+| Block | Holds |
+| --- | --- |
+| **Hero** | An opening block with a title, supporting copy and a main call to action. |
+| **Text** | Words. Formatted body copy, not images. |
+| **Image** | A picture. Images go here, not inside a text block. |
+| **Button** | A standalone call to action. |
+| **Product** | One item with its price, copy and link. |
+| **Product Grid** | Several products together, with names and prices. |
+| **Gallery** | A grid of images, for lookbooks or photo stories. |
+
+Structure:
+
+| Block | Holds |
+| --- | --- |
+| **Header** | The masthead at the top, typically logo-first. |
+| **2 Columns** | Splits a row into two, the most reliable multi-column layout in email. |
+| **3 Columns** | Splits a row into three, for compact features or comparisons. |
+| **Divider** | A visual break between sections. |
+| **Spacer** | Blank vertical space. |
+| **Social** | Icons linking to your social profiles. |
+| **Footer** | The closing block with company details and the unsubscribe link. |
+
+The builder header shows **Saved** or **Unsaved** so you can tell whether your latest edit has been stored.
+
+**Merge field** — a placeholder like a first name that fills in per recipient when the email is sent.
+
+## Brand: who your email comes from
+
+The **Brand** area holds the sending identity. Its tabs:
+
+**Brand Kit** — your logo, colors and voice. Contains **Company** (company name, description, and **physical address**, which is required in the footer of marketing email by law), **Brand Identity** (spacing, corner radius and type sizes that give your emails a consistent look), **Brand Voice** (how your AI agent should write for you), and **Social Links**.
+
+**Sender** — the *Sender & Testing* card, where three fields decide what recipients see:
+
+- **From name** — the name in the inbox, e.g. your business name.
+- **From email** — the address it comes from.
+- **Reply-to email** — where replies go, if that differs from the From address.
+
+**Domains** — the domains you are allowed to send from, and their DNS setup. See below.
+
+**AI Memory** — a free-text note your AI agent reads every time it works on your account: preferences, house style, things to always or never do.
+
+**API Keys** — credentials for connecting Nitrosend to your own code. Only shown if your role can manage them.
+
+**Channels** is a related screen holding your SMS numbers. It is not one of the Brand tabs — reach it from the command palette.
+
+### Domain verification
+
+Before you can send from a domain you have to prove you own it, by adding DNS records at whoever hosts your domain. Nitrosend shows each required record and whether it is in place. A domain reads **Verified** once everything checks out, or **Needs attention** if something is missing or has changed.
+
+The records are grouped into families, named on screen as:
+
+| Record | Why it exists |
+| --- | --- |
+| **Verification** | Proves the domain is yours. |
+| **SPF** | Lists who is allowed to send for your domain. |
+| **DKIM** | Signs your mail so receivers can tell it was not tampered with. |
+| **DMARC** | Tells receivers what to do with mail that fails the checks above. |
+| **MX** | Routes mail addressed to the domain. |
+| **Return-path** | Where bounce notifications go. |
+| **Tracking** | Makes opens and clicks measurable on your own domain. |
+
+Records prefixed **From-domain** (From-domain DKIM, From-domain DMARC, and so on) apply to the domain in your From address when that differs from the subdomain you send through.
+
+## Activity and the Send Log
+
+**Activity** is the overview: how much went out and how it performed. The **Send Log** is the itemised list, one row per message.
+
+Sends are labelled by where they came from — **Campaign**, **Flow**, **Test**, or **Transactional** (triggered one-to-one mail like a receipt, rather than marketing).
+
+The headline numbers:
+
+- **Recipients** — how many people a send went to.
+- **Delivered** — accepted by the receiving mail server.
+- **Opened** — the recipient opened it. Approximate by nature, since some mail apps block the measurement.
+- **Clicked** — the recipient clicked a link.
+
+### Deliverability words
+
+- **Bounce** — the message could not be delivered. A permanent bounce means the address is bad; a temporary one may succeed later.
+- **Complaint** — the recipient marked your email as spam. The most damaging outcome, and the reason lists should only contain people who asked to hear from you.
+- **Unsubscribe** — the recipient opted out.
+- **Suppression** — an address Nitrosend refuses to send to, usually after a hard bounce or a complaint. Suppression protects your sender reputation, so an address staying suppressed is the system working.
+
+## Inbox
+
+The [Agent Inbox](/concepts/agent-inbox) sorts incoming replies into five tabs:
+
+- **Needs you** — a human has to answer this.
+- **Agent ready** — your AI agent has drafted a reply and is waiting for you to approve it.
+- **Handled** — dealt with, by you or by the agent.
+- **Quarantine** — held back as suspicious.
+- **All threads** — everything, unfiltered.
+
+An individual item can also carry a **Needs a human** tag, marking that one message as something the agent should not answer on its own.
+
+## Integrations
+
+An **integration** is a connection to another tool. They come in a few kinds:
+
+- **Email delivery** — send through your own provider: Amazon SES, Mailgun, Postmark, Resend, SendGrid.
+- **Contact and customer sync** — keep people in step with a CRM such as Attio or HubSpot.
+- **Audience migration** — bring an existing audience across, for example from Mailchimp.
+- **Commerce events** — pull orders and products from a store like Shopify.
+
+## Working through an AI agent
+
+Nitrosend is built to be driven by an AI assistant as well as by hand, and both act on the same objects. When your agent says it is creating a campaign, adding contacts to a list, or defining a segment, it means exactly what those words mean on this page.
+
+Two terms belong to that surface specifically:
+
+- **MCP** — the protocol your assistant uses to talk to Nitrosend. Setting it up is covered in [Integrations](/integrations/overview).
+- **Brand Kit and AI Memory** — what the agent reads to stay on-voice. See [Brand Kit and memory](/integrations/mcp-brand-kit-memory).
