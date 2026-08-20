@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "sourcey dev",
+    "prebuild": "node scripts/check-plan-shape-content.mjs",
     "build": "npx sourcey build"
   },
   "dependencies": {
