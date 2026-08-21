@@ -123,14 +123,19 @@ Prefer to set things up manually? Here's the traditional path.
 
 ### 1. Create your account
 
-Sign up at [app.nitrosend.com](https://app.nitrosend.com) and complete the onboarding wizard. This sets up your brand colors, logo, and sending domain.
+Sign up at [app.nitrosend.com](https://app.nitrosend.com) and complete the
+onboarding wizard. Confirming your company identity reserves a protected
+`hello@<brand-slug>.nitrosend.net` address derived from the Brand Kit company
+name—not the account owner's name.
 
-### 2. Prepare a sender
+### 2. Activate a sender
 
-In **Brand > Domains**, prepare the protected Nitrosend address reserved for
-your brand, or add the DNS records for a customer-owned sending subdomain. The
-brand-subdomain address uses no provider resources until you choose **Prepare sender**.
-When it is ready, select its From address explicitly.
+In **Brand > Domains**, activate the protected Nitrosend address reserved for
+your brand, or add the DNS records for a customer-owned sending subdomain.
+Activation is an immediate local database operation under Nitrosend's already
+verified shared sender root; it creates no per-brand DNS, DKIM, provider
+identity, tenant resource, or background job. If a custom sender is already
+selected, Nitrosend preserves it until you explicitly choose another sender.
 
 ### 3. Import contacts
 
@@ -164,9 +169,11 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
 }'
 ```
 
-Live email requires one ready, selected sender. Prepare the reserved Nitrosend
-brand-subdomain sender with `POST /v1/my/brands/{sid}/prepare_sending`, or
-verify a domain you own. If an eligible first request starts brand-subdomain
-preparation, the API returns
-`sender_identity_provisioning` and stores no message; retry the same
-idempotency key after readiness and selection.
+Live email requires one ready, selected sender. Materialize the reserved
+Nitrosend brand-subdomain sender with
+`POST /v1/my/brands/{sid}/prepare_sending`, or verify a domain you own. The
+operation completes synchronously and selects the new sender only when the
+brand has no existing selection. An eligible first API request can perform the
+same local materialization before admission. If the shared root is unavailable,
+the API returns retryable `hosted_sender_root_unavailable`, stores no message,
+and the same idempotency key is safe to retry.

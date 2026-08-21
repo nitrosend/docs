@@ -41,11 +41,11 @@ Call `nitro_get_status` first for account context, then read the `nitro://guide`
   <Step title="Mint an API key">
     `POST /v1/my/api_keys` with that JWT returns `nskey_live_...`. Store it as a secret.
   </Step>
-  <Step title="Prepare the reserved sender">
-    Get the brand SID from `GET /v1/my/brands`, then call `POST /v1/my/brands/{sid}/prepare_sending`. Account creation reserves only the protected `<brand>.nitrosend.com` name; this explicit call creates its DNS, DKIM, provider identity, and tenant resources asynchronously. Poll the brand until `brand_subdomain.ready` is `true`, then select a From local part with `PATCH /v1/my/brands/{sid}` and `{ "sender_local_part": "hello" }`.
+  <Step title="Activate the reserved sender">
+    Complete the Brand Kit company identity, then get the brand SID from `GET /v1/my/brands`. The response shows the protected `hello@<brand-slug>.nitrosend.net` address derived from that company name. Call `POST /v1/my/brands/{sid}/prepare_sending` to materialize its local Domain and sending-identity rows synchronously under Nitrosend's verified shared root. It creates no per-brand DNS, DKIM, provider identity, tenant resource, or background job. When no sender is selected, the same transaction selects this sender; otherwise it preserves the existing selection.
   </Step>
   <Step title="Send once ready">
-    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. If an eligible first send starts preparation instead, the API returns a retryable `sender_identity_provisioning` response and stores no message; retry the same request only after readiness and explicit sender selection.
+    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. An eligible first request can perform the same local materialization before admission. If the shared root is unavailable, the API returns retryable `hosted_sender_root_unavailable`, stores no message, reservation, charge, or provider capability, and the same request is safe to retry.
   </Step>
   <Step title="Choose optional production upgrades">
     A customer-owned sending subdomain builds portable reputation and never consumes the reserved Nitrosend brand-subdomain sender. Paid plans and checkout remain optional; `$0` plans need no card.

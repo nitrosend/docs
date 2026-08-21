@@ -1901,7 +1901,7 @@
     },
     {
       "name": "nitro_manage_domains",
-      "description": "Prepare or select the Nitrosend brand-subdomain sender, or add, verify, diagnose, list, and remove customer sending domains. Receiving MX appears only after forward-all exists.",
+      "description": "Activate or select the Nitrosend brand-subdomain sender, or add, verify, diagnose, list, and remove customer sending domains. Receiving MX appears only after forward-all exists.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1917,7 +1917,7 @@
               "list",
               "remove"
             ],
-            "description": "prepare_brand_subdomain starts idempotent asynchronous preparation; poll nitro_get_status.\nselect_brand_subdomain selects a ready sender with optional local_part and apex.\nadd registers a customer domain and returns required DNS records.\nverify checks provider and DNS readiness. check_dns diagnoses DNS and tracking HTTPS only.\nlist returns domains, readiness, records, DMARC, and allowance use.\nremove requires domain_name and confirm; retry paired removal with unpair after showing its effect."
+            "description": "prepare_brand_subdomain locally materializes the shared-root sender and is idempotent.\nselect_brand_subdomain selects a ready sender with optional local_part and apex.\nadd registers a customer domain and returns required DNS records.\nverify checks provider and DNS readiness. check_dns diagnoses DNS and tracking HTTPS only.\nlist returns domains, readiness, records, DMARC, and allowance use.\nremove requires domain_name and confirm; retry paired removal with unpair after showing its effect."
           },
           "params": {
             "type": "object",
@@ -1937,7 +1937,7 @@
               },
               "apex": {
                 "type": "string",
-                "description": "Optional prepared Nitrosend sending apex."
+                "description": "Optional active Nitrosend sending apex."
               },
               "unpair": {
                 "type": "boolean",

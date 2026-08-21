@@ -61,12 +61,12 @@ These examples show the full loop: what you say, what your AI calls, and what co
       "campaign_count": 2
     },
     "brand_subdomain": {
-      "allocation_status": "active",
-      "status": "not_prepared",
+      "namespace_status": "active",
+      "status": "not_materialized",
       "ready": false,
       "preparation_required": true,
-      "fqdn": "acme-co.nitrosend.com",
-      "apex": "nitrosend.com",
+      "fqdn": "acme-co.nitrosend.net",
+      "apex": "nitrosend.net",
       "local_part": "hello",
       "local_part_editable": false,
       "fqdn_changeable": false
@@ -118,15 +118,15 @@ These examples show the full loop: what you say, what your AI calls, and what co
       {
         "area": "domain",
         "severity": "high",
-        "message": "No ready sending identity. Prepare your reserved Nitrosend brand subdomain, or verify a custom domain.",
-        "brand_subdomain_status": "not_prepared",
+        "message": "No ready sending identity. Activate your reserved Nitrosend brand subdomain, or verify a custom domain.",
+        "brand_subdomain_status": "not_materialized",
         "brand_subdomain_preparation_required": true,
         "blocks": "campaign approval and live sends"
       }
     ],
     "recommendations": [
       { "action": "Set physical address", "tool": "nitro_set_brand_kit" },
-      { "action": "Prepare or verify a sending identity", "tool": "nitro_manage_domains" }
+      { "action": "Activate or verify a sending identity", "tool": "nitro_manage_domains" }
     ]
   },
   "meta": {
@@ -137,11 +137,13 @@ These examples show the full loop: what you say, what your AI calls, and what co
 ```
 
 **What happens next:** The AI reads the structured identity state and asks to
-prepare the permanently reserved sender or connect a customer-owned domain. For
+activate the permanently reserved sender or connect a customer-owned domain. For
 the Nitrosend path it calls `nitro_manage_domains` with
-`operation: "prepare_brand_subdomain"`, polls status, and then calls
-`operation: "select_brand_subdomain"` to select the ready sender explicitly.
-Preparation retains no email.
+`operation: "prepare_brand_subdomain"`. That operation materializes the local
+identity synchronously and selects it only when no sender is already selected.
+If another sender remains selected, the agent then calls
+`operation: "select_brand_subdomain"` explicitly. Activation retains no email
+and performs no provider work.
 
 For accounts with multiple brands, switch context before making changes:
 

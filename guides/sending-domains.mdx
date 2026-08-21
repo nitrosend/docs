@@ -5,29 +5,32 @@ description: Prepare your reserved Nitrosend sender or connect a customer-owned 
 
 # Sending Domains
 
-Every brand permanently reserves one protected address under
-`<brand>.nitrosend.com`. Reserving the name is cheap: Nitrosend creates no DNS,
-DKIM, provider identity, tenant, or background job until you explicitly choose
-**Prepare sender** or make an eligible first API/MCP send attempt. That first
-attempt can start preparation, but it returns a retryable response and stores
-no email.
+After Brand Kit setup, every brand permanently reserves one protected address:
+`hello@<brand-slug>.nitrosend.net`. The slug comes from the confirmed company
+name, never the account owner's name or a placeholder. Reservation creates no
+Domain or sending-identity row for a dormant account. Activation—or the first
+eligible API/MCP send—materializes those local rows synchronously under one
+already-verified shared SES root. There is no per-brand DNS, DKIM, provider
+identity, tenant resource, background job, polling state, or `.com` fallback.
 
 You can instead add a sending domain you own. Your email then goes out from
 **your** address on Nitrosend's infrastructure, and the reputation you build is
 portable with your domain. There's no separate email provider to wire up.
 
-## Prepare the Nitrosend sender
+## Activate the Nitrosend sender
 
 1. Go to **Brand → Domains**.
-2. Review the reserved `<brand>.nitrosend.com` address and choose **Prepare sender**.
-3. Wait while Nitrosend independently verifies DNS, DKIM, provider ownership,
-   and tenant association.
-4. When the identity is **Ready**, choose the visible local part, such as
-   `hello`, and explicitly select it.
+2. Review the reserved `<brand-slug>.nitrosend.net` address and choose
+   **Activate sender**.
+3. Nitrosend creates the local logical identity immediately. If the brand has
+   no selected sender, that same transaction selects it; an existing custom
+   sender remains selected until you explicitly replace it.
+4. Choose the visible local part, such as `hello`, whenever you select this
+   hosted identity.
 
-Preparation never selects a sender, queues a message, or sends email. The
-reserved FQDN cannot be renamed in this release. A Nitrosend brand-subdomain
-sender also does not consume your customer-domain allowance.
+Activation never queues or sends email and never calls a DNS or email provider.
+The reserved FQDN cannot be renamed in this release. A Nitrosend
+brand-subdomain sender also does not consume your customer-domain allowance.
 
 ## Add a sending subdomain
 
@@ -103,7 +106,8 @@ Each effective sending identity has its own capacity history. Headroom grows
 only from matured, clean delivered volume on that exact identity—not from
 account age, subscription age, payment, list imports, validation, or time
 passing. A new customer domain therefore begins with its own observed history;
-volume from a `nitrosend.com` brand-subdomain sender is never transferred to it.
+volume from another hosted or customer-domain identity is never transferred to
+it. Existing legacy `.com` history also remains bound to that exact identity.
 
 Commercial plan capacity, identity capacity, provider limits, and delivery
 pacing are separate inputs to one admission decision. The API, MCP status, and
