@@ -13,11 +13,91 @@ The visual editor uses a section-based layout. Drag components (text, images, bu
 
 ## Personalization
 
-Use merge tags to personalize content:
+Use merge tags to personalize content. Tags work in the subject line, preheader and
+email body, across campaigns, flows and test sends:
 
 ```
 Hi {{ contact.first_name }},
 ```
+
+### Contact fields
+
+| Tag | Resolves to |
+| --- | --- |
+| `{{ contact.first_name }}` / `{{ contact.last_name }}` / `{{ contact.email }}` | Standard contact fields |
+| `{{ contact.title }}`, `{{ contact.company }}`, `{{ contact.industry }}`, `{{ contact.seniority }}`, `{{ contact.website }}` | Profile fields, resolved from your enrichment data |
+| `{{ contact.total_spent }}`, `{{ contact.order_count }}`, `{{ contact.last_order_at }}`, `{{ contact.value_tier }}`, `{{ contact.lifecycle_stage }}` | Commerce fields, formatted for display (`$1,240.00`, `14 Jul 2026`) |
+
+These are the only supported `contact.*` paths. Anything else is rejected when the
+email is validated, with an exact repair hint.
+
+### Custom fields and enrichment data
+
+Your own custom fields and the contact data synced from your connected tools use the
+`data.` namespace:
+
+```
+Your {{ data.plan_tier }} plan renews on {{ data.renewal_date }}.
+Your last order was {{ data.shopify.last_order_total }}.
+```
+
+Rather than assembling these by hand, use the `{ }` button next to the subject,
+preheader and body toolbar in the editor — it lists your account's real fields with
+the exact tag for each. Over the API, `GET /v1/my/contacts/fields` returns a
+ready-to-paste `merge_tag` for every mergeable field.
+
+Some fields are deliberately not mergeable and come back with `merge_tag: null`:
+
+- Provider credentials, raw sync payloads and internal record identifiers
+- Tags and engagement metrics, which are never sent to a recipient
+- Derived `data.nitro.*` values — use the formatted `contact.*` commerce tags above
+- Keys the tag grammar cannot express, such as those with spaces, dashes or a
+  leading digit
+
+<Note>
+  Enrichment coverage is partial by nature — not every contact has every synced
+  field. Always pair an enrichment tag with a fallback (below).
+</Note>
+
+### Fallbacks and filters
+
+What happens when a tag has no value depends on the namespace. A `data.*` tag
+with no value is an error, not a blank: the send fails for that recipient rather
+than delivering broken copy. A built-in `contact.*` tag renders as an empty
+string instead — which is how "Hi ," ships. Either way, the answer is the same:
+give any field that is not fully populated a fallback:
+
+```
+Hi {{ contact.first_name | default: "there" }},
+```
+
+Available filters are `default`, `upcase`, `downcase` and `capitalize`, and they
+chain:
+
+```
+{{ contact.first_name | capitalize | default: "Friend" }}
+```
+
+The `default` filter takes one literal value. Nested merge tags inside a fallback
+are not supported.
+
+### Company and system tags
+
+`{{ company.name }}`, `{{ company.address }}` and `{{ company.url }}` come from your
+brand settings. `{{ unsubscribe_url }}` renders each recipient's one-click
+unsubscribe link.
+
+### Transactional sends
+
+On transactional sends (`POST /v1/my/messages`), `data.*` addresses the payload you
+supply with that request — `{{ data.order_id }}`, `{{ data.confirmation_code }}` —
+not the recipient's stored contact fields. Stored custom and enrichment fields are
+for campaigns, flows and templates.
+
+### Testing
+
+Test sends and previews render merge tags against a real contact's data, so what you
+see is what that recipient gets.
 
 ## MJML rendering
 
