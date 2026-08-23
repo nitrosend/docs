@@ -11,6 +11,11 @@ secret delivery, plan changes, and billing. Nitrosend handles account, brand,
 campaign, list, template, and support workflows in the existing dashboard
 through SSO.
 
+The Marketplace integration is provider-isolated: an existing Nitrosend login
+may be reused for SSO, but a Vercel installation is not silently attached to a
+Stripe-owned account. Vercel's installation and resource identifiers remain the
+source of ownership for its local entitlement.
+
 Marketplace availability depends on Vercel provider approval. Until approval
 is complete, use the regular Nitrosend dashboard and API key flow.
 
