@@ -151,9 +151,13 @@ The builder header shows **Saved** or **Unsaved** so you can tell whether your l
 
 **Merge field** — a placeholder like a first name that fills in per recipient when the email is sent.
 
-## Brand: who your email comes from
+## Brand, Settings and Account
 
-The **Brand** area holds the sending identity. Its tabs:
+These three areas separate what recipients see, how the current brand is operated, and how the account is administered.
+
+### Brand: what recipients see
+
+The **Brand** area holds the identity and sender details recipients see. Its tabs:
 
 **Brand Kit** — your logo, colors and voice. Contains **Company** (company name, description, and **physical address**, which is required in the footer of marketing email by law), **Brand Identity** (spacing, corner radius and type sizes that give your emails a consistent look), **Brand Voice** (how your AI agent should write for you), and **Social Links**.
 
@@ -163,13 +167,23 @@ The **Brand** area holds the sending identity. Its tabs:
 - **From email** — the address it comes from.
 - **Reply-to email** — where replies go, if that differs from the From address.
 
-**Domains** — the domains you are allowed to send from, and their DNS setup. See below.
+### Settings: how the current brand is operated
 
-**AI Memory** — a free-text note your AI agent reads every time it works on your account: preferences, house style, things to always or never do.
+The **Settings** area is scoped to the current brand. Its tabs:
+
+**Domains** — the domains the current brand is allowed to send from, and their DNS setup. See below.
 
 **API Keys** — credentials for connecting Nitrosend to your own code. Only shown if your role can manage them.
 
-**Channels** is a related screen holding your SMS numbers. It is not one of the Brand tabs — reach it from the command palette.
+**AI Memory** — a free-text note your AI agent reads every time it works on your account: preferences, house style, things to always or never do.
+
+**Channels** — the current brand's SMS numbers.
+
+The final **Account** entry links out of the brand-scoped Settings section.
+
+### Account: workspace administration
+
+The **Account** area holds account profile details, Team and Billing. These settings apply to the workspace rather than only the current brand.
 
 ### Domain verification
 
