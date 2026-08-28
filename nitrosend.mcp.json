@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.5.0"
+    "version": "1.5.2"
   },
   "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
@@ -2137,7 +2137,7 @@
     },
     {
       "name": "nitro_control_delivery",
-      "description": "Approve or control flow/campaign delivery after review. Requires the reviewed brand sid; resume never publishes a draft, and flow publication requires its exact revision.",
+      "description": "Approve or control flow/campaign delivery after review. The reviewed brand sid is an optional assertion; resume never publishes a draft, and flow publication requires its exact revision.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2156,7 +2156,7 @@
           "expected_brand_sid": {
             "type": "string",
             "minLength": 1,
-            "description": "Copy meta.current_brand.sid from the reviewed result."
+            "description": "Optional reviewed-brand assertion. When available, copy meta.current_brand.sid from the reviewed result."
           },
           "operation": {
             "type": "string",
@@ -2200,8 +2200,7 @@
         "required": [
           "target_type",
           "target_id",
-          "operation",
-          "expected_brand_sid"
+          "operation"
         ],
         "additionalProperties": false
       },
@@ -2365,7 +2364,7 @@
     },
     {
       "name": "nitro_manage_billing",
-      "description": "Read billing/plans, create operator-approved subscription or add-funds checkout URLs, and poll status. This tool never pays; the operator opens the URL. Prepaid balance is separate from plans.",
+      "description": "Read billing/plans, create operator-approved subscription or add-funds checkout URLs, and poll status. Add-funds behavior depends on the selected instrument: current live instruments return operator approval URLs, and no live presented-credential rail is enabled. Prepaid balance is separate from plans.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2380,11 +2379,11 @@
               "add_funds",
               "funding_purchase_status"
             ],
-            "description": "Billing operation to perform"
+            "description": "Billing operation. Start with status; use plans/checkout for subscriptions and add_funds/funding_purchase_status for prepaid balance."
           },
           "params": {
             "type": "object",
-            "description": "Operation-specific parameters.",
+            "description": "Operation parameters: checkout requires plan_id; add_funds requires amount_cents and currency; funding_purchase_status requires purchase_id.",
             "properties": {
               "plan_id": {
                 "type": "integer",
@@ -2398,9 +2397,13 @@
                 "type": "string",
                 "description": "Three-letter funding currency"
               },
-              "idempotency_key": {
+              "instrument": {
                 "type": "string",
-                "description": "Stable key for this Add funds request"
+                "enum": [
+                  "stripe_checkout",
+                  "shopify_one_time"
+                ],
+                "description": "Optional add-funds instrument; omit to use the account default"
               },
               "purchase_id": {
                 "type": "integer",
@@ -2408,6 +2411,10 @@
               }
             },
             "additionalProperties": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Required stable key for add_funds. Reuse it only for an unchanged request."
           }
         },
         "required": [
