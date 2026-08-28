@@ -323,15 +323,16 @@ Approval, Safe Mode, and `confirm_send_to_all` are separate checks. Approval ver
 ```json
 {
   "result": {
-    "flow_id": 12,
-    "steps_created": 3,
+    "id": 12,
+    "draft_revision_id": 42,
+    "step_count": 3,
     "status": "draft",
     "trigger": { "event": "list_add", "contact_list_id": 5 }
   }
 }
 ```
 
-**What happens next:** The flow is in draft. AI calls `nitro_control_delivery` with `{"target_type": "flow", "target_id": 12, "operation": "approve"}` then `"live"` to activate it. From now on, every contact added to the Subscribers list automatically receives the welcome series.
+**What happens next:** The flow is in draft. AI copies the flow ID from `result.id` and the exact current revision from `result.draft_revision_id` in the persisted `nitro_compose_flow` response. It calls `nitro_review_delivery` with `{"target_type": "flow", "target_id": 12, "revision_id": 42}`. When review returns `result.revision_id` as `42`, AI copies that review-returned value into both control calls: `{"target_type": "flow", "target_id": 12, "operation": "approve", "revision_id": 42}` and then `{"target_type": "flow", "target_id": 12, "operation": "live", "revision_id": 42}`. From now on, every contact added to the Subscribers list automatically receives the welcome series.
 
 ---
 
