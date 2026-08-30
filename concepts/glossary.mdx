@@ -27,14 +27,15 @@ These are the top-level areas, in the order they appear.
 | **Activity** | The record of what actually went out and what happened to it. See [Activity and the Send Log](#activity-and-the-send-log). |
 | **Contacts** | Everyone you can email, plus the ways of grouping them. See [Audiences](#audiences-contacts-lists-segments-and-saved-views). |
 | **Clients** | For agencies managing separate accounts on behalf of their own customers. Only appears if your account is set up for managed clients. |
-| **Brand** | Everything that defines who an email comes from and what it looks like. See [Brand](#brand-who-your-email-comes-from). |
+| **Brand** | Everything that defines who an email comes from and what it looks like. See [Brand](#brand-what-recipients-see). |
 | **Integrations** | Connections to other tools — your email provider, CRM, or store. See [Integrations](#integrations). |
+| **Settings** | How the current brand is operated: Domains, API Keys, AI Memory and Channels. See [Settings](#settings-how-the-current-brand-is-operated). |
 | **Learning Center** | Guides and walkthroughs inside the app. |
 | **Affiliates** | Your referral dashboard. Only appears if you are on the affiliate program. |
 
 ### Brand switcher
 
-The control at the top of the sidebar that swaps which **brand** you are working in. Everything below it — campaigns, contacts, templates, domains — belongs to the brand you have selected.
+The brand selector in the sidebar footer changes which brand you are working in. Brand-scoped areas — including campaigns, contacts, templates and Settings — follow the brand you have selected.
 
 ### Setup Center
 
@@ -151,9 +152,15 @@ The builder header shows **Saved** or **Unsaved** so you can tell whether your l
 
 **Merge field** — a placeholder like a first name that fills in per recipient when the email is sent.
 
-## Brand: who your email comes from
+## Brand, Settings and Account
 
-The **Brand** area holds the sending identity. Its tabs:
+These three areas separate what recipients see, how the current brand is operated, and how the account is administered.
+
+### Brand: what recipients see
+
+The **Brand** area holds the identity and sender details recipients see. Its tabs:
+
+Brand Kit and Sender are the canonical Brand pages. You may also see Domains, API Keys and AI Memory in the Brand tab row as migration notices; those entries explain that the operational pages have moved to Settings and link to their new locations.
 
 **Brand Kit** — your logo, colors and voice. Contains **Company** (company name, description, and **physical address**, which is required in the footer of marketing email by law), **Brand Identity** (spacing, corner radius and type sizes that give your emails a consistent look), **Brand Voice** (how your AI agent should write for you), and **Social Links**.
 
@@ -163,13 +170,23 @@ The **Brand** area holds the sending identity. Its tabs:
 - **From email** — the address it comes from.
 - **Reply-to email** — where replies go, if that differs from the From address.
 
-**Domains** — the domains you are allowed to send from, and their DNS setup. See below.
+### Settings: how the current brand is operated
 
-**AI Memory** — a free-text note your AI agent reads every time it works on your account: preferences, house style, things to always or never do.
+The **Settings** area is scoped to the current brand. Its tabs:
+
+**Domains** — the domains the current brand is allowed to send from, and their DNS setup. See below.
 
 **API Keys** — credentials for connecting Nitrosend to your own code. Only shown if your role can manage them.
 
-**Channels** is a related screen holding your SMS numbers. It is not one of the Brand tabs — reach it from the command palette.
+**AI Memory** — a free-text note your AI agent reads every time it works on your account: preferences, house style, things to always or never do.
+
+**Channels** — the current brand's SMS numbers.
+
+The final **Account** entry links out of the brand-scoped Settings section.
+
+### Account: workspace administration
+
+The **Account** area holds account profile details, Team and Billing. These settings apply to the workspace rather than only the current brand.
 
 ### Domain verification
 
