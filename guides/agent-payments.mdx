@@ -1,0 +1,314 @@
+---
+title: Payments for agents
+description: Upgrade a Nitrosend plan or add prepaid balance through MCP, CLI, or REST with owner approval and verified completion
+---
+
+# Payments for agents
+
+An agent prepares the purchase. The account owner approves Stripe Checkout.
+Nitrosend activates the plan or credits the balance only after provider
+verification.
+
+<Info>
+  The billing tool never pays. It returns an approval URL when a provider needs
+  the account owner, then exposes a status operation that proves the outcome.
+</Info>
+
+## Choose what you are buying
+
+Plans and prepaid balance solve different problems. Check this distinction before
+writing any payment code.
+
+| Purchase | What it changes | Start with | Complete when |
+|---|---|---|---|
+| **Plan** | The recurring Nitrosend subscription, allowances, and entitlements | `plans`, then `checkout` | Checkout status reports `active` |
+| **Prepaid balance** | Funds explicitly metered services such as email validation | Funding status, then `add_funds` | Funding purchase status reports `credited` |
+
+A paid plan does not create prepaid balance. Adding funds does not upgrade the
+plan.
+
+## The lifecycle in one minute
+
+~~~text
+Agent or app          Nitrosend              Stripe or provider       Account owner
+     | prepare intent      |                          |                      |
+     |-------------------->| create/reuse purchase    |                      |
+     |<--------------------| approval URL + ID        |                      |
+     |                     |                          |<---- approve in UI ---|
+     |                     |<-- webhook/readback -----|                      |
+     | poll with ID        |                          |                      |
+     |-------------------->| read reconciled state    |                      |
+     |<--------------------| active or credited       |                      |
+~~~
+
+Keep the returned purchase ID. It is the stable handle for polling and recovery.
+The approval URL is temporary and sensitive.
+
+## Before you start
+
+- Call `status` first. It identifies the current plan, provider route, prepaid
+  balance, purchase availability, and provider-safe next action.
+- Use a billing-authorized account context. Account-scoped API keys can create
+  purchases over MCP, CLI, and REST. External OAuth MCP sessions can inspect
+  billing, but they do not carry the account principal required for a mutation.
+  If OAuth returns `ask_account_admin`, an owner or admin must complete the
+  action in Nitrosend or provide a scoped API-key workflow.
+- Generate one stable idempotency key per purchase intent and persist it before
+  the first mutation.
+- Treat provider-managed routes as instructions, not failures. Shopify plan
+  purchases can return a Shopify-hosted approval URL; Vercel accounts may
+  return a marketplace management action.
+
+## Upgrade a plan
+
+List the available plans, create or reuse one purchase intent, open the returned
+approval URL when present, then poll the returned `purchase_id`.
+
+<Tabs>
+  <Tab title="MCP">
+    Use an account-scoped API key for `checkout`. OAuth MCP sessions can run
+    `status` and `plans`, then hand the mutation to an account owner or admin.
+
+    Start with account and provider state:
+
+    ~~~json
+    {"operation":"status"}
+    ~~~
+
+    List plans and select the returned `plan_id`:
+
+    ~~~json
+    {"operation":"plans"}
+    ~~~
+
+    Start checkout with a key that survives retries:
+
+    ~~~json
+    {
+      "operation": "checkout",
+      "params": { "plan_id": 2 },
+      "idempotency_key": "plan-pro-acme-2026-08-31"
+    }
+    ~~~
+
+    A change to an active provider subscription can return
+    `confirmation_required`. Ask the operator, then retry the unchanged intent
+    with the same key:
+
+    ~~~json
+    {
+      "operation": "checkout",
+      "params": { "plan_id": 2, "confirm": true },
+      "idempotency_key": "plan-pro-acme-2026-08-31"
+    }
+    ~~~
+
+    Poll using the purchase ID from the checkout response:
+
+    ~~~json
+    {
+      "operation": "checkout_status",
+      "params": { "purchase_id": 481 }
+    }
+    ~~~
+  </Tab>
+
+  <Tab title="CLI">
+    The Nitrosend CLI calls the same MCP tool directly:
+
+    ~~~bash
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"status"}'
+
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"plans"}'
+
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"checkout","params":{"plan_id":2},"idempotency_key":"plan-pro-acme-2026-08-31"}'
+
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"checkout_status","params":{"purchase_id":481}}'
+    ~~~
+
+    The CLI does not create another payment layer. It prints the Nitrosend
+    envelope, including the approval and next action, so the operator can open
+    the hosted checkout and the runner can poll the same purchase.
+  </Tab>
+
+  <Tab title="REST">
+    Start checkout with the idempotency key in the header:
+
+    ~~~bash
+    curl -X POST https://api.nitrosend.com/v1/my/subscription/checkout \
+      -H "Authorization: Bearer $NITROSEND_API_KEY" \
+      -H "Content-Type: application/json" \
+      -H "Idempotency-Key: plan-pro-acme-2026-08-31" \
+      -d '{"plan_id":2}'
+    ~~~
+
+    Poll the returned purchase ID:
+
+    ~~~bash
+    curl "https://api.nitrosend.com/v1/my/subscription/checkout_status?purchase_id=481" \
+      -H "Authorization: Bearer $NITROSEND_API_KEY"
+    ~~~
+
+    See the generated reference for [plan checkout](/api#operation-v1-my-subscription-checkout-post)
+    and [checkout status](/api#operation-v1-my-subscription-checkout-status-get).
+  </Tab>
+</Tabs>
+
+A response may have no checkout URL when the requested plan is already current,
+the provider applies the change directly, or `next_action` points to marketplace
+management. Shopify plan purchases can return a Shopify-hosted approval URL.
+Follow `approval`, `billing_route`, `manage_url`, and `next_action` rather than
+assuming every plan change opens Stripe.
+
+### Prove the plan change
+
+The terminal proof is Nitrosend reporting the subscription as active on the
+requested plan. The browser success page is useful feedback, but it is not the
+authority. Continue polling `checkout_status` through delayed webhooks or
+provider readback.
+
+## Add prepaid funds
+
+Read funding status before presenting an amount. It returns the currency,
+available and reserved balance, allowed amount range, provider route, and whether
+purchase is currently available.
+
+<Tabs>
+  <Tab title="MCP">
+    Use an account-scoped API key for `add_funds`. OAuth MCP sessions can read
+    funding status, then hand the mutation to an account owner or admin.
+
+    Read the current balance and purchase capability:
+
+    ~~~json
+    {"operation":"status"}
+    ~~~
+
+    Create or reuse the add-funds intent:
+
+    ~~~json
+    {
+      "operation": "add_funds",
+      "params": {
+        "amount_cents": 5000,
+        "currency": "USD"
+      },
+      "idempotency_key": "fund-validation-acme-2026-08-31"
+    }
+    ~~~
+
+    Poll the returned funding purchase ID:
+
+    ~~~json
+    {
+      "operation": "funding_purchase_status",
+      "params": { "purchase_id": 812 }
+    }
+    ~~~
+  </Tab>
+
+  <Tab title="CLI">
+    These are direct Nitrosend MCP calls:
+
+    ~~~bash
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"status"}'
+
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"add_funds","params":{"amount_cents":5000,"currency":"USD"},"idempotency_key":"fund-validation-acme-2026-08-31"}'
+
+    nitrosend mcp tools call nitro_manage_billing --machine \
+      --args '{"operation":"funding_purchase_status","params":{"purchase_id":812}}'
+    ~~~
+  </Tab>
+
+  <Tab title="REST">
+    Inspect the balance and policy:
+
+    ~~~bash
+    curl https://api.nitrosend.com/v1/my/billing/funding \
+      -H "Authorization: Bearer $NITROSEND_API_KEY"
+    ~~~
+
+    Create the purchase:
+
+    ~~~bash
+    curl -X POST https://api.nitrosend.com/v1/my/billing/funding/purchases \
+      -H "Authorization: Bearer $NITROSEND_API_KEY" \
+      -H "Content-Type: application/json" \
+      -H "Idempotency-Key: fund-validation-acme-2026-08-31" \
+      -d '{"amount_cents":5000,"currency":"USD"}'
+    ~~~
+
+    Poll the returned purchase:
+
+    ~~~bash
+    curl https://api.nitrosend.com/v1/my/billing/funding/purchases/812 \
+      -H "Authorization: Bearer $NITROSEND_API_KEY"
+    ~~~
+
+    See the generated reference for [funding status](/api#operation-v1-my-billing-funding-get),
+    [creating a funding purchase](/api#operation-v1-my-billing-funding-purchases-post),
+    and [funding purchase status](/api#operation-v1-my-billing-funding-purchases-id-get).
+  </Tab>
+</Tabs>
+
+### Prove the credit
+
+The purchase is complete when its customer-visible status is `credited` and the
+funding projection includes the credited amount. Funding status reads the
+reconciled Nitrosend ledger; provider webhooks and the funding reconciliation
+worker move a verified purchase into that ledger. A `pending` or
+otherwise non-terminal purchase still needs reconciliation, so do not start
+another purchase with a new key while the first outcome is unknown.
+
+## Checkout, Link, Payment Links, and Stripe CLI
+
+These Stripe names refer to different surfaces:
+
+| Term | Role in this flow |
+|---|---|
+| **Stripe Checkout Session** | The hosted, single purchase approval session created by Nitrosend |
+| **Link** | A Stripe wallet that may appear as a payment method inside Checkout when the account and customer are eligible |
+| **Stripe Payment Links** | Stripe's reusable link product; Nitrosend plan and funding purchases do not use it as their lifecycle owner |
+| **Stripe CLI** | A development tool for forwarding and inspecting test webhooks; it cannot approve a Checkout Session or replace the browser Link flow |
+
+Link requires no separate Nitrosend operation. Open the `checkout_url`, then
+choose Link if Stripe offers it. The Nitrosend API, MCP tool, and CLI all create
+the same provider checkout.
+
+## Retry and recovery
+
+| State or error | Safe response |
+|---|---|
+| `confirmation_required` | Ask the operator, then retry the same plan, key, and request with `confirm: true` |
+| `ask_account_admin` | Stop the OAuth mutation; an owner/admin must act in Nitrosend or provide an account-scoped API-key workflow |
+| Open plan purchase | Poll the existing purchase; do not choose another plan yet |
+| Funding purchase capability is unavailable | Follow the provider-safe `next_action` returned by funding status |
+| `pending` | Poll with bounded backoff; keep the original purchase ID and idempotency key |
+| Expired or terminal failed checkout | Start a new intent with a new idempotency key |
+| `partially_reversed` or `reversed` | Do not replay the purchase; trust the current funding balance and returned recovery action |
+| `idempotency_conflict` | Restore the original request or create a new key for the changed intent |
+| Provider-managed route | Open the returned marketplace management surface |
+
+A stable key identifies intent, not an attempt. Network timeouts and process
+restarts do not justify a new key.
+
+## Production checklist
+
+- Persist the intent, idempotency key, purchase ID, requested plan or amount, and
+  terminal status.
+- Keep approval URLs out of routine logs and analytics.
+- Allow only trusted `https` approval URLs returned by Nitrosend.
+- Poll with bounded backoff and resume after process restarts.
+- Branch on provider route and next action instead of assuming Stripe.
+- Mark internal work complete only after Nitrosend reports `active` or
+  `credited`.
+
+For the state and authority model, read [Purchase lifecycle](/concepts/payment-lifecycle).
+For exact fields, use the [MCP tools reference](/mcp) and generated
+[API reference](/api/).

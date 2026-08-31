@@ -75,6 +75,8 @@ export default defineConfig({
           {
             group: "Guides",
             pages: [
+              "guides/agent-payments",
+              "guides/mcp-examples",
               "guides/sending-emails",
               "guides/sending-domains",
               "guides/managing-contacts",
@@ -89,6 +91,7 @@ export default defineConfig({
             group: "Concepts",
             pages: [
               "concepts/glossary",
+              "concepts/payment-lifecycle",
               "concepts/contacts",
               "concepts/templates",
               "concepts/flows",

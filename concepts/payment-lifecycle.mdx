@@ -1,0 +1,176 @@
+---
+title: Purchase lifecycle
+description: The state, authority, idempotency, and provider invariants behind Nitrosend plan checkout and prepaid funding
+---
+
+# Purchase lifecycle
+
+Payment is a state transition, not a URL. Nitrosend records purchase intent
+before provider work, exposes human approval when required, and reports success
+only after the provider outcome is reconciled into account state.
+
+## Two purchase domains
+
+| Domain | Durable intent | Account state changed | Terminal success |
+|---|---|---|---|
+| **Plan purchase** | Requested plan plus idempotency claim | Subscription, commercial tier, entitlements | Subscription is `active` on the requested plan |
+| **Prepaid funding** | Requested amount, currency, instrument, and idempotency claim | Funding ledger and available balance | Funding purchase is `credited` |
+
+The domains share orchestration principles, not storage or balances. A plan
+purchase cannot satisfy a prepaid deficit, and a funding credit cannot activate
+subscription entitlements.
+
+## State transitions
+
+### Plan purchase
+
+~~~text
+request
+  |
+  +--> confirmation_required -- operator confirms with same key --> request
+  |
+  +--> provider applies, schedules, or declines the change directly
+  |
+  +--> pending + approval URL
+             |
+             +--> active
+             +--> expired
+             +--> failed
+             +--> provider outcome still pending
+~~~
+
+A purchase can complete without hosted checkout when the existing billing
+provider applies or schedules the change directly. When checkout is hosted, the
+same pending subscription and purchase claim carry the provider session,
+expiration, and requested plan.
+
+### Prepaid funding
+
+~~~text
+requested -> checkout_created -> pending -> credited
+     |              |               |          |
+     +--------------+---------------+--> failed
+                                    +--> expired
+                                               +--> partially_reversed --> reversed
+                                               +-------------------------> reversed
+~~~
+
+Customer-facing status collapses internal dispatch and uncertain provider work
+into a recoverable `pending` state. The service retains more precise evidence
+for reconciliation and audit.
+
+## Authority boundaries
+
+Three authorities participate:
+
+1. **The caller owns intent.** It chooses a plan or amount and supplies a stable
+   idempotency key.
+2. **The account owner owns approval.** Nitrosend returns a provider approval URL
+   when money or an external subscription needs confirmation. The agent does not
+   open, approve, or complete that step on the owner's behalf.
+3. **Nitrosend owns product finality.** Webhooks and provider readback are
+   reconciled into the subscription or funding ledger. Consumers trust the
+   resulting `active` or `credited` state.
+
+A browser redirect is not evidence of settlement. Webhook receipt alone is also
+not the consumer contract; the reconciled Nitrosend read model is.
+
+## Idempotency boundary
+
+The idempotency key is bound to an account, operation, and request fingerprint.
+
+- An exact retry returns or resumes the original purchase.
+- Reusing the key with a changed plan, amount, currency, or instrument conflicts.
+- A timeout does not justify a new key.
+- A new key is appropriate only for a new intent or after an expired or terminal
+  failed attempt that the next action explicitly permits replacing.
+
+The provider receives a derived idempotency identity from the same durable claim.
+This prevents a retry between local persistence and the provider response from
+creating parallel checkout sessions.
+
+## Provider routing
+
+Billing route is account state, not a client preference.
+
+| Route | Plan behavior | Prepaid behavior |
+|---|---|---|
+| **Stripe** | Hosted Checkout or an in-place subscription change | Hosted funding checkout when purchase policy is available |
+| **Shopify** | Nitrosend returns a Shopify-hosted approval URL | A provider-hosted approval URL is returned when a funding instrument is available |
+| **Vercel** | Nitrosend returns the Vercel resource management action | Funding status explains the marketplace-managed or unavailable route |
+| **Transition or unavailable** | Mutation stops with a provider-safe recovery action | Purchase capability is unavailable until the route is resolved |
+
+Clients must not construct Stripe sessions, Shopify confirmations, or Vercel
+management links themselves. They follow `billing_route`, `manage_url`,
+`approval`, and `next_action`.
+
+## Webhook and readback authority
+
+Webhooks make completion prompt; readback makes it recoverable. Both converge on
+the same local state transition.
+
+- A valid webhook can reconcile the provider object into Nitrosend state.
+- Plan checkout status may perform provider readback when a webhook is delayed.
+- Funding purchase status reads local reconciled state; provider webhooks and
+  background reconciliation own provider readback and apply.
+- Reconciliation is idempotent, so webhook delivery and polling can race safely.
+- Unknown or incomplete provider evidence remains pending or fails closed.
+- Funding is credited through the ledger transition, not by trusting a success
+  redirect or client-supplied amount.
+
+Plan checkout status is an active recovery tool. Funding purchase status is the
+stable observation surface for the ledger transition performed by the webhook
+or reconciliation worker.
+
+## Authorization and URL visibility
+
+Billing is account-scoped. Read operations can expose status without granting
+mutation authority. Checkout creation and approval URL visibility require a
+billing-authorized context.
+
+Headless clients should use an account-scoped API key stored as a secret.
+External OAuth MCP sessions can inspect billing but do not carry a per-request
+account principal for mutations. The correct result is an admin handoff to
+Nitrosend or a scoped API-key workflow. A client must never work around that
+result by calling Stripe directly.
+
+Approval URLs are capabilities:
+
+- Return them only to an authorized caller.
+- Keep them out of routine logs, traces, and analytics.
+- Discard them after expiration or terminal completion.
+- Use only the exact provider URL returned by Nitrosend.
+
+## Error taxonomy
+
+| Class | Examples | Meaning |
+|---|---|---|
+| **Caller correction** | Missing plan, invalid amount, invalid key | Fix the request before retrying |
+| **Intent conflict** | `idempotency_conflict` | The key is already bound to another request |
+| **Authority** | `ask_account_admin` | The caller may read but cannot create or view the approval |
+| **Provider route** | `billing_provider_unavailable`, marketplace management | Follow the returned account route |
+| **Open purchase** | Pending plan or funding purchase | Resume and poll the existing purchase |
+| **Evidence unavailable** | Pending purchase, unverified checkout | Retry status with bounded backoff |
+| **Terminal or reversal** | `expired`, `failed`, `partially_reversed`, `reversed` | Do not replay the purchase; trust the returned balance and recovery action |
+
+## Testing invariants
+
+A payment integration is ready when tests prove all of these:
+
+- Exact retries return one local purchase and one provider checkout.
+- Changed requests under the same key conflict.
+- The caller cannot observe an approval URL without billing authority.
+- Checkout creation does not activate a plan or credit a balance.
+- Redirect arrival does not activate a plan or credit a balance.
+- Valid webhook evidence and status readback converge on the same final state.
+- Invalid or incomplete provider evidence cannot produce `active` or
+  `credited`.
+- Plan purchase does not change prepaid balance.
+- Funding purchase does not change subscription entitlements.
+- Shopify plan purchases receive Shopify-hosted approval, while
+  marketplace-managed accounts receive their provider management action. Neither
+  route receives an incorrect Stripe checkout.
+
+Use [Payments for agents](/guides/agent-payments) for the operational flow. The
+[MCP tools reference](/mcp) and generated [API reference](/api/) remain
+authoritative for exact fields and response schemas.

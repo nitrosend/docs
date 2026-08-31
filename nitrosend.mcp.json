@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.5.2"
+    "version": "1.6.0"
   },
   "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
@@ -2383,11 +2383,15 @@
           },
           "params": {
             "type": "object",
-            "description": "Operation parameters: checkout requires plan_id; add_funds requires amount_cents and currency; funding_purchase_status requires purchase_id.",
+            "description": "Operation parameters: checkout requires plan_id and may require confirm; checkout_status accepts its plan purchase_id; add_funds requires amount_cents and currency; funding_purchase_status requires its funding purchase_id.",
             "properties": {
               "plan_id": {
                 "type": "integer",
                 "description": "Plan ID (required for checkout)"
+              },
+              "confirm": {
+                "type": "boolean",
+                "description": "Set true only after operator confirmation when checkout reports confirmation_required"
               },
               "amount_cents": {
                 "type": "integer",
@@ -2407,14 +2411,15 @@
               },
               "purchase_id": {
                 "type": "integer",
-                "description": "Local funding purchase ID"
+                "description": "Local purchase ID returned by checkout or add_funds, interpreted by operation"
               }
             },
             "additionalProperties": false
           },
           "idempotency_key": {
             "type": "string",
-            "description": "Required stable key for add_funds. Reuse it only for an unchanged request."
+            "maxLength": 128,
+            "description": "Required stable key for checkout and add_funds. Reuse it only for an unchanged request."
           }
         },
         "required": [
@@ -2423,8 +2428,8 @@
         "additionalProperties": false
       },
       "annotations": {
-        "destructiveHint": false,
-        "idempotentHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
         "openWorldHint": true,
         "readOnlyHint": false,
         "title": "Manage billing"
@@ -2596,7 +2601,7 @@
     },
     {
       "name": "nitro_inbox_action",
-      "description": "Mutate an agent inbox item or mailbox thread. Commands: send_reply, send_reply_test, mark_handled, request_human, release_to_agent, mark_quarantine.",
+      "description": "Reply or update inbox triage, sender policy, read state, and contact linkage through one mutation tool.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2609,7 +2614,11 @@
               "mark_handled",
               "request_human",
               "release_to_agent",
-              "mark_quarantine"
+              "mark_quarantine",
+              "classify_spam",
+              "set_sender_policy",
+              "set_read_state",
+              "set_contact"
             ],
             "description": "Inbox action command"
           },
@@ -2653,6 +2662,56 @@
             "type": "boolean",
             "default": false,
             "description": "Validate send_reply or send_reply_test without creating or sending"
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "spam",
+              "not_spam"
+            ],
+            "description": "Spam feedback for classify_spam"
+          },
+          "inbox_id": {
+            "type": "integer",
+            "description": "Inbox id for sender policy"
+          },
+          "matcher_type": {
+            "type": "string",
+            "enum": [
+              "address",
+              "domain"
+            ]
+          },
+          "matcher_value": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "allow",
+              "block"
+            ]
+          },
+          "read": {
+            "type": "boolean",
+            "description": "Read or unread state for set_read_state"
+          },
+          "last_read_message_id": {
+            "type": "integer"
+          },
+          "contact_id": {
+            "type": "integer",
+            "description": "Existing contact id for set_contact"
+          },
+          "create_contact": {
+            "type": "boolean",
+            "default": false
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
           }
         },
         "required": [

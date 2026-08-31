@@ -84,6 +84,36 @@ nitrosend mcp tools call nitro_query \
 
 CSV mode is table-only — no envelope, no sidecars. Use it when you want raw rows.
 
+### Purchase a plan or add prepaid funds
+
+The Nitrosend CLI invokes `nitro_manage_billing` over MCP directly. No
+payment-specific CLI or external runtime sits between the command and
+Nitrosend.
+
+~~~bash
+# Inspect account route, plan, and prepaid balance
+nitrosend mcp tools call nitro_manage_billing --machine \
+  --args '{"operation":"status"}'
+
+# List plans, then prepare owner-approved checkout
+nitrosend mcp tools call nitro_manage_billing --machine \
+  --args '{"operation":"plans"}'
+nitrosend mcp tools call nitro_manage_billing --machine \
+  --args '{"operation":"checkout","params":{"plan_id":2},"idempotency_key":"plan-pro-acme-2026-08-31"}'
+
+# Or prepare a separate prepaid funding purchase
+nitrosend mcp tools call nitro_manage_billing --machine \
+  --args '{"operation":"add_funds","params":{"amount_cents":5000,"currency":"USD"},"idempotency_key":"fund-validation-acme-2026-08-31"}'
+~~~
+
+The command returns an approval URL and purchase ID when provider approval is
+needed. The account owner completes Checkout in a browser. Poll
+`checkout_status` until the plan is `active`, or
+`funding_purchase_status` until funds are `credited`.
+
+See [Payments for agents](/guides/agent-payments) for complete commands, Link
+and Stripe CLI terminology, and recovery rules.
+
 ### Replay a recent command
 
 ```bash

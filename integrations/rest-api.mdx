@@ -220,6 +220,25 @@ plus pacing and a bounded public reason/remediation. This endpoint never
 authorizes or reserves a send. The actual send still passes through the single
 delivery authority, so clients must not calculate headroom from a plan name.
 
+## Plan checkout and prepaid funding
+
+Plan purchase and prepaid balance are separate account-scoped lifecycles. Send
+a stable `Idempotency-Key` when creating either purchase. For a plan, call
+`POST /v1/my/subscription/checkout`, complete provider approval when requested,
+then poll `GET /v1/my/subscription/checkout_status?purchase_id=...` until the
+requested plan is active.
+
+For prepaid balance, inspect `GET /v1/my/billing/funding` first. Create a
+funding purchase with `POST /v1/my/billing/funding/purchases`, passing
+`amount_cents`, `currency`, and a stable `Idempotency-Key`. Poll
+`GET /v1/my/billing/funding/purchases/{id}` until the purchase is credited.
+
+Checkout creation, browser redirect, and webhook delivery alone are not
+completion proof. [Payments for agents](/guides/agent-payments) owns the full
+MCP, CLI, and REST journey; [Purchase lifecycle](/concepts/payment-lifecycle)
+defines state and authority. Use the generated [API reference](/api/) for exact
+fields.
+
 ## Explicit prepaid validation
 
 Email validation is never included or triggered by import, schedule, or send.
@@ -253,6 +272,12 @@ increase sender capacity.
 
 | Action | Method | Endpoint |
 |--------|--------|----------|
+| **Billing** | | |
+| Create or reuse plan checkout | `POST` | `/subscription/checkout` |
+| Reconcile plan checkout | `GET` | `/subscription/checkout_status` |
+| Get prepaid funding status | `GET` | `/billing/funding` |
+| Create or reuse funding purchase | `POST` | `/billing/funding/purchases` |
+| Reconcile funding purchase | `GET` | `/billing/funding/purchases/{id}` |
 | **Messages** | | |
 | Send a message | `POST` | `/messages` |
 | List messages | `GET` | `/messages` |
