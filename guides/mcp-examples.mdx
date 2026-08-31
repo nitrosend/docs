@@ -376,6 +376,22 @@ Approval, Safe Mode, and `confirm_send_to_all` are separate checks. Approval ver
 
 ---
 
+## Buy a plan or add prepaid funds
+
+Plan purchase and prepaid funding share `nitro_manage_billing`, but they remain
+separate lifecycles. Start with `status`, ask the account owner to approve the
+exact plan or amount, and pass a stable `idempotency_key` when you create the
+purchase. If Nitrosend returns an approval URL, hand it to the owner and poll
+Nitrosend afterward. A plan is complete at `active`; prepaid funding is complete
+at `credited`.
+
+[Payments for agents](/guides/agent-payments) has complete MCP, CLI, and REST
+flows. [Purchase lifecycle](/concepts/payment-lifecycle) explains approval,
+idempotency, provider routing, and completion proof. Use the [MCP tools
+reference](/mcp) for the current request and response fields.
+
+---
+
 ## What's next
 
 - [Connect your AI tool](/integrations/overview) — setup guides for Claude, ChatGPT, Gemini, Cursor, and more
