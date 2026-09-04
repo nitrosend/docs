@@ -41,10 +41,16 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
     "channel": "email",
     "to": "user@example.com",
     "subject": "Welcome to our platform",
-    "html": "<h1>Welcome!</h1><p>Thanks for signing up.</p>",
-    "body": "Welcome! Thanks for signing up."
+    "html": "<h1>Welcome!</h1><p>Order {{ data.order_id }} confirmed.</p>",
+    "body": "Welcome! Order {{ data.order_id }} confirmed.",
+    "data": { "order_id": "A-1042" }
   }'
 ```
+
+On a transactional send, `{{ data.* }}` reads the per-send `data` payload above, and
+`{{ contact.* }}` reads the recipient's stored contact fields. Stored custom and
+enrichment fields belong to campaigns, flows and templates — see the
+[personalization reference](/concepts/templates#personalization).
 
 ### List campaigns
 

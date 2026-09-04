@@ -15,7 +15,16 @@ Each contact can have multiple communication channels:
 
 ## Custom fields
 
-Store additional data on contacts using custom fields. These can be used in template personalization and segment conditions.
+Store additional data on contacts using custom fields — pass any keys in the `data`
+object when creating or updating a contact (`data: { "plan_tier": "pro" }`), map CSV
+columns during import, or let an integration sync fill them in.
+
+Custom fields work in segment conditions and as merge tags in email copy, using the
+`data.` namespace: `{{ data.plan_tier }}`. Data synced from a connected tool is
+mergeable the same way (`{{ data.shopify.last_order_total }}`), while provider
+credentials, raw payloads and internal identifiers are not. `GET /v1/my/contacts/fields`
+returns each field's ready-to-paste `merge_tag`, or `null` when the field cannot be
+used in copy — see the [personalization reference](/concepts/templates#personalization).
 
 ## Tags
 
