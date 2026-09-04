@@ -29,9 +29,12 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
     "to": "user@example.com",
     "subject": "Your receipt",
     "html": "<h1>Thanks for your purchase</h1>",
-    "body": "Thanks for your purchase"
+    "body": "Thanks for your purchase",
+    "idempotency_key": "receipt-order-1042"
   }'
 ```
+
+Always pass an `idempotency_key` (or an `Idempotency-Key` header): a stable value tied to the triggering event, such as `receipt-order-1042`. Retrying with the same key never sends a duplicate; reusing a key with a different payload returns a `409 idempotency_conflict`. Keyless sends are deprecated and will be rejected from **1 September 2026** (responses already carry `Deprecation` and `Sunset` headers).
 
 ## Email editor
 
