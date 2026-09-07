@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.6.0"
+    "version": "1.6.2"
   },
   "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
@@ -2006,7 +2006,7 @@
     },
     {
       "name": "nitro_review_delivery",
-      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Flow review needs exact revision_id; this never approves or sends.",
+      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2034,12 +2034,19 @@
             "type": "integer",
             "minimum": 1,
             "description": "Optional contact ID for merge-tag personalization during review"
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 998,
+            "description": "Subject for a self-contained inline email review"
+          },
+          "html": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144,
+            "description": "Rendered HTML for a self-contained inline email review"
           }
         },
-        "required": [
-          "target_type",
-          "target_id"
-        ],
         "additionalProperties": false
       },
       "annotations": {
@@ -2113,6 +2120,10 @@
             },
             "maxItems": 5,
             "description": "Explicit test recipients. Use email addresses for email targets and E.164 phone numbers for SMS targets."
+          },
+          "data": {
+            "type": "object",
+            "description": "Sample values for required data.* merge fields in an email test."
           },
           "dry_run": {
             "type": "boolean",
@@ -2483,7 +2494,8 @@
         },
         "required": [
           "channel",
-          "to"
+          "to",
+          "idempotency_key"
         ],
         "additionalProperties": false
       },
