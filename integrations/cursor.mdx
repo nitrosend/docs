@@ -110,7 +110,7 @@ Send a test of my latest campaign to user@example.com
     Open Cursor's MCP settings and confirm the `nitrosend` server is enabled. Trigger a Nitrosend tool call again. If Cursor still does not prompt for OAuth, remove and re-add the `nitrosend` entry and restart Cursor once.
   </Accordion>
   <Accordion title="Tools not appearing in Cursor Chat">
-    If you edited `mcp.json` manually, make sure Cursor picked up the new config. A restart is sometimes required after adding a new server. Check that `api.nitrosend.com` is reachable: `curl -I https://api.nitrosend.com/mcp`
+    If you edited `mcp.json` manually, make sure Cursor picked up the new config. A restart is sometimes required after adding a new server. Inspect protected-resource metadata with `curl -i https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp`; it should return `200 OK` and name `https://api.nitrosend.com/mcp` as the protected resource. Separately, unauthenticated `GET /mcp` should return `401 Unauthorized` with `WWW-Authenticate: Bearer resource_metadata="https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp"`. Authenticated MCP application traffic uses `POST /mcp`; because Nitrosend does not offer a GET/SSE listener, authenticated `GET /mcp` returns `405 Method Not Allowed`.
   </Accordion>
 </AccordionGroup>
 
