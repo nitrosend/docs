@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.6.2"
+    "version": "1.6.3"
   },
   "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
@@ -2006,7 +2006,7 @@
     },
     {
       "name": "nitro_review_delivery",
-      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends.",
+      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends. For flows, an omitted revision_id uses the current draft and a supplied revision_id asserts that it is still current.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2028,7 +2028,7 @@
           "revision_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Required for flows. Exact immutable flow revision to review."
+            "description": "Optional for flows. Omit to review the current draft, or supply its ID as a current-draft assertion."
           },
           "contact_id": {
             "type": "integer",
@@ -2148,7 +2148,7 @@
     },
     {
       "name": "nitro_control_delivery",
-      "description": "Approve or control flow/campaign delivery after review. The reviewed brand sid is an optional assertion; resume never publishes a draft, and flow publication requires its exact revision.",
+      "description": "Approve or control flow/campaign delivery after review. The reviewed brand sid is an optional assertion; resume never publishes a draft. Flow approve, reject, and live use the current draft when revision_id is omitted, while a supplied revision_id asserts that draft is still current.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2193,7 +2193,7 @@
           "revision_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Exact flow revision for approve, reject, or live."
+            "description": "Optional for flow approve, reject, and live. Omit to use the current draft; supply it as a current-draft staleness assertion."
           },
           "confirm_send_to_all": {
             "type": "boolean",
