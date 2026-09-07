@@ -142,7 +142,7 @@ claude mcp add --transport http -s project nitrosend https://api.nitrosend.com/m
 
 <AccordionGroup>
   <Accordion title="Connection failed">
-    Make sure `api.nitrosend.com` is reachable from your network. Run `curl -I https://api.nitrosend.com/mcp` to check connectivity.
+    Make sure `api.nitrosend.com` is reachable from your network. Inspect protected-resource metadata with `curl -i https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp`; it should return `200 OK` and name `https://api.nitrosend.com/mcp` as the protected resource. Separately, unauthenticated `GET /mcp` should return `401 Unauthorized` with `WWW-Authenticate: Bearer resource_metadata="https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp"`. Authenticated MCP application traffic uses `POST /mcp`; because Nitrosend does not offer a GET/SSE listener, authenticated `GET /mcp` returns `405 Method Not Allowed`.
   </Accordion>
   <Accordion title="Authentication failed">
     Run `/mcp` inside Claude Code to trigger the OAuth flow explicitly. If that still fails, remove and re-add the server: `claude mcp remove nitrosend` then re-run the add command.
