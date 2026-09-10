@@ -21,30 +21,48 @@ month**. No credit card required.
 
 ## Plans
 
-| Plan | Price | Emails / month | Brands | Customer domains | Rolling 24h recipients | Seats |
+| Plan | Price | Emails / month | Brands | Customer domains | Rolling 24h recipients: Probation / Standard / Trusted | Seats |
 |------|-------|----------------|--------|------------------|------------------------|-------|
-| **Free** | $0 | 8,000 starter budget, then 500/mo | 3 | 1 | 100 | 1 |
-| **Pro** | $20/mo | 20,000 | 5 | 3 | 10,000 | 3 |
-| **Ultra** | $100/mo | 125,000 | 10 | 10 | 62,500 | 10 |
-| **Enterprise** | from $300/mo | 500K–4M+ (tiered) | Unlimited | Unlimited | Contracted | Unlimited |
+| **Free** | $0 | 8,000 starter budget, then 500/mo | 3 | 1 | 100 / 500 / 5,000 | 1 |
+| **Pro** | $20/mo | 20,000 | 5 | 3 | 1,000 / 10,000 / 100,000 | 3 |
+| **Ultra** | $100/mo | 125,000 | 10 | 10 | 1,000 / 62,500 / 625,000 | 10 |
+| **Enterprise** | from $300/mo | 500K–4M+ (tiered) | Unlimited | Unlimited | 1,000 for new unproven accounts / Contracted / Contracted | Unlimited |
 
 Every brand can prepare one reserved Nitrosend brand-subdomain sender. It does
-not consume the customer-domain allowance. Brand-subdomain senders have a
-separate 1,000-recipient rolling 24-hour infrastructure ceiling, and every
-sender also follows its own volume-based capacity and delivery pacing. The
-binding limit is always the lowest applicable commercial, sender, provider, or
-pacing control. Included email volume never guarantees immediate dispatch
-speed.
+not consume the customer-domain allowance. Hosted brand subdomains follow the
+same plan and standing allowances; they do not have an extra 1,000/day ceiling.
+Daily usage is pooled across the account's brands and includes capacity held
+for queued or unresolved sends. Email credits are separate from daily capacity.
+Provider limits, sender health and pacing still govern actual dispatch.
+
+Standing combines attributable delivery history, current positive list
+verification, domain strength and account signals. Sufficient evidence can
+qualify an account on day one; payment alone does not earn trust. Trusted
+receives its full plan allowance without a second volume ramp. New sender
+contexts still require their first-send safety review, and Probation reviews
+each changed content identity. Existing reviewed Enterprise terms remain intact.
 
 Email validation has no included allowance on any plan. It is an explicit
 prepaid operation and is never started automatically during import, scheduling,
 or sending.
 
+Use **Contacts → Verify list** to choose all contacts in the Brand, a contact
+list, a segment, or selected contacts. Review the exact audience and maximum
+charge before confirming. Each operation accepts up to 100,000 candidates;
+larger audiences must be split into bounded lists or segments. Valid results
+can raise standing; invalid, catch-all and unknown results do not prove list
+quality. Buying prepaid credits alone does not raise standing.
+
+The dashboard warns at 80% and at exhaustion. Free accounts receive the valid
+plan-upgrade action; accounts whose list evidence can improve receive **Verify
+your list**. API and MCP capacity responses expose the same reasons and actions.
+Queued campaigns wait for capacity; API callers should follow the returned
+retry time rather than repeatedly retrying or treating the refusal as delivered.
+
 - **Pro and above** add BYO sending/AI keys, frontier AI models, removable
   branding, and priority support.
 - **Ultra and Enterprise** add dedicated IPs as a paid add-on and more brands,
-  seats, and domains. New identities build capacity from clean delivered
-  volume.
+  seats, and domains.
 - **Enterprise** adds SSO / SAML, a 99.9% SLA, a dedicated account manager, and
   tiered volume pricing for higher-volume senders.
 

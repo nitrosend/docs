@@ -102,12 +102,18 @@ any domain.
 
 ## How sending capacity grows
 
-Each effective sending identity has its own capacity history. Headroom grows
-only from matured, clean delivered volume on that exact identity—not from
-account age, subscription age, payment, list imports, validation, or time
-passing. A new customer domain therefore begins with its own observed history;
-volume from another hosted or customer-domain identity is never transferred to
-it. Existing legacy `.com` history also remains bound to that exact identity.
+Sending allowance depends on your plan and sender standing: Probation, Standard
+or Trusted. Standing ranks attributable delivery history, positive current list
+verification, domain strength and account signals together. Strong evidence can
+earn a higher standing on day one; payment alone cannot. Trusted receives the
+full plan allowance immediately, without a second volume ramp. See
+[Pricing](/pricing) for the plan-and-standing allowances.
+
+Each effective sending identity still owns its own delivery and reputation
+history. History is not copied between domains, and changing sender context
+does not copy its first-send content clearance. Probation continues to require
+review of each changed content identity; higher standing does not bypass sender
+authentication, suppression or safety checks.
 
 Commercial plan capacity, identity capacity, provider limits, and delivery
 pacing are separate inputs to one admission decision. The API, MCP status, and
