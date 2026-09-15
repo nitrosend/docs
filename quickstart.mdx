@@ -36,14 +36,13 @@ Add Nitrosend as an MCP server, then sign in. Pick your tool:
     ```
 
     Then run `/mcp` inside Claude Code and complete the Nitrosend sign-in.
+
+    Or point your agent at the install skill, [nitrosend.com/SKILL.md](https://nitrosend.com/SKILL.md), and it connects itself.
   </Tab>
-  <Tab title="Claude Desktop">
-    Add Nitrosend as a **Custom Connector** — not the CLI. In Claude Desktop, go to **Settings** → **Connections** → **Customize** → **Add Connectors +** → **Add Custom Connector**, then enter:
+  <Tab title="Claude Desktop / Claude.ai">
+    Enable the official **Nitrosend** connector, not the CLI. In Claude Desktop (or Cowork), go to **Settings** → **Connectors**, search for `Nitrosend` and click **Connect**. On Claude.ai, open [claude.ai/directory/nitrosend](https://claude.ai/directory/nitrosend) and click **Connect**.
 
-    - **Name**: `nitrosend`
-    - **Remote MCP URL**: `https://api.nitrosend.com/mcp`
-
-    Click **Connect** and sign in when prompted. No API key needed.
+    Sign in when prompted. No API key, no URL to paste.
   </Tab>
   <Tab title="ChatGPT">
     Install the official Nitrosend app from the ChatGPT app directory, click **Connect**, and sign in — no config, no API key.
@@ -130,7 +129,7 @@ name—not the account owner's name.
 
 ### 2. Activate a sender
 
-In **Settings > Domains**, activate the protected Nitrosend address reserved for
+In **Settings > Domains** ([app.nitrosend.com/my/settings/domains](https://app.nitrosend.com/my/settings/domains)), activate the protected Nitrosend address reserved for
 your brand, or add the DNS records for a customer-owned sending subdomain.
 Activation is an immediate local database operation under Nitrosend's already
 verified shared sender root; it creates no per-brand DNS, DKIM, provider
@@ -139,21 +138,21 @@ selected, Nitrosend preserves it until you explicitly choose another sender.
 
 ### 3. Import contacts
 
-Go to **Contacts > Import** and upload a CSV, or add contacts manually. Each contact needs at least an email address.
+Go to **Contacts > Import** ([app.nitrosend.com/my/contacts/import](https://app.nitrosend.com/my/contacts/import)) and upload a CSV, or add contacts manually. Each contact needs at least an email address.
 
 ### 4. Create a template
 
-Head to **Templates** and use the drag-and-drop editor to design your email. Your brand colors and logo are applied automatically.
+Head to **Templates** ([app.nitrosend.com/my/templates](https://app.nitrosend.com/my/templates)) and use the drag-and-drop editor to design your email. Your brand colors and logo are applied automatically.
 
 ### 5. Send a campaign
 
-Go to **Campaigns > New**, select your template and audience, and hit send.
+Go to **Campaigns > New** ([app.nitrosend.com/my/campaigns](https://app.nitrosend.com/my/campaigns)), select your template and audience, and hit send.
 
 ---
 
 ## Using the REST API
 
-If you prefer to integrate programmatically, grab your API key from **Settings > API Keys** and check the [API Reference](/api/).
+If you prefer to integrate programmatically, grab your API key from **Settings > API Keys** ([app.nitrosend.com/my/settings/api-keys](https://app.nitrosend.com/my/settings/api-keys)) and check the [API Reference](/api/).
 
 ```bash
 curl -X POST https://api.nitrosend.com/v1/my/messages \
