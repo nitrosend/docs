@@ -1,32 +1,28 @@
 ---
 title: Claude Desktop
-description: Add Nitrosend as a Custom Connector in Claude Desktop for conversational email marketing
+description: Enable the official Nitrosend connector in Claude Desktop and run your email marketing through conversation
 ---
 
 # Claude Desktop + Nitrosend MCP
 
-Connect Nitrosend to Claude Desktop as a Custom Connector and manage your email marketing through natural conversation. No coding, no config files — just add the connection and start prompting.
+Nitrosend is an official connector in the Claude directory. Enable it once under **Settings → Connectors**, sign in, and Claude can run your email marketing through natural conversation. No coding, no config files, no URL to paste.
 
 <Info>
-  Claude Desktop users should connect Nitrosend as a Custom Connector. Do not install `@nitrosend/cli` or run `nitrosend login` for the standard Claude Desktop setup — the CLI is for terminal and CI workflows, not Desktop connector onboarding.
+  Claude Desktop, Claude.ai and Claude Cowork users should enable the Nitrosend connector. Do not install `@nitrosend/cli` or run `nitrosend login` for the standard Claude setup; the CLI is for terminal and CI workflows, not connector onboarding.
 </Info>
 
 ## What is MCP?
 
 **MCP (Model Context Protocol)** is an open standard that lets Claude connect directly to external services. When Nitrosend is connected as an MCP server, Claude gets native access to your email marketing — campaigns, flows, contacts, templates, analytics — all through conversation.
 
-## Setup: Add Nitrosend as a Custom Connector
+## Setup: Enable the Nitrosend connector
 
 <Steps>
-  <Step title="Open Claude Desktop Settings">
-    In the Claude Desktop app, go to **Settings** → **Connections** → **Customize**.
+  <Step title="Open Connectors">
+    In the Claude Desktop app, go to **Settings** → **Connectors**.
   </Step>
-  <Step title="Add a Custom Connector">
-    Click **Add Connectors +** → **Add Custom Connector** and enter:
-    - **Name**: `nitrosend`
-    - **Remote MCP URL**: `https://api.nitrosend.com/mcp`
-
-    Click **Connect**.
+  <Step title="Find Nitrosend and connect">
+    Search for **Nitrosend** and click **Connect**. The same listing is at [claude.ai/directory/nitrosend](https://claude.ai/directory/nitrosend): open that link in Claude.ai (web) to add the connector there, and it is available in Claude Desktop and Cowork as well.
   </Step>
   <Step title="Sign in">
     Claude will open a Nitrosend sign-in window. Log in or create a free account — no API key needed.
@@ -43,7 +39,7 @@ Connect Nitrosend to Claude Desktop as a Custom Connector and manage your email 
 </Steps>
 
 <Tip>
-  No API key required. The Custom Connector handles authentication through a secure sign-in flow — just log in when prompted and you're connected.
+  No API key and no server URL required. The connector handles authentication through a secure sign-in flow: log in when prompted and you're connected. If you added Nitrosend as a custom connector before it was listed in the directory, it was upgraded to the official listing automatically.
 </Tip>
 
 ## What Claude can do with Nitrosend connected
@@ -88,8 +84,8 @@ Beyond tools, Claude can read live resources for deeper context:
 
 ## Tips for best results
 
-- **Set up your Brand Kit first.** Go to [Brand Kit](https://app.nitrosend.com/my/brand) and configure your brand colors, fonts, and logo. Claude uses this automatically when composing emails.
-- **Use AI Memory.** Go to [AI Memory](https://app.nitrosend.com/my/settings/memory) to tell Nitrosend about your business goals, target audience, and email strategy. Claude reads this to make smarter decisions.
+- **Set up your Brand Kit first.** Go to Brand Kit ([app.nitrosend.com/my/brand](https://app.nitrosend.com/my/brand)) and configure your brand colors, fonts, and logo. Claude uses this automatically when composing emails.
+- **Use AI Memory.** Go to AI Memory ([app.nitrosend.com/my/settings/memory](https://app.nitrosend.com/my/settings/memory)) to tell Nitrosend about your business goals, target audience, and email strategy. Claude reads this to make smarter decisions.
 - **Be specific about your audience.** Say "send to the newsletter list" rather than just "send an email."
 - **Ask for previews.** Say "send me a test first" before going live with any campaign.
 
@@ -97,9 +93,13 @@ Beyond tools, Claude can read live resources for deeper context:
   Learn how to configure Brand Kit and AI Memory to make every email smarter.
 </Card>
 
+## Fallback: custom connector
+
+If your Claude organisation restricts directory connectors, ask an organisation owner to enable Nitrosend, or to add it as a custom connector: **Settings** → **Connectors** → **Add custom connector**, name `Nitrosend`, remote MCP URL `https://api.nitrosend.com/mcp`. On individual plans you can add the custom connector yourself. Same tools, same sign-in flow.
+
 ## Legacy fallback: Manual MCP configuration
 
-If the Custom Connector method isn't available in your version of Claude Desktop, update Claude Desktop first. Only use this local stdio fallback when you cannot use Custom Connectors and you understand that it stores an API key in your local Claude config:
+If neither the directory listing nor custom connectors are available in your version of Claude Desktop, update Claude Desktop first. Only use this local stdio fallback when you cannot use connectors at all and you understand that it stores an API key in your local Claude config:
 
 <Expandable title="Manual config file setup">
 
@@ -128,5 +128,5 @@ Restart Claude Desktop. You should see a hammer icon indicating MCP tools are av
 </Expandable>
 
 <Info>
-  Requires Node.js 18 or later for the manual config method. The Custom Connector method has no local dependencies and remains the recommended path.
+  Requires Node.js 18 or later for the manual config method. The directory connector has no local dependencies and remains the recommended path.
 </Info>

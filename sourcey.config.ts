@@ -91,6 +91,7 @@ export default defineConfig({
             group: "Concepts",
             pages: [
               "concepts/glossary",
+              "concepts/dashboard-urls",
               "concepts/payment-lifecycle",
               "concepts/contacts",
               "concepts/templates",
