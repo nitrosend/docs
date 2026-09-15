@@ -39,7 +39,7 @@ Nitrosend is an official connector in the Claude directory. Enable it once under
 </Steps>
 
 <Tip>
-  No API key and no server URL required. The connector handles authentication through a secure sign-in flow: log in when prompted and you're connected. If you added Nitrosend as a custom connector before it was listed in the directory, it was upgraded to the official listing automatically.
+  No API key and no server URL required. The connector handles authentication through a secure sign-in flow: log in when prompted and you're connected.
 </Tip>
 
 ## What Claude can do with Nitrosend connected
@@ -89,13 +89,15 @@ Beyond tools, Claude can read live resources for deeper context:
 - **Be specific about your audience.** Say "send to the newsletter list" rather than just "send an email."
 - **Ask for previews.** Say "send me a test first" before going live with any campaign.
 
-<Card title="Brand Kit & AI Memory" icon="sparkles" href="/integrations/mcp-brand-kit-memory">
-  Learn how to configure Brand Kit and AI Memory to make every email smarter.
-</Card>
+<CardGroup cols={1}>
+  <Card title="Brand Kit & AI Memory" icon="sparkles" href="/integrations/mcp-brand-kit-memory">
+    Learn how to configure Brand Kit and AI Memory to make every email smarter.
+  </Card>
+</CardGroup>
 
 ## Fallback: custom connector
 
-If your Claude organisation restricts directory connectors, ask an organisation owner to enable Nitrosend, or to add it as a custom connector: **Settings** → **Connectors** → **Add custom connector**, name `Nitrosend`, remote MCP URL `https://api.nitrosend.com/mcp`. On individual plans you can add the custom connector yourself. Same tools, same sign-in flow.
+If your Claude organisation restricts directory connectors, ask an organisation owner to enable Nitrosend, or to add it as a custom connector: **Settings** → **Connectors** → **Add custom connector**, name `Nitrosend`, remote MCP URL `https://api.nitrosend.com/mcp`. Same tools, same sign-in flow.
 
 ## Legacy fallback: Manual MCP configuration
 
