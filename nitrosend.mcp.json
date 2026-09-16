@@ -3,7 +3,7 @@
   "mcpVersion": "2026-05-26",
   "server": {
     "name": "nitro",
-    "version": "1.6.3"
+    "version": "1.6.4"
   },
   "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
@@ -373,7 +373,7 @@
               "bulk_tag",
               "validate"
             ],
-            "description": "Choose one audience operation. validate accepts exactly one of contact_channel_ids, contact_ids, list_id, or segment_id. Dry-run quotes without mutation; execution needs idempotency_key and prepaid funds. Deletion needs confirm."
+            "description": "Choose one audience operation. validate accepts exactly one of contact_channel_ids, contact_ids, list_id, segment_id, or all_contacts: true. Dry-run quotes without mutation; pass its quote_digest on execution to refuse audience or price drift. Execution needs idempotency_key and prepaid funds. Deletion needs confirm."
           },
           "params": {
             "type": "object",
@@ -792,7 +792,7 @@
     },
     {
       "name": "nitro_import_contacts",
-      "description": "Import up to 100 inline contacts or use the CSV upload/finalize path for up to 250k. Existing subscription state is preserved unless opt_in is explicit; SMS opt-in must be explicit.",
+      "description": "Inline: max 100 contacts; large lists: CSV upload/finalize. Account-standing row/file limits: status guardrail (standing, max_rows) or GET /v1/my/imports/spec. Existing subscription state is always preserved. Inline records subscribe only with an explicit opt_in (SMS included); a CSV import asserts consent for the contacts it creates, so new email and phone channels from CSV rows are subscribed.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2509,7 +2509,7 @@
     },
     {
       "name": "nitro_inbox",
-      "description": "Read the agent queue or mailbox. Follow exact next_calls for older or truncated thread content.\n",
+      "description": "Read the agent queue or mailbox. Follow next_calls for older or truncated thread content.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2523,7 +2523,8 @@
               "list_mailbox",
               "get_thread",
               "get_thread_page",
-              "get_message_body"
+              "get_message_body",
+              "get_attachment"
             ]
           },
           "action_item_id": {
@@ -2534,19 +2535,26 @@
           },
           "before_occurred_at": {
             "type": "string",
-            "description": "Exact ISO 8601 thread cursor returned by get_thread or get_thread_page"
+            "description": "Thread cursor from get_thread/get_thread_page"
           },
           "before_message_id": {
             "type": "integer",
-            "description": "Exact thread cursor message id returned with before_occurred_at"
+            "description": "Cursor message id paired with before_occurred_at"
           },
           "message_id": {
             "type": "integer"
           },
+          "attachment_id": {
+            "type": "integer"
+          },
+          "acknowledge_unscanned": {
+            "type": "boolean",
+            "description": "Operator accepted the unscanned-download risk"
+          },
           "offset": {
             "type": "integer",
             "minimum": 0,
-            "description": "Exact sanitized-body character offset returned by get_thread or get_message_body"
+            "description": "Body offset from get_thread/get_message_body"
           },
           "state": {
             "type": "string",
@@ -2558,7 +2566,7 @@
               "needs_attention",
               "all"
             ],
-            "description": "Optional queue state filter; default needs_attention"
+            "description": "Default needs_attention"
           },
           "status": {
             "type": "string",
@@ -2569,24 +2577,63 @@
             ]
           },
           "query": {
-            "type": "string"
+            "type": "string",
+            "description": "Subject, preview, or sender"
           },
           "inbox_id": {
             "type": "integer"
+          },
+          "sender": {
+            "type": "string",
+            "description": "Sender fragment"
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "since": {
+            "type": "string",
+            "description": "ISO 8601"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "queue",
+              "newest"
+            ]
+          },
+          "view": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "full"
+            ],
+            "description": "Default compact"
+          },
+          "include_counts": {
+            "type": "boolean"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "reply",
+              "read"
+            ],
+            "description": "get_thread only"
           },
           "page": {
             "type": "integer"
           },
           "per": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Max 100 compact"
           },
           "brand_context_ref": {
             "type": "string",
-            "description": "Current context ref for get_item/get_thread."
+            "description": "Ref from a prior read"
           },
           "reply_context_digest": {
             "type": "string",
-            "description": "Current reply_context.context_digest required by validate_reply."
+            "description": "From get_item/get_thread; required by validate_reply"
           },
           "subject": {
             "type": "string"
@@ -2596,6 +2643,14 @@
           },
           "html": {
             "type": "string"
+          },
+          "attachment_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "description": "Signed upload references"
           }
         },
         "required": [
@@ -2613,7 +2668,7 @@
     },
     {
       "name": "nitro_inbox_action",
-      "description": "Reply or update inbox triage, sender policy, read state, and contact linkage through one mutation tool.",
+      "description": "Reply, reserve attachments, triage one item or many, and set sender policy, read state, or contact linkage.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2630,33 +2685,88 @@
               "classify_spam",
               "set_sender_policy",
               "set_read_state",
-              "set_contact"
+              "set_contact",
+              "reserve_attachment_upload"
             ],
             "description": "Inbox action command"
           },
           "action_item_id": {
             "type": "integer",
-            "description": "Queue item id for queue-gated commands"
+            "description": "Queue item id"
+          },
+          "action_item_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1,
+            "maxItems": 100,
+            "description": "Triage: many items"
+          },
+          "filter": {
+            "type": "object",
+            "description": "Triage: list_queue filters; needs expected_count",
+            "additionalProperties": true
+          },
+          "expected_count": {
+            "type": "integer",
+            "minimum": 0
           },
           "conversation_id": {
             "type": "integer",
-            "description": "Mailbox conversation id for reply commands"
+            "description": "Mailbox thread id for reply commands"
           },
           "subject": {
             "type": "string",
-            "description": "Optional reply subject for send_reply or send_reply_test"
+            "description": "Reply subject"
           },
           "body": {
             "type": "string",
-            "description": "Plain text reply body for send_reply or send_reply_test"
+            "description": "Plain text reply body"
           },
           "html": {
             "type": "string",
-            "description": "Optional HTML reply body for send_reply or send_reply_test"
+            "description": "HTML reply body"
+          },
+          "attachment_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "description": "Signed upload references"
+          },
+          "upload": {
+            "type": "object",
+            "description": "File metadata for reserve_attachment_upload",
+            "properties": {
+              "filename": {
+                "type": "string"
+              },
+              "content_type": {
+                "type": "string"
+              },
+              "byte_size": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 6291456
+              },
+              "checksum": {
+                "type": "string",
+                "description": "Base64 MD5"
+              }
+            },
+            "required": [
+              "filename",
+              "content_type",
+              "byte_size",
+              "checksum"
+            ],
+            "additionalProperties": false
           },
           "reply_context_digest": {
             "type": "string",
-            "description": "Current reply_context.context_digest from nitro_inbox get_item/get_thread. Required for reply commands."
+            "description": "From nitro_inbox get_item/get_thread; required for reply commands"
           },
           "to": {
             "type": "array",
@@ -2664,28 +2774,27 @@
               "type": "string"
             },
             "maxItems": 5,
-            "description": "Explicit test recipients for send_reply_test"
+            "description": "Test recipients for send_reply_test"
           },
           "idempotency_key": {
             "type": "string",
-            "description": "Required for all action commands"
+            "description": "Required"
           },
           "dry_run": {
             "type": "boolean",
             "default": false,
-            "description": "Validate send_reply or send_reply_test without creating or sending"
+            "description": "Validate a reply without sending"
           },
           "classification": {
             "type": "string",
             "enum": [
               "spam",
               "not_spam"
-            ],
-            "description": "Spam feedback for classify_spam"
+            ]
           },
           "inbox_id": {
             "type": "integer",
-            "description": "Inbox id for sender policy"
+            "description": "For set_sender_policy"
           },
           "matcher_type": {
             "type": "string",
@@ -2701,19 +2810,19 @@
             "type": "string",
             "enum": [
               "allow",
-              "block"
+              "block",
+              "handle"
             ]
           },
           "read": {
-            "type": "boolean",
-            "description": "Read or unread state for set_read_state"
+            "type": "boolean"
           },
           "last_read_message_id": {
             "type": "integer"
           },
           "contact_id": {
             "type": "integer",
-            "description": "Existing contact id for set_contact"
+            "description": "For set_contact"
           },
           "create_contact": {
             "type": "boolean",
