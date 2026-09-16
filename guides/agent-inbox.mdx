@@ -48,10 +48,16 @@ Agents work the queue over MCP with two tools:
 
 ```text
 nitro_inbox         list_queue | get_item | list_mailbox | get_thread | get_thread_page | get_message_body | validate_reply
-nitro_inbox_action  send_reply | send_reply_test | mark_handled | request_human | release_to_agent | mark_quarantine
+nitro_inbox_action  send_reply | send_reply_test | mark_handled | request_human | release_to_agent | mark_quarantine | classify_spam
 ```
 
-A typical loop: `list_queue` with `state: "agent_ready"`, `get_item` for the thread, follow `get_thread_page` or `get_message_body` when the response provides those continuation calls, `validate_reply` to check the draft, `send_reply_test` to verify an explicit test recipient when needed, `send_reply` to answer, and `request_human` for anything the agent should not decide alone.
+A typical loop: `list_queue` with `state: "agent_ready"`, `get_item` for the thread, follow `get_thread_page` or `get_message_body` when the response provides those continuation calls, `validate_reply` to check the draft, `send_reply_test` to verify an explicit test recipient when needed, `send_reply` to answer, and `request_human` for anything the agent should not decide alone. An accepted `send_reply` marks its item handled on its own; use `mark_handled` for items you close without replying.
+
+`list_queue` and `list_mailbox` return compact rows by default (id, state, reason codes, sender, subject, timing) and take `view: "full"` for previews and contact context. The queue filters by `state`, `inbox_id`, `reason_code`, `sender`, `query`, `since`, and `sort`; page 1 carries the state counts. Reads that will not reply can pass `purpose: "read"` to `get_thread` and skip the reply context. When a read returns a `brand_context_ref`, pass it on the next read so the brand packet is reused rather than re-sent.
+
+Sender rules (`set_sender_policy`, or `POST /v1/my/inboxes/:id/sender_policy`) take three decisions: `allow` skips the provider spam gate for that sender or domain, `block` quarantines it, and `handle` projects its mail straight to `handled` with the reason `sender_auto_handled`, which is how notification senders (CI, OTP mailers, marketplace bots) stay out of the queue for good. Like `allow`, `handle` overrides the provider spam verdict for that sender; a virus verdict or an inactive inbox still quarantines regardless of the rule. Separately, a `Reply-To` that differs from `From` but shares its registrable domain on an authenticated message is recorded as `reply_to_mismatch_aligned` and no longer sends ordinary list mail to a human; a cross-domain `Reply-To` still does.
+
+Triage verbs (`mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`, `classify_spam`) act on one item with `action_item_id`, on up to 100 with `action_item_ids`, or on a `filter` (the same keys as `list_queue`) with `expected_count` set to the total the listing reported. A batch returns `updated` ids with their new state and `skipped` ids with a reason, never item bodies; if the filtered selection changed since it was listed, the call is refused with the live count so nothing acts on mail you have not seen.
 
 ## REST API
 
@@ -59,8 +65,9 @@ Everything the dashboard does is available over REST:
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /v1/my/inbox_action_items` | List the queue (`state`, `inbox_id` filters) |
+| `GET /v1/my/inbox_action_items` | List the queue (`state`, `inbox_id`, `reason_code`, `sender`, `query`, `since`, `sort` filters) |
 | `POST /v1/my/inbox_action_items/:id/act` | Apply a verb (`mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`) |
+| `POST /v1/my/inbox_action_items/act` | Apply one verb to many items (`action_item_ids`, or `filter` + `expected_count`; max 100) |
 | `GET /v1/my/conversations` | List threads (`mailbox=true`, `inbox_id`, `query`) |
 | `GET /v1/my/conversations/:id` | Thread with messages |
 | `POST /v1/my/conversations` | Compose a new message (`inbox_id`, `to[]`, `cc[]`, `bcc[]`, `subject`, `body`) |
