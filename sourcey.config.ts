@@ -50,7 +50,7 @@ export default defineConfig({
           },
           {
             group: "API Integrations",
-            pages: ["integrations/rest-api", "integrations/events-api", "integrations/api-reference", "cli/overview", "integrations/vercel-ai-sdk", "integrations/vercel-marketplace"],
+            pages: ["integrations/rest-api", "integrations/events-api", "integrations/api-reference", "cli/overview", "integrations/vercel-ai-sdk", "integrations/vercel-marketplace", "integrations/stripe-projects"],
           },
           {
             group: "Email Providers",
@@ -70,6 +70,7 @@ export default defineConfig({
               "integrations/attio",
               "integrations/hubspot",
               "integrations/shopify",
+              "integrations/stripe",
             ],
           },
           {

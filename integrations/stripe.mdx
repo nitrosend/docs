@@ -1,0 +1,78 @@
+---
+title: Stripe
+description: Bring Stripe customers, subscriptions and payments into Nitrosend for segments, personalisation and flows
+---
+
+# Stripe
+
+Install the Nitrosend app on your Stripe account to import customers with their subscription and payment history, and to trigger flows from billing events as they happen.
+
+This is your own Stripe account's data. It is separate from how Nitrosend bills you; nothing here touches your Nitrosend plan.
+
+## What syncs
+
+The Stripe connector imports:
+
+- Stripe customers as Nitrosend contacts (email and phone where present)
+- Subscription facts on the contact: plan, status, MRR, renewal date, trial end, cancellation flag
+- Paid invoices and refunds as orders, so revenue and lifetime value are counted once
+- Stripe source metadata on the contact
+
+Customers are imported as contacts only. Use [segments](/concepts/segments) to build audiences from subscription status, plan, MRR and payment activity.
+
+## Consent handling
+
+Stripe customers have not opted in to marketing email by installing an app, so they are imported **unsubscribed by default**. Opt contacts in through your own consent flow before sending marketing email; transactional and account email can use the facts straight away.
+
+## Events and flow triggers
+
+Once connected, Stripe sends account events to Nitrosend. Each event is verified, matched to your connection and applied to the contact, and the following [flow](/concepts/flows) triggers fire:
+
+| Trigger | Stripe event |
+| --- | --- |
+| Purchase | `invoice.paid` |
+| Checkout | `checkout.session.completed` |
+| Subscription started | `customer.subscription.created` with status `active` or `trialing` |
+| Subscription canceled | `customer.subscription.deleted`, or an update that turns on cancel at period end |
+| Trial ending | `customer.subscription.trial_will_end` |
+| Payment failed | `invoice.payment_failed` |
+
+Every trigger carries `event.source`, `event.stripe_event_id`, `event.stripe_event_type` and `event.customer_id`; subscription triggers add `event.plan` and `event.currency`, and a failed payment adds `event.amount`. A redelivered Stripe event never enrols a contact twice.
+
+## Connect Stripe
+
+From Nitrosend:
+
+1. Go to **Integrations** in Nitrosend.
+2. Choose **Stripe**.
+3. Click **Connect** and approve the Nitrosend app on the Stripe account you want to import.
+4. Return to Nitrosend and run **Sync customers**.
+
+From the Stripe App Marketplace:
+
+1. Install Nitrosend from the listing.
+2. If the account email is new to Nitrosend, an account is created for you and you land in the dashboard signed in. If this Stripe account is already connected to a Nitrosend account, you land in that account.
+3. If your email already has a Nitrosend account that is not yet connected to this Stripe account, sign in and connect Stripe from **Integrations**.
+
+The app asks for read access to customers, subscriptions, invoices, charges, refunds, checkout sessions and events. Nitrosend never stores an API key you paste; the app token is refreshed on your behalf and only ever reads.
+
+The sync runs in the background. The sync progress tray keeps you updated anywhere in the dashboard, or return to the integration detail page for details. Run **Sync customers** again any time to refresh history; live events keep contacts current between syncs.
+
+## Test mode
+
+Choose the test-mode install link to connect a Stripe test environment. A test connection is kept apart from a live one, so both can exist for the same Stripe account without mixing customers or revenue.
+
+## Disconnect and reconnect
+
+Uninstalling the app from Stripe stops all reads immediately; Nitrosend keeps the imported contacts and history. Reconnecting from **Integrations** restores the same connection and its baseline, so nothing is counted twice.
+
+## After import
+
+- Review imported customers in **Contacts**.
+- Use [segments](/concepts/segments) to build audiences from plan, status, MRR and payment activity.
+- Build [flows](/concepts/flows) from the triggers above.
+- Send only to contacts who are subscribed in Nitrosend.
+
+<Warning>
+  Stripe sync imports customers and receives billing events. It does not charge customers, change subscriptions, or write data back to Stripe.
+</Warning>
