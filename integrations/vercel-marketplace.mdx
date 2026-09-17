@@ -81,6 +81,12 @@ The SSO entry point follows Vercel's redirect-login flow: Vercel sends
 `mode=sso`, `code`, and `state`; Nitrosend exchanges them with Vercel for a
 short-lived OIDC token, verifies it, then opens the existing dashboard callback.
 
+If the email on your Vercel team already has a Nitrosend account, the install
+is not attached to it automatically. Vercel shows a notice, and the first SSO
+takes you to the Nitrosend sign-in; once you are signed in as an admin of the
+account you want to use, the installation is linked to it. Installs with a new
+email get a Nitrosend account created for them.
+
 ## Billing
 
 Marketplace-billed resources are billed through Vercel. Nitrosend keeps a local

@@ -1,0 +1,90 @@
+---
+title: Stripe Projects
+description: Provision a Nitrosend account, API key and hosted sender from the Stripe CLI, pay for a tier with the card on your Stripe account, and manage it all with stripe projects
+---
+
+# Stripe Projects
+
+Nitrosend is a provider on [Stripe Projects](https://projects.dev). One
+command creates or links a Nitrosend account, provisions a sending brand with
+an API key and a hosted sender, writes the credentials to your `.env`, and
+lets you pick, upgrade and downgrade tiers from the terminal. Everything the
+CLI creates is an ordinary Nitrosend account you can open in the dashboard.
+
+Availability depends on Stripe listing Nitrosend in the Projects catalog.
+Until then, use the regular dashboard and API key flow.
+
+## Quickstart
+
+```bash
+stripe plugin install projects
+stripe projects init
+stripe projects add nitrosend/email --config '{"company_name":"Acme Coffee","website":"https://acme.example"}'
+stripe projects env --pull
+```
+
+`add` returns `NITROSEND_API_KEY`, `NITROSEND_API_URL`, `NITROSEND_MCP_URL`,
+`NITROSEND_BRAND_SID` and `NITROSEND_FROM_ADDRESS`. The sender is
+`hello@<company>.nitrosend.net`, reserved for you and activated on your first
+send; no DNS is needed. If you omit `company_name`, the CLI asks for it before
+the sender can be reserved.
+
+Your coding agent gets a `sp-nitrosend` skill written next to the credentials;
+it explains the variables, the MCP connection and the first send.
+
+## Accounts
+
+- **New to Nitrosend.** The verified email on your Stripe account gets a
+  Nitrosend account, owned by you, with the normal dashboard access.
+- **Already a Nitrosend user.** Your email is never attached from the CLI
+  alone. The CLI opens the Nitrosend sign-in; sign in, choose the account to
+  link, and the link completes. For a headless agent, mint a one-time link
+  token in Settings > Developers and pass it: `stripe projects link nitrosend
+  --config '{"link_token":"XXXXXXXX"}'`.
+- **Same Stripe account, another teammate.** A new email on a Stripe account
+  that already has a Nitrosend account is added to that account as an owner.
+
+`stripe projects unlink nitrosend` removes the link and keeps the account.
+
+## Tiers and billing
+
+Tiers are the public Nitrosend plans: Free, Pro and Ultra. Every tier has
+unlimited contacts; agent and API calls are not metered. Enrichment and
+email validation are metered per use on every tier.
+
+```bash
+stripe projects upgrade nitrosend/email      # pick pro or ultra
+stripe projects downgrade nitrosend/email    # back to free
+```
+
+A paid tier is charged to the card on your Stripe Projects billing profile
+through a Shared Payment Token. Nitrosend runs the subscription in its own
+Stripe account, so renewals, receipts and dunning work exactly as for any
+Nitrosend customer, and `stripe projects spend` shows what Nitrosend charged.
+Your monthly spend cap applies. The dashboard shows the plan and routes plan
+changes back to the CLI.
+
+## Credentials
+
+`stripe projects rotate nitrosend/email` issues a new API key; the previous
+key keeps working for 24 hours. `stripe projects remove nitrosend/email`
+deprovisions the resource: the key is revoked after a grace period, the
+brand and its content stay, and the account stays.
+
+## Sending from your own domain
+
+The hosted sender needs no DNS. To send from your own domain, open
+Settings > Domains in the dashboard, add the domain, publish the records it
+prints, and select it. Both senders can coexist.
+
+## Stripe customer data
+
+Nitrosend can also import the customers, subscriptions and invoices from the
+Stripe account you build on and turn them into segments, merge fields and
+flow triggers. See [Stripe](/integrations/stripe).
+
+## Dashboard
+
+`stripe projects open nitrosend` prints a one-time sign-in link to the
+dashboard for this account. The link expires after five minutes and works
+once.
