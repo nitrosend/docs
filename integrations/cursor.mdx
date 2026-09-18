@@ -1,23 +1,31 @@
 ---
 title: Cursor
-description: Connect Nitrosend to Cursor via MCP for AI-powered email marketing inside your editor
+description: Install the official Nitrosend plugin from the Cursor Marketplace and run your email marketing from Cursor's agent
 ---
 
-# Cursor + Nitrosend MCP
+# Cursor + Nitrosend
 
-Connect Nitrosend to Cursor and manage your email marketing directly from your editor. Compose emails, build automation flows, send campaigns, and check analytics — all through conversation.
+Nitrosend is an official plugin on the [Cursor Marketplace](https://cursor.com/marketplace/nitrosend). Install it once and Cursor's agent gets the full Nitrosend tool set: compose emails, build automation flows, send campaigns, manage contacts and check analytics, all through conversation.
 
 ## Setup
 
-### One-click install
+### Option 1: Install the official plugin (recommended)
 
-[Install Nitrosend in Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=nitrosend&config=eyJ1cmwiOiJodHRwczovL2FwaS5uaXRyb3NlbmQuY29tL21jcCJ9)
+In Cursor's Agent chat, run:
 
-Cursor should add Nitrosend as a remote MCP server using the direct `url` config. On first use, Cursor will prompt you to sign in with Nitrosend — no API key needed.
+```
+/add-plugin nitrosend
+```
 
-### Manual install
+Or install from the listing: **[Add Nitrosend to Cursor](https://cursor.com/marketplace/nitrosend)**
 
-Add Nitrosend to `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside the current repo for a project-local setup:
+Click **Add to Cursor** on the listing (Cursor asks you to sign in to your Cursor account first if you are not already). You can also open **Customize** in the Cursor sidebar, find **Nitrosend** and choose **Install**, then pick project or user scope.
+
+The plugin bundles one remote MCP server, `nitrosend`, pointed at `https://api.nitrosend.com/mcp`. Nothing runs on your machine, so it works in the Cursor desktop app and Cursor on the web. Cloud agents keep their own MCP list: add the same URL as an HTTP server from the MCP dropdown at [cursor.com/agents](https://cursor.com/agents), or have a team admin share it under Dashboard, Plugins & MCPs, then sign in once (OAuth is per user).
+
+### Option 2: Add the MCP server manually
+
+Prefer to manage MCP servers yourself? Add the same server to `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside the current repo for a project-local setup:
 
 ```json
 {
@@ -29,21 +37,43 @@ Add Nitrosend to `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` in
 }
 ```
 
-Restart Cursor. On first use, Cursor will prompt you to sign in via OAuth.
+Restart Cursor if the server does not appear straight away.
 
 <Tip>
-  Cursor now supports Nitrosend as a direct remote HTTP MCP server. Do not use `mcp-remote` or the local `@nitrosend/mcp` package for the standard Cursor setup.
+  Pick one path. The plugin and the manual entry add the same server, so keep one or the other and Cursor lists a single `nitrosend` server. Do not use `mcp-remote` or the local `@nitrosend/mcp` package for the standard Cursor setup.
 </Tip>
+
+<details>
+<summary>Older Cursor builds without remote MCP support</summary>
+
+If your Cursor build cannot connect to a remote MCP server directly, route through the stdio bridge instead. It needs Node on the machine:
+
+```json
+{
+  "mcpServers": {
+    "nitrosend": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://api.nitrosend.com/mcp"]
+    }
+  }
+}
+```
+
+</details>
+
+### Sign in
+
+The first Nitrosend tool call opens a Nitrosend sign-in window. Log in or create a free account there. OAuth handles the rest: no API key, nothing to paste.
 
 ### Verify the connection
 
-Open Cursor Chat and ask:
+Open Cursor's Agent chat and ask:
 
 ```
 What's my Nitrosend account status?
 ```
 
-If the sign-in prompt does not appear after the first Nitrosend tool call, open Cursor's MCP settings, confirm the `nitrosend` server is enabled, and re-run the prompt. If Cursor still does not pick up a new `mcp.json`, restart it once.
+Cursor calls `nitro_get_status` and shows your account, sender identity, readiness, blockers and recommendations. If the sign-in prompt does not appear after the first tool call, open **Customize** in the sidebar, confirm the `nitrosend` MCP server is enabled, and re-run the prompt.
 
 ## Example workflows
 
@@ -107,13 +137,16 @@ Send a test of my latest campaign to user@example.com
 
 <AccordionGroup>
   <Accordion title="Sign-in window didn't open">
-    Open Cursor's MCP settings and confirm the `nitrosend` server is enabled. Trigger a Nitrosend tool call again. If Cursor still does not prompt for OAuth, remove and re-add the `nitrosend` entry and restart Cursor once.
+    Open **Customize** in the Cursor sidebar and confirm the `nitrosend` MCP server is enabled. Trigger a Nitrosend tool call again. If Cursor still does not prompt for OAuth, remove and re-add the plugin (or the `nitrosend` entry in `mcp.json`) and restart Cursor once.
   </Accordion>
   <Accordion title="Tools not appearing in Cursor Chat">
-    If you edited `mcp.json` manually, make sure Cursor picked up the new config. A restart is sometimes required after adding a new server. Inspect protected-resource metadata with `curl -i https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp`; it should return `200 OK` and name `https://api.nitrosend.com/mcp` as the protected resource. Separately, unauthenticated `GET /mcp` should return `401 Unauthorized` with `WWW-Authenticate: Bearer resource_metadata="https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp"`. Authenticated MCP application traffic uses `POST /mcp`; because Nitrosend does not offer a GET/SSE listener, authenticated `GET /mcp` returns `405 Method Not Allowed`.
+    If you installed the plugin, check it is enabled for the scope you are working in (project or user) under **Customize**. If you edited `mcp.json` manually, make sure Cursor picked up the new config; a restart is sometimes required after adding a new server. Inspect protected-resource metadata with `curl -i https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp`; it should return `200 OK` and name `https://api.nitrosend.com/mcp` as the protected resource. Separately, unauthenticated `GET /mcp` should return `401 Unauthorized` with `WWW-Authenticate: Bearer resource_metadata="https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp"`. Authenticated MCP application traffic uses `POST /mcp`; because Nitrosend does not offer a GET/SSE listener, authenticated `GET /mcp` returns `405 Method Not Allowed`.
+  </Accordion>
+  <Accordion title="Two nitrosend servers listed">
+    You have both the plugin and a manual `mcp.json` entry. Remove one. Either path works; the plugin is the one Cursor keeps up to date for you.
   </Accordion>
 </AccordionGroup>
 
 <Info>
-  No API key or local dependencies required. Authentication is handled via OAuth sign-in when you first connect.
+  No API key or local dependencies required. Authentication is handled via OAuth sign-in when you first connect. The plugin is free and MIT licensed; source at [github.com/nitrosend/cursor](https://github.com/nitrosend/cursor).
 </Info>
