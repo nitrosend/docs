@@ -62,7 +62,15 @@ Add Nitrosend as an MCP server, then sign in. Pick your tool:
     Codex CLI connects directly to the remote MCP server. For ChatGPT, use the ChatGPT tab.
   </Tab>
   <Tab title="Cursor">
-    Add Nitrosend to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (this repo):
+    Nitrosend is an official plugin on the Cursor Marketplace. In Cursor's Agent chat, run:
+
+    ```
+    /add-plugin nitrosend
+    ```
+
+    Or click **Add to Cursor** on the listing: [cursor.com/marketplace/nitrosend](https://cursor.com/marketplace/nitrosend). The first Nitrosend tool call opens the sign-in window. No API key, no config file.
+
+    Prefer to manage MCP servers yourself? Add the same server to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (this repo):
 
     ```json
     {
@@ -74,7 +82,7 @@ Add Nitrosend as an MCP server, then sign in. Pick your tool:
     }
     ```
 
-    Restart Cursor. On first use it prompts you to sign in via OAuth.
+    Full walkthrough in the [Cursor guide](/integrations/cursor).
   </Tab>
   <Tab title="Gemini CLI">
     Add Nitrosend to `~/.gemini/settings.json`:
