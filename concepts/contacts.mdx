@@ -15,7 +15,18 @@ Each contact can have multiple communication channels:
 
 ## Custom fields
 
-Store additional data on contacts using custom fields. These can be used in template personalization and segment conditions.
+Custom fields hold anything else you know about a contact, such as a plan or a signup source. Set them inside the contact's `data` object when you create or update the contact, through the [REST API](/guides/managing-contacts) or `attributes.data` in the `nitro_manage_audience` MCP tool:
+
+```json
+{
+  "email": "alice@example.com",
+  "data": { "plan": "pro", "signup_source": "webinar" }
+}
+```
+
+A key sent at the top level instead of inside `data` is ignored. New keys are registered automatically, so you can use them in segment conditions and in templates, where you reference one as `{{ data.plan }}` (see [personalization](/concepts/templates#personalization)).
+
+Integration fields are written by their sync under the integration's name, such as `data.shopify`, and can't be set through the API.
 
 ## Tags
 
