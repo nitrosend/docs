@@ -13,11 +13,20 @@ The visual editor uses a section-based layout. Drag components (text, images, bu
 
 ## Personalization
 
-Use merge tags to personalize content:
+Merge tags fill in each recipient's details when the email is sent. Insert them from the editor's merge tag menu, or type them:
 
 ```
 Hi {{ contact.first_name }},
+You're on the {{ data.plan | default: "free" }} plan.
+Lifetime spend: {{ data.shopify.customers.amount_spent }}
 ```
+
+- **Contact fields**: `contact.first_name`, `contact.last_name` and `contact.email`, plus profile fields such as `contact.company`, `contact.title` and `contact.total_spent`.
+- **Custom fields**: `data.<key>` reads a field from the contact's `data` object (see [custom fields](/concepts/contacts#custom-fields)). Use dots for nested fields, for example `data.preferences.locale`.
+- **Integration fields**: synced fields live under the integration's name, for example `data.shopify.customers.amount_spent`. They render in campaigns and flows; transactional messages render contact and custom fields only.
+- **Fallbacks**: in campaigns and flows, a field the contact doesn't have renders empty. `{{ data.plan | default: "free" }}` renders `free` instead. Other filters include `upcase`, `capitalize`, `number`, `currency` and `date`.
+
+Values are HTML-escaped in the HTML version of the email, so a field can't add markup.
 
 ## MJML rendering
 
