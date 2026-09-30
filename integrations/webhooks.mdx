@@ -1,0 +1,192 @@
+---
+title: Webhooks
+description: Receive signed delivery events for your transactional email at your own HTTPS endpoint
+---
+
+# Webhooks
+
+A webhook tells your application what happened to each transactional email
+without polling: Nitrosend POSTs a signed event to your HTTPS endpoint when a
+message is accepted, delivered, bounced, complained about, opened, clicked or
+fails for good.
+
+Webhooks cover transactional email: single messages your brand sends, not
+campaigns or flows. SMS and test sends do not emit events.
+
+## Events
+
+| Event | Sent when |
+| --- | --- |
+| `email.sent` | The provider accepted the message. |
+| `email.delivered` | The recipient's mail server accepted it. |
+| `email.bounced` | It bounced, hard or soft. |
+| `email.complained` | The recipient marked it as spam. |
+| `email.opened` | The first time it was opened. Security scanners and bots do not count. |
+| `email.clicked` | The first human click of each link in it. |
+| `email.failed` | It failed for good. A failure Nitrosend is still retrying is not reported, and a send whose provider outcome is unknown reports once that outcome is known. |
+
+Opens and clicks come from Nitrosend's own tracking, so a brand that turns
+open or click tracking off stops sending those two events.
+
+## Add an endpoint
+
+In the dashboard, open **Settings > Webhooks** and choose **New Webhook**
+([app.nitrosend.com/my/settings/webhooks](https://app.nitrosend.com/my/settings/webhooks)).
+Enter the endpoint URL and pick the events it should receive.
+
+Or create it with the API:
+
+```bash
+curl -X POST https://api.nitrosend.com/v1/my/webhooks \
+  -H "Authorization: Bearer $NITROSEND_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/webhooks/nitrosend",
+    "events": ["email.delivered", "email.bounced", "email.complained", "email.failed"]
+  }'
+```
+
+The response includes the endpoint's signing secret (`whsec_...`) in full.
+Store it with your other secrets. Later reads mask it; reveal it again from the
+dashboard or with `GET /v1/my/webhooks/{id}?reveal=true`.
+
+The URL must use HTTPS, resolve to a public internet address, and carry no
+credentials. A brand can have up to 10 webhooks. Webhooks appear in Settings
+only for people who can manage API keys.
+
+## What a request looks like
+
+Each event is one `POST` with a JSON body:
+
+```http
+POST /webhooks/nitrosend HTTP/1.1
+Content-Type: application/json
+User-Agent: Nitrosend-Webhooks/1.0
+webhook-id: evt_0192f3a4-7b1c-7d2e-9f10-2a3b4c5d6e7f
+webhook-timestamp: 1790740800
+webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
+
+{
+  "type": "email.bounced",
+  "timestamp": "2026-09-30T10:00:00.000Z",
+  "data": {
+    "message_id": 48213,
+    "to": "ada@example.com",
+    "subject": "Reset your password",
+    "idempotency_key": "reset-8841",
+    "tags": { "user_id": "42" },
+    "bounce": { "type": "hard", "subtype": "NoEmail" }
+  }
+}
+```
+
+- `message_id` is the `id` that `POST /v1/my/messages` returned.
+- `idempotency_key` is the `Idempotency-Key` you sent the message with. It is
+  left out when you sent none.
+- `tags` are the tags you sent the message with.
+- `timestamp` is when the event happened.
+- Some events add detail, such as `bounce` on `email.bounced` or `failure`
+  on `email.failed`. The [API Reference](/api) lists every event's fields.
+
+## Verify the signature
+
+Requests are signed in the [Standard Webhooks](https://www.standardwebhooks.com)
+format, so any Standard Webhooks library can verify them. Verify every request
+before acting on it, using the raw body exactly as received.
+
+With the Node SDK:
+
+```ts
+import express from 'express';
+import { verifyWebhook, WebhookVerificationError } from '@nitrosend/sdk';
+
+const app = express();
+
+// Register this route before any JSON body parser, so the raw body reaches it.
+app.post('/webhooks/nitrosend', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const event = await verifyWebhook(
+      req.body.toString('utf8'),
+      req.headers,
+      process.env.NITROSEND_WEBHOOK_SECRET!,
+    );
+    // event.type, event.data.message_id, ...
+    res.sendStatus(200);
+  } catch (error) {
+    if (error instanceof WebhookVerificationError) return res.sendStatus(400);
+    throw error;
+  }
+});
+```
+
+Without a library:
+
+1. Base64-decode the part of the secret after `whsec_`. That is the key.
+2. Build the signed content: `{webhook-id}.{webhook-timestamp}.{raw body}`.
+3. Compute an HMAC-SHA256 of it with the key and base64-encode the result.
+4. Compare it, in constant time, with each `v1,` value in `webhook-signature`
+   (values are space-separated). Accept the request if one matches.
+5. Reject the request if `webhook-timestamp` is more than 5 minutes from now.
+
+```python
+import base64, hashlib, hmac, time
+
+def verify(body: bytes, headers, secret: str) -> bool:
+    try:
+        msg_id = headers["webhook-id"]
+        timestamp = int(headers["webhook-timestamp"])
+        signatures = headers["webhook-signature"].split(" ")
+    except (KeyError, ValueError):
+        return False
+    if abs(time.time() - timestamp) > 300:
+        return False
+    key = base64.b64decode(secret.removeprefix("whsec_"))
+    signed = f"{msg_id}.{timestamp}.".encode() + body
+    expected = base64.b64encode(hmac.new(key, signed, hashlib.sha256).digest()).decode()
+    return any(
+        hmac.compare_digest(sig.split(",", 1)[1], expected)
+        for sig in signatures
+        if sig.startswith("v1,")
+    )
+```
+
+## Respond, retries and duplicates
+
+Return any `2xx` status within 10 seconds to acknowledge an event. Anything
+else is a failed attempt: another status, a timeout, or a redirect, which
+Nitrosend does not follow. A failed event is retried after 1 minute,
+5 minutes, 30 minutes, 2 hours, 8 hours and 24 hours, then marked failed.
+
+An event can arrive more than once (for example, when your endpoint handled
+it but answered too late), and a retried event can arrive after later ones. `webhook-id` stays the same across retries of an event:
+record the ids you have handled and skip repeats, and use `timestamp` for
+ordering.
+
+When deliveries to an endpoint have failed continuously for 3 days, the next
+failed attempt turns the endpoint off and emails the account owner. Events that occur while an endpoint
+is off are not sent, including after you turn it back on.
+
+## Test and inspect
+
+Choose **Send test event** from the webhook's menu, or call
+`POST /v1/my/webhooks/{id}/test`, to send a sample event through the same
+signed delivery path. A test event has `"test": true` in `data` and a
+`message_id` of `null`.
+
+Each webhook keeps the last 7 days of deliveries, with their status, response
+code and attempt count. See them in the webhook's edit dialog, or with
+`GET /v1/my/webhooks/{id}/deliveries`.
+
+## API
+
+| Action | Method | Endpoint |
+| --- | --- | --- |
+| List webhooks | `GET` | `/v1/my/webhooks` |
+| Create a webhook | `POST` | `/v1/my/webhooks` |
+| Get a webhook (`?reveal=true` for the full secret) | `GET` | `/v1/my/webhooks/{id}` |
+| Change the URL, events, or turn it on or off | `PATCH` | `/v1/my/webhooks/{id}` |
+| Delete a webhook and its delivery history | `DELETE` | `/v1/my/webhooks/{id}` |
+| Send a test event | `POST` | `/v1/my/webhooks/{id}/test` |
+| List recent deliveries | `GET` | `/v1/my/webhooks/{id}/deliveries` |
+
+See the [API Reference](/api) for request and response schemas.

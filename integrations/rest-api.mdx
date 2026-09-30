@@ -202,6 +202,10 @@ Pass an `Idempotency-Key` header on retries. Reusing the same key with the same
 payload returns the original message. Reusing the key with a different payload
 returns `409 idempotency_conflict`.
 
+To learn what happened to a message after it is accepted (sent, delivered,
+bounced, failed and more) without polling, register a
+[webhook](/integrations/webhooks).
+
 ## Suppressions
 
 `GET /v1/my/suppressions` lists the account's active email suppressions by
@@ -282,6 +286,11 @@ plan allowance.
 | **Messages** | | |
 | Send a message | `POST` | `/messages` |
 | List messages | `GET` | `/messages` |
+| **Webhooks** | | |
+| List webhooks | `GET` | `/webhooks` |
+| Create webhook | `POST` | `/webhooks` |
+| Send test event | `POST` | `/webhooks/{id}/test` |
+| List deliveries | `GET` | `/webhooks/{id}/deliveries` |
 | **Suppressions** | | |
 | List suppressions | `GET` | `/suppressions` |
 | **Delivery** | | |
