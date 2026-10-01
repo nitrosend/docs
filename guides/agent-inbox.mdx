@@ -74,6 +74,9 @@ Everything the dashboard does is available over REST:
 | `POST /v1/my/conversations/:id/reply` | Reply to a thread |
 | `GET /v1/my/conversations/:id/messages/:message_id/source` | Full headers and source for one message |
 
+To have new mail pushed to your own system as it arrives, subscribe a
+[webhook](/integrations/webhooks#replies) to `email.received`.
+
 Mutating requests take an `Idempotency-Key` header, so a retried request never sends twice:
 
 ```bash
