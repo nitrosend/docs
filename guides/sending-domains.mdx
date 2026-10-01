@@ -66,10 +66,14 @@ This is the setup inbox providers like Gmail expect from senders.
 
 ## Add the DNS records
 
-The **Domains** screen lists the exact records for your subdomain — typically a
+The **Domains** screen lists the exact records for your subdomain: typically a
 verification record, **SPF**, **DKIM**, and a return-path / tracking record. Add
-each one at your DNS provider (Cloudflare, GoDaddy, Namecheap, Route 53, and so on)
-exactly as shown.
+each one at your DNS provider (Cloudflare, GoDaddy, Namecheap, Route 53, and so on).
+
+Enter each record's **Host** in your provider's Host or Name field, with the type
+and value as shown. Most providers add your domain to that field themselves, so
+`send` becomes `send.yourdomain.com`, and `@` means the domain itself. Some
+providers, such as Cloudflare, accept the full name too.
 
 <Info>
   DNS changes can take anywhere from a few minutes to a couple of days to
