@@ -33,6 +33,8 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
   }'
 ```
 
+Links in transactional messages go straight to their destination. Nitrosend never rewrites them for click tracking, because they often carry sign-in, reset, or confirmation tokens. Open tracking still follows the brand setting in [Open and click tracking](#open-and-click-tracking).
+
 ## Email editor
 
 The drag-and-drop editor lets you build responsive emails visually. Your brand theme (colors, fonts, logo) is applied automatically. All emails are rendered as MJML under the hood for maximum inbox compatibility.
@@ -45,6 +47,20 @@ Use the suppressions API when you need the account-level block list and bounce
 diagnostic text behind failed recipients. `GET /v1/my/suppressions` returns the
 suppressed address, reason, source event reference, and bounded provider
 diagnostic when available.
+
+## Open and click tracking
+
+Nitrosend measures opens with a small image in the HTML part of each email, and clicks by sending links through a tracking redirect. Both are on for every brand by default and feed the **Opened** and **Clicked** numbers in Activity and the engagement filters in segments.
+
+Turn either off for a brand under **Brand > Sender > Engagement tracking** ([app.nitrosend.com/my/brand/sender](https://app.nitrosend.com/my/brand/sender)), or set `email_track_opens` or `email_track_clicks` to `false` on `PATCH /v1/my/brands/{sid}` (see the [API Reference](/api/)). The card shows the current setting, and `GET /v1/my/brands/{sid}` returns both fields.
+
+- **Open tracking off**: emails carry no tracking image.
+- **Click tracking off**: links point straight to their destination. Links in [transactional messages](#transactional-messages) never go through the redirect, whatever the setting.
+- The unsubscribe link is never rewritten.
+
+The change applies to emails rendered after you save it. A campaign already sending switches over from its next batch. Emails already delivered keep their image and links, and their links redirect as before, but opens and clicks from them are no longer recorded.
+
+Opens and clicks recorded before you turned tracking off stay in Activity and segments. To delete them, email [contact@nitrosend.com](mailto:contact@nitrosend.com): support deletes the recorded events for the tracking you turned off, segment engagement is rebuilt without them, and aggregate counts stay.
 
 ## View in browser
 
