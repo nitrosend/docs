@@ -1,6 +1,6 @@
 ---
 title: Webhooks
-description: Receive signed delivery events for your transactional email at your own HTTPS endpoint
+description: Receive signed delivery and reply events for your transactional email at your own HTTPS endpoint
 ---
 
 # Webhooks
@@ -8,10 +8,10 @@ description: Receive signed delivery events for your transactional email at your
 A webhook tells your application what happened to each transactional email
 without polling: Nitrosend POSTs a signed event to your HTTPS endpoint when a
 message is accepted, delivered, bounced, complained about, opened, clicked or
-fails for good.
+fails for good, and when a reply reaches one of your brand's inboxes.
 
-Webhooks cover transactional email: single messages your brand sends, not
-campaigns or flows. SMS and test sends do not emit events.
+Delivery events cover transactional email: single messages your brand sends,
+not campaigns or flows. SMS and test sends do not emit events.
 
 ## Events
 
@@ -24,6 +24,7 @@ campaigns or flows. SMS and test sends do not emit events.
 | `email.opened` | The first time it was opened. Security scanners and bots do not count. |
 | `email.clicked` | The first human click of each link in it. |
 | `email.failed` | It failed for good. A failure Nitrosend is still retrying is not reported, and a send whose provider outcome is unknown reports once that outcome is known. |
+| `email.received` | A message reached one of the brand's inboxes and was not quarantined: a reply, an automatic reply, or new mail to the inbox address. See [Replies](#replies). |
 
 Opens and clicks come from Nitrosend's own tracking, so a brand that
 [turns open or click tracking off](/guides/sending-emails#open-and-click-tracking)
@@ -88,6 +89,52 @@ webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
 - `timestamp` is when the event happened.
 - Some events add detail, such as `bounce` on `email.bounced` or `failure`
   on `email.failed`. The [API Reference](/api) lists every event's fields.
+
+## Replies
+
+`email.received` reports mail that reaches one of your brand's inboxes. Inboxes
+are part of the [Agent Inbox](/guides/agent-inbox), in beta and enabled on
+request. A reply reaches Nitrosend when it is sent to an inbox address, so send
+with that address as `reply_to` (or `from`) when you want replies reported.
+
+```json
+{
+  "type": "email.received",
+  "timestamp": "2026-09-30T10:04:12.000Z",
+  "data": {
+    "message_id": 48213,
+    "idempotency_key": "receipt-77",
+    "tags": { "order": "77" },
+    "from": "ada@example.com",
+    "to": "support@yourbrand.com",
+    "subject": "Re: Your receipt",
+    "text": "Can I change the delivery address?",
+    "html": "<p>Can I change the delivery address?</p>",
+    "truncated": false,
+    "auto_submitted": false,
+    "attachments": [
+      { "id": 311, "filename": "photo.jpg", "content_type": "image/jpeg", "size": 48213, "scanned": true }
+    ],
+    "conversation_id": 9021,
+    "conversation_message_id": 55410
+  }
+}
+```
+
+- When the message answers one of your sends, `message_id`, `idempotency_key`
+  and `tags` identify that send, as they do on every other event. Otherwise
+  `message_id` is `null` and `tags` is empty.
+- `text` and `html` are each capped at 64 KiB; `truncated` is `true` when
+  either was cut. The full message stays in the inbox.
+- `attachments` lists the files the inbox stored, without their contents.
+  Download one with
+  `GET /v1/my/conversations/{conversation_id}/messages/{conversation_message_id}/attachments/{id}`.
+  A file with `scanned: false` was not virus-scanned and downloads only with
+  `?acknowledge_unscanned=true`.
+- `auto_submitted` is `true` for automatic replies such as out-of-office
+  notices.
+- Mail the inbox quarantines (spam, viruses, blocked senders) is not sent.
+  Each message is reported once.
 
 ## Verify the signature
 
@@ -172,7 +219,8 @@ is off are not sent, including after you turn it back on.
 Choose **Send test event** from the webhook's menu, or call
 `POST /v1/my/webhooks/{id}/test`, to send a sample event through the same
 signed delivery path. A test event has `"test": true` in `data` and a
-`message_id` of `null`.
+`message_id` of `null`. The API sends `email.delivered` by default; pass
+`{"type": "email.received"}` (or any other event) to test that event's shape.
 
 Each webhook keeps the last 7 days of deliveries, with their status, response
 code and attempt count. See them in the webhook's edit dialog, or with
