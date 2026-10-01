@@ -105,7 +105,7 @@ Actions:
 | **SMS** | Sends a text message. Greyed out until the brand has a sending number. |
 | **Subscribe** | Opts the contact in. |
 | **Unsubscribe** | Opts the contact out. |
-| **Webhook** | Calls an external URL. |
+| **Webhook** | Calls an external URL from the flow. Not the same as [event webhooks](/integrations/webhooks), which Settings manages. |
 
 **Find Email** and **Verify Email** also appear in the palette, but they are signposts rather than steps you can add here: finding and checking addresses is lead-sourcing work, so clicking either card takes you to [Outreach](/concepts/outreach) instead of dropping a step into the flow.
 
@@ -177,6 +177,8 @@ The **Settings** area is scoped to the current brand. Its tabs:
 **Domains** — the domains the current brand is allowed to send from, and their DNS setup. See below. ([app.nitrosend.com/my/settings/domains](https://app.nitrosend.com/my/settings/domains))
 
 **API Keys** — credentials for connecting Nitrosend to your own code. Only shown if your role can manage them. ([app.nitrosend.com/my/settings/api-keys](https://app.nitrosend.com/my/settings/api-keys))
+
+**Webhooks**: HTTPS endpoints of yours that receive signed events as the brand's transactional email is sent, delivered, bounced, opened and more. Only shown if your role can manage API keys. See [Webhooks](/integrations/webhooks). ([app.nitrosend.com/my/settings/webhooks](https://app.nitrosend.com/my/settings/webhooks))
 
 **AI Memory** — a free-text note your AI agent reads every time it works on your account: preferences, house style, things to always or never do. ([app.nitrosend.com/my/settings/memory](https://app.nitrosend.com/my/settings/memory))
 
