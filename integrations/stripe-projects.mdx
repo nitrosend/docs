@@ -29,20 +29,23 @@ stripe projects env --pull
 send; no DNS is needed. If you omit `company_name`, the CLI asks for it before
 the sender can be reserved.
 
-Your coding agent gets a `sp-nitrosend` skill written next to the credentials;
-it explains the variables, the MCP connection and the first send.
+`stripe projects llm-context` points your coding agent at the Nitrosend agent
+guide: the variables, the MCP connection and the first send.
 
 ## Accounts
 
-- **New to Nitrosend.** The verified email on your Stripe account gets a
-  Nitrosend account, owned by you, with the normal dashboard access.
-- **Already a Nitrosend user.** Your email is never attached from the CLI
-  alone. The CLI opens the Nitrosend sign-in; sign in, choose the account to
-  link, and the link completes. For a headless agent, mint a one-time link
-  token in Settings > Developers and pass it: `stripe projects link nitrosend
-  --config '{"link_token":"XXXXXXXX"}'`.
-- **Same Stripe account, another teammate.** A new email on a Stripe account
-  that already has a Nitrosend account is added to that account as an owner.
+Linking needs no browser. Stripe verifies the email on your Stripe account,
+and the link is made in one step:
+
+- **New to Nitrosend.** That email gets a Nitrosend account, owned by you,
+  with the normal dashboard access.
+- **Already a Nitrosend user.** The account you administer is linked. If you
+  administer several, the CLI asks which one.
+- **Already paying Nitrosend directly.** Your plan and card stay as they are;
+  change the plan in the dashboard.
+
+A Stripe account links to one Nitrosend account, so teammates working on the
+same Stripe account work on the same Nitrosend account.
 
 `stripe projects unlink nitrosend` removes the link and keeps the account.
 
@@ -53,16 +56,18 @@ unlimited contacts; agent and API calls are not metered. Enrichment and
 email validation are metered per use on every tier.
 
 ```bash
-stripe projects upgrade nitrosend/email      # pick pro or ultra
-stripe projects downgrade nitrosend/email    # back to free
+stripe projects upgrade nitrosend      # pick pro or ultra
+stripe projects downgrade nitrosend    # back to free
 ```
 
 A paid tier is charged to the card on your Stripe Projects billing profile
 through a Shared Payment Token. Nitrosend runs the subscription in its own
-Stripe account, so renewals, receipts and dunning work exactly as for any
-Nitrosend customer, and `stripe projects spend` shows what Nitrosend charged.
-Your monthly spend cap applies. The dashboard shows the plan and routes plan
-changes back to the CLI.
+Stripe account with that token as the payment method, so the first charge and
+every renewal stay inside your Stripe Projects spending limit and show in
+`stripe projects spend`. An upgrade is charged the difference at once. Ultra
+costs more than the default Stripe Projects spending limit, so raise your
+limit in your Stripe account settings before choosing it. The dashboard shows
+the plan and routes plan changes back to the CLI.
 
 ## Credentials
 
