@@ -1,19 +1,21 @@
 ---
 title: Webhooks
-description: Receive signed delivery and reply events for your transactional email at your own HTTPS endpoint
+description: Receive signed email, reply and account events at your own HTTPS endpoint
 ---
 
 # Webhooks
 
-A webhook tells your application what happened to each transactional email
-without polling: Nitrosend POSTs a signed event to your HTTPS endpoint when a
-message is accepted, delivered, bounced, complained about, opened, clicked or
-fails for good, and when a reply reaches one of your brand's inboxes.
+A webhook tells your application what happened without polling. Nitrosend
+POSTs a signed event to your HTTPS endpoint when a transactional email is
+accepted, delivered, bounced, complained about, opened, clicked or fails for
+good, when a reply reaches one of your brand's inboxes, and when something
+changes on the account: a campaign finishes, sending pauses, a domain is
+verified.
 
-Delivery events cover transactional email: single messages your brand sends,
-not campaigns or flows. SMS and test sends do not emit events.
+Email events cover transactional email: single messages your brand sends, not
+campaigns or flows. SMS and test sends do not emit email events.
 
-## Events
+## Email events
 
 | Event | Sent when |
 | --- | --- |
@@ -30,11 +32,34 @@ Opens and clicks come from Nitrosend's own tracking, so a brand that
 [turns open or click tracking off](/guides/sending-emails#open-and-click-tracking)
 stops sending those two events.
 
+## Account events
+
+| Event | Sent when |
+| --- | --- |
+| `campaign.completed` | A campaign finished sending to its whole audience. |
+| `campaign.failed` | A campaign send ended before reaching any recipient. |
+| `campaign.stopped` | Nitrosend paused a campaign send because its bounce or spam-complaint rate crossed the stop threshold. |
+| `flow.paused` | Nitrosend paused a flow because its bounce or spam-complaint rate crossed the pause threshold. |
+| `sending.paused` | Nitrosend paused all sending on the account. |
+| `sending.limit_approaching` | The account has used most of its rolling 24-hour sending allowance. |
+| `sending.limit_reached` | The account has used its whole rolling 24-hour allowance; sends wait for capacity. |
+| `import.completed` | A contact import finished. |
+| `import.failed` | A contact import failed. |
+| `domain.verified` | A sending domain passed DNS verification and can send. |
+| `domain.verification_lost` | A verified sending domain failed its DNS checks and is no longer verified. |
+| `domain.dns_degraded` | A verified sending domain's DNS records could not be confirmed; it stays verified while Nitrosend rechecks. |
+| `webhook.disabled` | Nitrosend turned off one of the brand's webhooks after three days of failed deliveries. |
+
+The three `sending.*` events reach the webhooks of every brand in the account;
+the others reach the webhooks of the brand they concern. The
+[API Reference](/api/) lists each event's fields.
+
 ## Add an endpoint
 
 In the dashboard, open **Settings > Webhooks** and choose **New Webhook**
 ([app.nitrosend.com/my/settings/webhooks](https://app.nitrosend.com/my/settings/webhooks)).
-Enter the endpoint URL and pick the events it should receive.
+Enter the endpoint URL and pick the events it should receive. Settings lists
+the email events; add account events through the API.
 
 Or create it with the API:
 
@@ -218,8 +243,8 @@ is off are not sent, including after you turn it back on.
 
 Choose **Send test event** from the webhook's menu, or call
 `POST /v1/my/webhooks/{id}/test`, to send a sample event through the same
-signed delivery path. A test event has `"test": true` in `data` and a
-`message_id` of `null`. The API sends `email.delivered` by default; pass
+signed delivery path. A test event has `"test": true` in `data` and its ids are
+`null`. The API sends `email.delivered` by default; pass
 `{"type": "email.received"}` (or any other event) to test that event's shape.
 
 Each webhook keeps the last 7 days of deliveries, with their status, response
