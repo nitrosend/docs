@@ -45,6 +45,31 @@ Create a welcome email flow for new subscribers
   No API key or local dependencies required. Authentication is handled through your Nitrosend account when you connect Nitrosend — whether you install via the button or the marketplace search.
 </Info>
 
+### 4. Let ChatGPT watch for events
+
+In a Work chat, ChatGPT can watch Nitrosend for an event and act when it
+arrives. Tell it what to watch and what to do:
+
+```
+Watch Nitrosend for replies from ada@example.com and draft an answer to each one.
+```
+
+```
+When my next campaign finishes sending, show me how it did.
+```
+
+ChatGPT subscribes through the Nitrosend app to the same events
+[webhooks](/integrations/webhooks) receive: email events, replies to your
+Agent Inbox addresses (`email.received`) and account events. A subscription
+can be narrowed to one message, idempotency key, set of tags, sender,
+campaign, flow or domain. It covers the brand that was selected when you
+asked, and ends when you stop monitoring in ChatGPT, disconnect the app or
+lose access to the account.
+
+A reply arrives as plain text, cut to 4,000 characters and marked as untrusted
+because its sender wrote it. ChatGPT reads the whole thread with the Nitrosend
+inbox tool.
+
 ---
 
 ## Option 2: Custom GPT with Actions
