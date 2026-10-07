@@ -85,9 +85,9 @@ nitrosend_tools = types.Tool(
                 properties={
                     "to": types.Schema(type=types.Type.STRING, description="Recipient email"),
                     "subject": types.Schema(type=types.Type.STRING, description="Subject line"),
-                    "body": types.Schema(type=types.Type.STRING, description="Email body (HTML)")
+                    "html": types.Schema(type=types.Type.STRING, description="Email body as HTML")
                 },
-                required=["to", "subject", "body"]
+                required=["to", "subject", "html"]
             )
         ),
         types.FunctionDeclaration(
@@ -123,7 +123,7 @@ def execute_nitrosend_function(name, args):
     if name == "send_email":
         resp = requests.post(f"{BASE_URL}/messages", headers=HEADERS, json={
             "channel": "email", "to": args["to"],
-            "subject": args["subject"], "body": args["body"]
+            "subject": args["subject"], "html": args["html"]
         })
         return resp.json()
     elif name == "list_campaigns":
