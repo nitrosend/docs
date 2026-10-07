@@ -10,8 +10,8 @@ Project-level defaults live in `.nitrosend.yml`. The CLI walks up from your curr
 ## File shape
 
 ```yaml
-profile: sandbox
-environment: sandbox
+profile: default
+environment: production
 output: json
 api_url: https://api.nitrosend.com/mcp
 ```
@@ -19,7 +19,7 @@ api_url: https://api.nitrosend.com/mcp
 | Field | Effect |
 |---|---|
 | `profile` | Default profile to use when `--profile` is not passed. |
-| `environment` | Label shown on every command result. Drives the production guard (see below). |
+| `environment` | Local label: `development` (the default), `staging`, `sandbox`, or `production`. Drives the production guard (see below). |
 | `output` | Default output mode (`tty`, `json`, `ndjson`, `csv`). |
 | `api_url` | Default MCP endpoint. Overridden by `--api-url` or `NITROSEND_API_URL`. |
 
@@ -27,12 +27,13 @@ api_url: https://api.nitrosend.com/mcp
 
 ## Environments
 
-`environment` is a free-form label, but two values are special:
+`environment` is a local label, one of `production`, `staging`, `sandbox`, or `development`. Any other value, or no `.nitrosend.yml` at all, means `development`. One value changes behavior:
 
-- **`sandbox`** — the default. No extra confirmation required for destructive commands beyond the typed target name.
-- **`production`** — destructive commands gain an extra typed confirmation step on top of the per-command target. Designed to make it hard to run a destructive command in prod by muscle memory.
+- **`production`**: every destructive command requires typed confirmation of its target, even ones that would not otherwise ask. Designed to make it hard to run a destructive command in prod by muscle memory.
 
-The label is rendered on every command result. In agent mode, it appears in `meta.environment` so harnesses can branch on it.
+The label is not a sandbox, and Nitrosend has no server-side sandbox. It does not change the endpoint, account, or brand: commands send real mail under every label, `sandbox` included.
+
+Labels other than `development` are rendered on command results. In agent mode, the label appears in `meta.environment` so harnesses can branch on it.
 
 ```yaml
 # .nitrosend.yml in your prod automation repo
@@ -81,14 +82,14 @@ Profiles store an OAuth refresh token or an API key plus the API URL. They're wr
 
 CI runners typically set only `NITROSEND_API_KEY` and rely on the rest from `.nitrosend.yml`.
 
-## Example: monorepo with sandbox + prod scripts
+## Example: monorepo with dev + prod scripts
 
 ```
 my-app/
-├── .nitrosend.yml          # profile: sandbox, environment: sandbox
+├── .nitrosend.yml          # profile: default, environment: development
 └── scripts/
     └── deploy/
         └── .nitrosend.yml  # profile: prod, environment: production
 ```
 
-Running `nitrosend ...` from the repo root uses the sandbox profile and skips prod confirmations. Running it from `scripts/deploy/` uses the prod profile and demands typed confirmation for any destructive op. The CLI walks up from the cwd, so the nearest config wins.
+Running `nitrosend ...` from the repo root uses the default profile and skips prod confirmations. Running it from `scripts/deploy/` uses the prod profile and demands typed confirmation for any destructive op. The CLI walks up from the cwd, so the nearest config wins. Both directories send real mail.

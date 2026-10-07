@@ -36,18 +36,20 @@ Call `nitro_get_status` first for account context, then read the `nitro://guide`
 
 ## Headless path (no dashboard, no MCP client)
 
+Request bodies on this path are top-level JSON fields; only signup nests its fields, under `user`. `PATCH /v1/my/brands/{sid}` with `{ "company_name": "Acme" }` sets the company name, while `{ "brand": { "company_name": "Acme" } }` returns `200` and changes nothing.
+
 <Steps>
   <Step title="Create an account">
     `POST /v1/signup` with `{ "user": { "email", "password" } }`. Returns a 15-day JWT in the `Authorization` response header.
   </Step>
   <Step title="Mint an API key">
-    `POST /v1/my/api_keys` with that JWT returns `nskey_live_...`. Store it as a secret.
+    `POST /v1/my/api_keys` with that JWT. The response includes the full `nskey_live_...` secret once, in `secret_key`. Store it as a secret then. Later reads mask it; reveal it again with `GET /v1/my/api_keys/{id}?reveal=true`.
   </Step>
   <Step title="Activate the reserved sender">
-    Complete the Brand Kit company identity, then get the brand SID from `GET /v1/my/brands`. The response shows the protected `hello@<brand-slug>.nitrosend.net` address derived from that company name. Call `POST /v1/my/brands/{sid}/prepare_sending` to materialize its local Domain and sending-identity rows synchronously under Nitrosend's verified shared root. It creates no per-brand DNS, DKIM, provider identity, tenant resource, or background job. When no sender is selected, the same transaction selects this sender; otherwise it preserves the existing selection.
+    Get the brand SID from `GET /v1/my/brands`, then call `POST /v1/my/brands/{sid}/prepare_sending` with `{ "subdomain": "<name>" }` (optionally `"local_part"`, which defaults to `hello`). It reserves `<name>.nitrosend.net` for the brand, permanently, and materializes its local Domain and sending-identity rows synchronously under Nitrosend's verified shared root. The brand's `brand_subdomain.suggested_subdomain`, when present, is a safe starting name; if the call returns `subdomain_taken`, choose another. Without a `subdomain`, the call derives the name from the company name instead and refuses with `brand_identity_required` until the whole Brand Kit is complete. Once a name is reserved, repeat calls return it and ignore the body. The sender can send when the response `status` is `ready`. It creates no per-brand DNS, DKIM, provider identity, tenant resource, or background job. When no sender is selected, the same transaction selects this sender; otherwise it preserves the existing selection.
   </Step>
   <Step title="Send once ready">
-    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. An eligible first request can perform the same local materialization before admission. If the shared root is unavailable, the API returns retryable `hosted_sender_root_unavailable`, stores no message, reservation, charge, or provider capability, and the same request is safe to retry.
+    `POST /v1/my/messages` with `{ "channel": "email", "to", "subject", "html" }` and an `Idempotency-Key` header. If the previous step was skipped, an eligible first request performs the company-derived materialization before admission, which needs the complete Brand Kit. If the shared root is unavailable, the API returns retryable `hosted_sender_root_unavailable`, stores no message, reservation, charge, or provider capability, and the same request is safe to retry.
   </Step>
   <Step title="Choose optional production upgrades">
     A customer-owned sending subdomain builds portable reputation and never consumes the reserved Nitrosend brand-subdomain sender. Paid plans and checkout remain optional; `$0` plans need no card.
@@ -57,5 +59,7 @@ Call `nitro_get_status` first for account context, then read the `nitro://guide`
 <Info>
   Node and Python `fetch` / `requests` calls work as-is. Only the bare `Python-urllib` user agent is blocked by the WAF.
 </Info>
+
+To drive the [CLI](/cli/overview) from a runner with no browser, export the key as `NITROSEND_API_KEY` or store it with `nitrosend login --api-key <key>`. Plain `nitrosend login` opens a browser for OAuth.
 
 For the complete reference, always defer to [nitrosend.com/skill.md](https://nitrosend.com/skill.md) and the [REST API docs](/integrations/rest-api).

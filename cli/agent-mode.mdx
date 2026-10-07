@@ -44,7 +44,7 @@ Every successful command returns an object with this shape:
   "command": "mcp tools call",
   "data": { "...": "tool-specific payload" },
   "meta": {
-    "environment": "sandbox",
+    "environment": "development",
     "profile": "default",
     "duration_ms": 142,
     "idempotency_key": "cli-lt8h2c"
@@ -73,7 +73,7 @@ Errors share the envelope. They never appear on stdout in human-facing modes, bu
     "how_to_fix": "Pass `to: \"<email>\"` in --args.",
     "suggested_tool_call": { "name": "nitro_get_status", "arguments": {} }
   },
-  "meta": { "environment": "sandbox", "duration_ms": 87 }
+  "meta": { "environment": "development", "duration_ms": 87 }
 }
 ```
 
