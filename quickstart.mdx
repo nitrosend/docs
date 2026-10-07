@@ -178,7 +178,9 @@ curl -X POST https://api.nitrosend.com/v1/my/messages \
 
 Live email requires one ready, selected sender. Materialize the reserved
 Nitrosend brand-subdomain sender with
-`POST /v1/my/brands/{sid}/prepare_sending`, or verify a domain you own. The
+`POST /v1/my/brands/{sid}/prepare_sending`, or verify a domain you own. Send
+`{"subdomain": "<name>"}` to choose the name; with no body the call derives it
+from the company name and needs the complete Brand Kit. The
 operation completes synchronously and selects the new sender only when the
 brand has no existing selection. An eligible first API request can perform the
 same local materialization before admission. If the shared root is unavailable,
