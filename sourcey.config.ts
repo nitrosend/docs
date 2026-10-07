@@ -86,6 +86,7 @@ export default defineConfig({
               "guides/creating-campaigns",
               "guides/agent-inbox",
               "guides/outreach",
+              "guides/partner-program",
             ],
           },
           {
