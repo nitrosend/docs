@@ -235,7 +235,7 @@ If the campaign audience is `all_contacts`, the final call must include `confirm
 }
 ```
 
-Approval, Safe Mode, and `confirm_send_to_all` are separate checks. Approval verifies content and preflight readiness. Safe Mode can still block API-key live/schedule calls. `confirm_send_to_all` only confirms that the broad all-subscribed-contacts audience is intentional.
+Approval, Safe Mode, and `confirm_send_to_all` are separate checks. Approval verifies content and preflight readiness. Under Safe Mode an API-key email campaign send waits for the account owner to approve its exact content and audience, and API-key flow and SMS live/schedule calls are blocked. `confirm_send_to_all` only confirms that the broad all-subscribed-contacts audience is intentional.
 
 ---
 
