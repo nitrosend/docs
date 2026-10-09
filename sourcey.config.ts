@@ -84,6 +84,7 @@ export default defineConfig({
               "guides/website-signup-forms",
               "guides/building-flows",
               "guides/creating-campaigns",
+              "guides/images-and-gifs",
               "guides/agent-inbox",
               "guides/outreach",
             ],

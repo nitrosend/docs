@@ -1,0 +1,71 @@
+---
+title: Images and GIFs
+description: Supported image formats and limits, and how to put an animated GIF in a Nitrosend email
+---
+
+# Images and GIFs
+
+## Uploading images
+
+Nitrosend hosts uploaded images on its own CDN, so you never need an image
+host for a still image.
+
+| | |
+|---|---|
+| **Formats** | PNG, JPEG, WebP |
+| **Not accepted as uploads** | GIF, SVG |
+| **Max file size** | 10 MB |
+| **Max dimensions** | 4,000 px on either side, 16 megapixels total |
+
+- **In the editor:** select an Image section and click the image area to choose
+  a file.
+- **With an agent:** `nitro_ingest` takes a public `image_url` or base64 data
+  for a PNG, JPEG or WebP file and returns a Nitrosend-hosted `image_url` to use
+  in the email.
+
+## Animated GIFs
+
+GIF is the right format for animation in email. It plays in Gmail, Apple Mail,
+Yahoo and most other email apps. Nitrosend doesn't accept GIF uploads yet, so
+host the file yourself and link to it:
+
+1. Put the GIF at a public `https://` URL: your website, a CDN (S3,
+   Cloudflare, Cloudinary) or your store's file storage (Shopify Files work).
+   The link must open the `.gif` file itself, not a page that contains it.
+2. In the editor, select the Image section, choose **Use direct URL** and paste
+   the link.
+3. Send a test to yourself and check it in Gmail and Outlook before the real
+   send.
+
+### With an agent
+
+Don't ask your agent to upload the GIF: `nitro_ingest` rejects GIF files. Give
+it the hosted URL and tell it to use that link as the image `src` directly:
+
+```text
+Use the GIF at https://yoursite.com/email/hero.gif as the hero image.
+It's already hosted, so put that URL straight into the image section.
+Don't upload or convert it.
+```
+
+### Why not animated WebP?
+
+Nitrosend accepts animated WebP uploads and serves them with every frame intact,
+but **Gmail converts WebP to a static image**, so most of your readers see a
+single frame. Apple Mail plays them. If the animation matters, use a GIF.
+
+### GIF tips for email
+
+- **Frame one carries the message.** Classic Outlook for Windows shows only the
+  first frame, so put the headline or offer there.
+- **Keep it under about 1 MB.** Large GIFs load slowly on mobile data. Fewer
+  frames and fewer colors make a smaller file.
+- **Size for the email width.** Emails are 600 px wide; a 1,200 px wide GIF
+  looks sharper on high-density screens but costs file size.
+- **Add alt text.** Some email apps hide images until the reader allows them.
+- **Compress before you host it.** [ezgif.com](https://ezgif.com/optimize) works
+  in the browser, or from the command line:
+
+  ```bash
+  gifsicle -O3 --lossy=80 --resize-width 1200 hero.gif -o hero-email.gif
+  ```
