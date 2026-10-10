@@ -17,6 +17,12 @@ Inboxes run on your top-level domain, not a subdomain. You point your domain's M
 
 The exact DNS records for your domain are shown in **Settings > Domains** ([app.nitrosend.com/my/settings/domains](https://app.nitrosend.com/my/settings/domains)). Once the records verify, your claimed addresses start receiving.
 
+## One inbox, several addresses
+
+An inbox on your own domain can answer to more than one address on that domain. Add aliases such as `ask@` or `billing@` to an inbox and mail to any of them lands in the same queue. Each thread shows the address the customer wrote to, and replies go out from that address. When you compose a new message, you can send from any of the inbox's addresses.
+
+Aliases need Nitrosend to receive the domain's mail through MX. A domain that forwards mail from another provider receives at the inbox's main address only.
+
 ## The action queue
 
 Every inbound message lands in the action queue in one of four states:
