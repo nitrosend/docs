@@ -1,21 +1,21 @@
 {
   "mcpSpec": "0.2.0",
-  "mcpVersion": "2026-05-26",
+  "mcpVersion": "2026-07-28",
   "server": {
     "name": "nitro",
-    "version": "1.6.4"
+    "version": "1.7.0"
   },
   "description": "AI-native email marketing platform for campaigns, lifecycle flows, and transactional email",
   "capabilities": {
-    "tools": {
-      "listChanged": false
-    },
-    "resources": {
-      "subscribe": false,
-      "listChanged": false
-    },
-    "prompts": {
-      "listChanged": false
+    "tools": {},
+    "resources": {},
+    "prompts": {},
+    "extensions": {
+      "io.modelcontextprotocol/ui": {
+        "mimeTypes": [
+          "text/html;profile=mcp-app"
+        ]
+      }
     }
   },
   "transport": {
@@ -283,7 +283,7 @@
     },
     {
       "name": "nitro_ingest",
-      "description": "Validate and store an image in the brand library. Use image_data for small images, upload then signed_id for local files, or image_url for external/generated assets. Returns a durable email URL.",
+      "description": "Store a brand image (PNG, JPEG, GIF, WebP; max 10 MB) from image_file (ChatGPT attachment), image_data, image_url or upload then signed_id. Returns a durable email URL, up to 1200px wide.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -292,20 +292,34 @@
             "type": "string"
           },
           "image_data": {
-            "type": "string",
-            "description": "Base64/data URL for PNG, JPEG, or WebP under 10 MB."
+            "type": "string"
           },
           "image_url": {
-            "type": "string",
-            "description": "Public PNG, JPEG, or WebP URL under 10 MB."
+            "type": "string"
+          },
+          "image_file": {
+            "type": "object",
+            "properties": {
+              "download_url": {
+                "type": "string"
+              },
+              "file_id": {
+                "type": "string"
+              },
+              "mime_type": {
+                "type": "string"
+              },
+              "file_name": {
+                "type": "string"
+              }
+            }
           },
           "signed_id": {
-            "type": "string",
-            "description": "signed_id returned after the reserved upload PUT."
+            "type": "string"
           },
           "description": {
             "type": "string",
-            "description": "Truthful visible content for library selection and alt text."
+            "description": "Truthful visible content (alt text)."
           },
           "upload": {
             "type": "object",
@@ -377,7 +391,7 @@
           },
           "params": {
             "type": "object",
-            "description": "Parameters named by operation. Contact custom fields belong in attributes.data."
+            "description": "Parameters named by operation. Contact custom fields belong in attributes.data. bulk_tag tag_action: add|remove|set (default add)."
           },
           "dry_run": {
             "type": "boolean",
@@ -403,7 +417,7 @@
       "annotations": {
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "readOnlyHint": false,
         "title": "Manage audience"
       }
@@ -792,7 +806,7 @@
     },
     {
       "name": "nitro_import_contacts",
-      "description": "Inline: max 100 contacts; large lists: CSV upload/finalize. Account-standing row/file limits: status guardrail (standing, max_rows) or GET /v1/my/imports/spec. Existing subscription state is always preserved. Inline records subscribe only with an explicit opt_in (SMS included); a CSV import asserts consent for the contacts it creates, so new email and phone channels from CSV rows are subscribed.",
+      "description": "Inline: max 100 contacts; large lists: CSV upload/finalize. Account-standing row/file limits: status guardrail (standing, max_rows) or GET /v1/my/imports/spec. Inline, opt_in omitted: new email contacts subscribe both channels; phone-only stay unsubscribed. Default CSV: new contacts subscribe both channels. In both cases, existing contacts keep subscriptions; added email subscribes, added phone does not.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -828,7 +842,7 @@
                 },
                 "opt_in": {
                   "type": "boolean",
-                  "description": "Explicit subscription state; required true for SMS opt-in."
+                  "description": "true/false subscribes/unsubscribes new/existing channels written."
                 }
               }
             }
@@ -1137,7 +1151,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": false,
         "openWorldHint": false,
         "readOnlyHint": false,
@@ -1146,7 +1160,7 @@
     },
     {
       "name": "nitro_compose_flow",
-      "description": "Create or edit an automation-flow draft; never activates it. For creative email, start with composition_mode=intent and follow its exact next_call. Multi-email flows choose routes per action_name. replace requires flow_id, confirm, and the draft revision; patch preserves other nodes. Activation uses nitro_control_delivery.",
+      "description": "Create or edit an inactive automation draft. For creative email, call composition_mode=intent and follow its exact next_call. replace needs flow_id, confirm, and the draft revision; patch preserves other nodes. Activate with nitro_control_delivery.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1428,7 +1442,7 @@
               "patch"
             ],
             "default": "create",
-            "description": "create: new complete graph; replace: complete existing draft graph; patch: name and/or selected email actions"
+            "description": "create: new graph; replace: whole draft graph; patch: name or selected email actions"
           },
           "flow_id": {
             "type": "integer"
@@ -1442,6 +1456,9 @@
             "description": "Latest draft revision id for conflict-safe writes."
           },
           "goal": {
+            "type": "string"
+          },
+          "lifecycle_key": {
             "type": "string"
           },
           "composition_mode": {
@@ -1598,7 +1615,7 @@
               },
               "data": {
                 "type": "object",
-                "description": "Event-specific configuration."
+                "description": "Event settings; list_add backfill_on_publish includes existing list members."
               }
             }
           },
@@ -1917,7 +1934,7 @@
               "list",
               "remove"
             ],
-            "description": "prepare_brand_subdomain locally materializes the shared-root sender and is idempotent.\nselect_brand_subdomain selects a ready sender with optional local_part and apex.\nadd registers a customer domain and returns required DNS records.\nverify checks provider and DNS readiness. check_dns diagnoses DNS and tracking HTTPS only.\nlist returns domains, readiness, records, DMARC, and allowance use.\nremove requires domain_name and confirm; retry paired removal with unpair after showing its effect."
+            "description": "prepare_brand_subdomain reserves the subdomain if missing, then the sender; idempotent.\nselect_brand_subdomain selects a ready sender with optional local_part and apex.\nadd registers a customer domain and returns required DNS records.\nverify checks provider and DNS readiness. check_dns diagnoses DNS and tracking HTTPS only.\nlist returns domains, readiness, records, DMARC, and allowance use.\nremove requires domain_name and confirm; retry paired removal with unpair after showing its effect."
           },
           "params": {
             "type": "object",
@@ -2148,7 +2165,7 @@
     },
     {
       "name": "nitro_control_delivery",
-      "description": "Approve or control flow/campaign delivery after review. The reviewed brand sid is an optional assertion; resume never publishes a draft. Flow approve, reject, and live use the current draft when revision_id is omitted, while a supplied revision_id asserts that draft is still current.",
+      "description": "Approve or control delivery after review. Restarting a paused flow may require a choice for contacts already in progress. revision_id can assert the current draft.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2193,7 +2210,15 @@
           "revision_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Optional for flow approve, reject, and live. Omit to use the current draft; supply it as a current-draft staleness assertion."
+            "description": "Optional current-draft assertion for flow approve, reject, and live."
+          },
+          "resume_mode": {
+            "type": "string",
+            "enum": [
+              "new_contacts_only",
+              "continue_existing"
+            ],
+            "description": "For paused flows: stop current journeys, or restart waits and continue gradually."
           },
           "confirm_send_to_all": {
             "type": "boolean",
@@ -2314,7 +2339,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": false,
         "readOnlyHint": false,
@@ -2366,7 +2391,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": false,
         "readOnlyHint": false,
@@ -2871,7 +2896,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": false,
         "openWorldHint": false,
         "readOnlyHint": false,
@@ -2953,7 +2978,7 @@
     {
       "uri": "nitro://lifecycle",
       "name": "lifecycle",
-      "description": "Canonical machine-readable lifecycle flow catalog. Includes priority order, goal aliases, real trigger events, trigger gating requirements, revenue rationale, and structured cadence for welcome, abandoned cart, browse abandonment, post-purchase, win-back, re-engagement, and newsletter flows."
+      "description": "Machine-readable lifecycle flows to draft from, such as welcome, cart and browse abandonment, post-purchase, win-back and sunset. Includes each flow's key, priority, trigger and list need, revenue rationale, and each email's objective, timing and checks. Pass a key as nitro_compose_flow lifecycle_key."
     },
     {
       "uri": "nitro://docs",
