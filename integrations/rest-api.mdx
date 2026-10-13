@@ -67,6 +67,10 @@ curl -X POST https://api.nitrosend.com/v1/my/contacts \
   }'
 ```
 
+Leave `opt_in` out of ordinary contact updates to keep the contact's current subscription. A new email address keeps Nitrosend's default email subscription; SMS requires opt-in. Set `opt_in: true` only when recording consent, or `opt_in: false` to unsubscribe an existing contact's supplied address. An opt-in does not remove a delivery suppression.
+
+In the TypeScript SDK, the same field is `optIn`.
+
 ### Get account status
 
 ```bash
