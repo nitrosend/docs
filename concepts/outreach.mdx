@@ -1,46 +1,123 @@
 ---
 title: Outreach
-description: Find leads, verify their email addresses, and activate them into sequenced sending
+description: Agentic outbound email. Nitrosend finds the right people, checks they fit, verifies their work email and runs a sequence you approve.
 ---
 
 # Outreach
 
 <Info>
-Outreach is coming soon. Register your interest from the **Outreach** page in your dashboard and we'll let you know the moment it opens.
+Outreach is in private beta. Join the waitlist from **Outreach** in the app ([app.nitrosend.com/my/outreach](https://app.nitrosend.com/my/outreach)).
 </Info>
 
-Outreach finds new leads, verifies that their email addresses are real, and activates them into automated sequences. It is the outbound counterpart to your contact base: contacts are people who know you; leads are people you want to reach.
+Outreach is agentic outbound email. Tell your agent who you want to reach. Nitrosend finds the right people, checks they fit, verifies their work email and runs a sequence you approve. Any reply stops it.
+
+Outreach is also the only place on Nitrosend for cold outreach. Campaigns, flows and transactional email are for people who opted in. See [Responsible outreach](#responsible-outreach).
 
 ## How it works
 
-1. **Search** — describe who you want to reach (role, industry, company size, location). Nitrosend runs the search and returns matching leads with a fit rating.
-2. **Review** — each lead carries a fit level (high, medium, low) and a deliverability verdict. Reveal a lead to get their verified email address.
-3. **Activate** — put revealed leads into a sequence. Activation triggers a flow, so sequences use the same flow engine, templates, and approval gates as everything else you send.
-4. **Monitor** — replies land in your agent inbox, and sequence states update live.
+1. **Describe the people.** Titles, seniority, industry, company size, location, keywords, or company domains and profile URLs you already know.
+2. **Nitrosend finds and qualifies them.** It reuses what your brand already knows, then searches. Each criterion is a match, mismatch or unknown, with the facts behind it. Work emails are found and verified. Anyone held back shows why.
+3. **Review the plan.** Pick an approved sequence or draft one from eight outreach starters, read the exact email each lead will get and the facts it used, then approve.
+4. **Start and follow replies.** Sequences show results, replies arrive classified, and any reply stops the sequence.
 
-## Verification before sending
+One run of this is an Outreach **search**. [Running Outreach](/guides/outreach) walks through every screen.
 
-A lead is only worth contacting if the address is real. Every revealed address is verified before it can enter a sequence, and the deliverability verdict is shown on the lead. Unverified addresses are held back rather than burned against your sending reputation.
+## Leads are not contacts
+
+The people a search finds are **leads**. They stay separate from your contacts: no list, segment or campaign can reach a lead. The only way to email a lead is an approved Outreach sequence.
+
+Outreach only ever emails named people. Companies are evidence for a lead, never recipients.
+
+Every search leaves out your customers, active deals, people who already replied, opt-outs and your brand's suppressions. You can exclude more company domains on top of those.
+
+## What Nitrosend checks for each lead
+
+Each lead carries separate readings. They are never collapsed into one score, so a strong fit can't hide a bad address.
+
+| Reading | What it tells you |
+| --- | --- |
+| **Identity** | Whether the records found belong to one real person. Two people who only share a name and company are never merged without asking you. |
+| **Fit** | How the person matches your target profile. Each criterion is a match, mismatch or unknown, with the facts behind it. |
+| **Evidence coverage** | How much of your target profile the evidence could actually check. Missing evidence stays unknown; it never counts as a match. |
+| **Deliverability** | Whether a work email was found and verified, and whether it is safe to send to. |
+| **Readiness** | Whether the lead can start a sequence now, and if not, the reason. |
+
+Open a lead to see why it fits, the risks, each enrichment fact with its source, and any prior context your brand already has.
+
+## Verification before anything sends
+
+A lead only becomes ready once its work email is verified.
+
+- **Catch-all domains are held.** A catch-all domain accepts every address, so verification can't confirm the person's mailbox exists. Those leads are held, with the reason shown, rather than sent.
+- **Verification counts for 30 days.** After that, the address has to be verified again before the lead can start.
+- **Leads are checked again at activation.** When you start outreach, every lead's readiness is re-checked, so an address that went stale after the search is caught before the first email.
+
+## The activation plan
+
+Nothing sends until you approve an activation plan. **Begin outreach** builds one in four steps:
+
+1. **Audience**: who is eligible, who is in review and who is blocked, grouped by reason.
+2. **Copy**: the sequence each lead enters. Pick an approved sequence, or create one from an outreach starter.
+3. **Schedule**: every email and wait, plus a personalized preview of sample leads with the facts each email used and warnings for missing data.
+4. **Review**: who enrolls into which sequence, and why it is safe to send.
+
+What you approve is what runs. An Outreach sequence is a flow with an outreach trigger, and it needs approval like any other flow before a lead can enter it.
 
 ## Replies always stop a sequence
 
-The moment a lead replies, their sequence stops. No exceptions, no "one more touch." The reply lands in your inbox queue where your agent or your team picks up the conversation as a human exchange.
+Any reply stops that lead's sequence, whatever it says, and that person is never sourced again by a later search. Replies appear in **Outreach > Replies**, classified as Positive, Referral, Objection, Unsubscribe, Out of office, Wrong person, Not now or Other.
 
-## Sequence states
+Nothing in Replies sends an email. Each reply suggests human next steps, such as reviewing the thread in Inbox or the person's contact permissions, and **Mark converted** records a win.
 
-Each lead in a sequence carries one state:
+## Unsubscribes
 
-| State | Meaning |
-|---|---|
-| Ready | Revealed and eligible for activation |
-| Held | Waiting on verification or a safety check |
-| In sequence | Actively receiving the sequence |
-| Completed | Finished the sequence without a reply |
-| Stopped | Sequence ended early, usually by a reply |
-| Converted | Replied or took the goal action |
-| Failed / Skipped | Could not be contacted, with the reason recorded |
+Unsubscribes are permanent. An unsubscribe stops every active sequence for that person, and Outreach doesn't contact them again.
 
-## Outreach vs Campaigns
+## Pricing
 
-- **Campaigns** send to your existing audience: contacts who opted in.
-- **Outreach** contacts people who have never heard from you. Volume is deliberately paced, addresses are verified first, and replies immediately convert the exchange into a conversation.
+You pay for qualified leads, not searches. There are no credits.
+
+- Each search has a maximum charge you approve before any work starts, and spend is capped there.
+- Searching, people who don't match and failed verifications cost nothing.
+- If you connect an Apollo key, Nitrosend tries it first to find work emails, and that spend stays on your Apollo account.
+
+Pricing is announced when Outreach opens.
+
+## Running Outreach from your agent
+
+When Outreach is on for your account, your agent gets the `nitro_manage_outreach` tool. It can plan a search, estimate it, start it with a spend cap, check its status, and pause, resume or cancel it. Starting a search needs the quoted maximum spend.
+
+Lead review, the activation plan and replies stay in the app, so starting a sequence is always a human approval.
+
+## Responsible outreach
+
+Responsible cold outreach is allowed on Nitrosend through Outreach, and only there. Campaigns, flows and transactional email are for people who opted in or asked for the message, so cold outreach isn't allowed on those channels.
+
+Outreach is built so cold email stays responsible:
+
+- Named people only. Companies are evidence, never recipients.
+- Missing evidence stays unknown; it never counts as a match.
+- Work emails are verified before anything sends. Catch-all addresses are held.
+- Every lead and every email is reviewed in an activation plan before the sequence starts.
+- Any reply stops the sequence, and that person is never sourced again.
+- Unsubscribes are permanent and stop every active sequence for that person.
+- Leads stay separate from your contacts. No list, segment or campaign can reach them; only an approved Outreach sequence can.
+- Spend is capped per search, with a maximum charge you approve before work starts.
+- A connected Apollo key is tried first to find work emails, and that spend stays yours.
+- No LinkedIn scraping.
+
+What stays your job as the sender:
+
+- Follow the laws that cover your recipients, such as GDPR, CAN-SPAM, CASL and the Australian Spam Act.
+- Say who you are.
+- Honor every opt-out.
+- Contact people only where those laws allow it.
+
+## Outreach vs campaigns, flows and transactional
+
+| | Who receives it | Cold outreach |
+| --- | --- | --- |
+| **Outreach** | Leads a search found and you approved in an activation plan | Allowed, under the rules above |
+| **Campaigns** | Subscribed contacts in the lists or segment you choose | Not allowed |
+| **Flows** | Contacts who opted in and trigger the flow | Not allowed |
+| **Transactional** | One person, about something they did or asked for | Not allowed |
