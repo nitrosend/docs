@@ -1,37 +1,98 @@
 ---
 title: Running Outreach
-description: Search for leads, review and reveal them, activate a sequence, and handle replies
+description: Run agentic outbound email end to end, from a search for the right people to an approved sequence and its replies
 ---
 
 # Running Outreach
 
-Outreach is coming soon; register your interest from the **Outreach** page in your dashboard. This guide walks one outreach cycle end to end. For the model behind it, see [Outreach](/concepts/outreach).
+Outreach is in private beta. Join the waitlist from **Outreach** in the app. This guide walks one Outreach search end to end, from finding people to following their replies. For the model behind it, see [Outreach](/concepts/outreach).
 
-## Run a search
+Cold outreach belongs here and nowhere else on Nitrosend. Campaigns, flows and transactional email are for people who opted in. See [Responsible outreach](/concepts/outreach#responsible-outreach).
 
-Open **Outreach** and start a search. Describe the people you want to reach: role, industry, company size, location. The search returns leads with a fit rating and company context. Searches are saved, so you can refine and re-run them as your targeting sharpens.
+## Join the waitlist
 
-## Review and reveal leads
+Open **Outreach** in the sidebar ([app.nitrosend.com/my/outreach](https://app.nitrosend.com/my/outreach)). Until Outreach is on for your account, the page offers **Join the waitlist**, with an optional note on who you're trying to reach. We email you when it opens for your account.
 
-The search detail view lists every lead with fit (high, medium, low), verification status, and sequence state. Filter by any of these to work the list down.
+Once it's on, Outreach has three tabs: **Searches**, **Sequences** and **Replies**.
 
-Reveal a lead to get their verified email address. Revealing is deliberate rather than automatic: you spend reveals on the leads worth contacting, and every revealed address is verified before it can enter a sequence.
+## Create a search
 
-## Activate a sequence
+On **Searches**, click **New search**. The **Find people** page has four cards.
 
-Select the leads you want to contact and activate them into a sequence. Sequences run on flows, so the emails, timing, and approval gates are the same ones you already use: design the touches once, and every activated lead moves through them on schedule.
+- **Target profile**: Titles, Seniority, Industry, Company size, Person location, Company HQ location and Keywords.
+- **Coverage**: where Nitrosend looks. **Professional profiles** is always on. Switch on **Community signals** or **Hiring activity** when they help your search.
+- **Known starting points**: company domains or professional profile URLs you already have, up to 100.
+- **Exclusions**: extra company domains to leave out. Your customers, active deals, previous replies, opt-outs and brand suppressions are always excluded.
 
-Leads that fail verification are held rather than sent, and the hold reason is shown on the lead.
+## Estimate and save the plan
+
+In the **Search plan** card, set **Qualified people**: how many ready-to-contact leads you want, up to 1,000. Then click **Estimate search**.
+
+The estimate shows how many qualified people your brand can reuse now, how many may be newly discovered, and the **Maximum charge (USD)**: the most this search can cost. If something in the target profile needs a decision first, the estimate says what to fix.
+
+Give the search a **Search name** and click **Create search plan**. The plan is saved before discovery starts, so nothing is searched or charged yet.
+
+## Start discovery
+
+Open the search and click **Start discovery**. You can **Pause discovery** and **Resume discovery** at any time. A search reads Planned, Running, Paused, Complete, Discovery limit reached or Failed.
+
+The top of the search page shows qualified people against your target, how much existing evidence was reused, the charge against your maximum, and how many leads need review.
+
+The funnel below tracks every person through Discovered, People, Scored, Revealed, Verified and Ready. Anyone who drops out shows a named reason, such as excluded, identity unresolved, target mismatch, evidence incomplete, no supported email, bad address, catch-all domain or awaiting verification.
+
+## Work the leads
+
+Leads sit in four tabs:
+
+| Tab | Who is in it |
+| --- | --- |
+| **Ready** | Verified leads that can start a sequence |
+| **Review** | Leads that need your decision before they can start |
+| **In sequence** | Leads already in an Outreach sequence |
+| **All saved** | Every lead the search kept |
+
+Open a lead to see its fit, deliverability and sequence state, its readiness, why it fits and the risks, each enrichment fact with its source, and any prior context your brand has.
+
+**Identity review** appears when two records only share a name and company. Choose **Merge** if they are the same person, or **Keep separate**.
+
+Select leads to act on them: **Start ready leads** (only ready leads start), **Move to Review** or **Stop**. **Export** downloads every lead in the search as a CSV.
+
+Leads stay separate from your contacts. No list, segment or campaign can reach them, so don't import them into Contacts.
+
+## Begin outreach
+
+Click **Begin outreach** to build the activation plan. It has four steps.
+
+1. **Audience**: which leads are eligible, in review, blocked or without an email, grouped by reason.
+2. **Copy**: pick an approved sequence, or create one from a starter: Founder Relevance Check, Signal Follow-Up, Warm Referral, Agency Partner Discovery, Problem Probe, Case Proof Nudge, Resource Give-First or Old Thread Reactivation. Turn on **Draft the copy with AI** and give it a copy direction if you want a first draft. The draft is a normal flow, so it still needs approval before anyone enters it.
+3. **Schedule**: every email and wait in the sequence, plus a personalized preview of sample leads. Each preview shows the rendered email, the facts it used, and warnings for missing data.
+4. **Review**: who enrolls into which sequence, and **Why it is safe to send**: the sequence is live and approved, it uses the outreach trigger, it isn't a campaign sequence, your account can send, and every email renders with an authorized sender.
+
+Click **Approve plan**, then **Start outreach**. What you approve is what runs.
+
+## Follow sequences
+
+The **Sequences** tab has one card per sequence: reply rate, then Active, Replied, Stopped, Converted and Failed, each linking to the matching leads. Sent count and open rate are shown for the whole sequence. The latest reply appears on the card.
 
 ## Handle replies
 
-When a lead replies, two things happen immediately:
+Any reply stops that lead's sequence, and that person is never sourced again. Every reply in the **Replies** tab has already stopped its sequence.
 
-1. Their sequence stops. No further touches are sent.
-2. The reply lands in your [agent inbox](/concepts/agent-inbox) queue, where your agent or your team continues the exchange as a normal conversation.
+Replies are classified as Positive, Referral, Objection, Unsubscribe, Out of office, Wrong person, Not now or Other. Open one to see the reply, the original email, what Nitrosend knows about the lead, and the next steps for you: **Review in Inbox**, **Review contact permissions** or **Open in leads**. Click **Mark converted** to record a win.
 
-Watch the sequence states on the search detail view to see where every lead stands: ready, held, in sequence, completed, stopped, or converted.
+Nothing in Replies sends an email. You answer a reply yourself.
 
-## Keep it deliverable
+## Run it from your agent
 
-Outreach volume is paced deliberately. Verified addresses only, measured sending, and an immediate stop on reply keep your sending reputation intact while you scale the program.
+When Outreach is on for your account, your agent gets the `nitro_manage_outreach` tool. It covers the search itself:
+
+- `intent` prepares a search from your goal and what your brand already knows.
+- `estimate` quotes the search, including the maximum spend.
+- `start` saves and starts the search. It needs the quoted maximum spend in USD cents and an idempotency key.
+- `status`, `pause`, `resume` and `cancel` follow and control it.
+
+```text
+Ask your agent: "Using Nitrosend Outreach, find heads of ecommerce at DTC brands in Australia. Estimate it and show me the maximum charge before you start."
+```
+
+Lead review, the activation plan and replies happen in the app, so starting a sequence always takes your approval there. If your agent doesn't have `nitro_manage_outreach`, Outreach isn't on for your account yet: join the waitlist from **Outreach** in the app.

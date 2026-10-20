@@ -806,7 +806,7 @@
     },
     {
       "name": "nitro_import_contacts",
-      "description": "Inline: max 100 contacts; large lists: CSV upload/finalize. Account-standing row/file limits: status guardrail (standing, max_rows) or GET /v1/my/imports/spec. Inline, opt_in omitted: new email contacts subscribe both channels; phone-only stay unsubscribed. Default CSV: new contacts subscribe both channels. In both cases, existing contacts keep subscriptions; added email subscribes, added phone does not.",
+      "description": "Inline: max 100 contacts; large lists: CSV upload/finalize. Account-standing row/file limits: status guardrail (standing, max_rows) or GET /v1/my/imports/spec. Inline, opt_in omitted: new email contacts subscribe both channels; phone-only stay unsubscribed. Default CSV: new contacts subscribe both channels. Existing contacts keep subscriptions; added email subscribes, added phone does not. Opted-in people only.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1160,7 +1160,7 @@
     },
     {
       "name": "nitro_compose_flow",
-      "description": "Create or edit an inactive automation draft. For creative email, call composition_mode=intent and follow its exact next_call. replace needs flow_id, confirm, and the draft revision; patch preserves other nodes. Activate with nitro_control_delivery.",
+      "description": "Create or edit an inactive automation draft. For creative email, call composition_mode=intent and follow its exact next_call. replace needs flow_id, confirm, and the draft revision; patch preserves other nodes. Activate with nitro_control_delivery. Cold outreach: Outreach only.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1652,7 +1652,7 @@
     },
     {
       "name": "nitro_compose_campaign",
-      "description": "Create or edit an email/SMS broadcast draft; never delivers it. For creative email, start with composition_mode=intent and follow its exact next_call. patch preserves omitted fields; replace requires campaign_id and confirm, and clears omitted audience or schedule. Use nitro_compose_flow for automation and nitro_send_message for transactional mail.",
+      "description": "Create or edit an email/SMS broadcast draft; never delivers it. For creative email, start with composition_mode=intent and follow its exact next_call. patch preserves omitted fields; replace requires campaign_id and confirm, and clears omitted audience or schedule. Use nitro_compose_flow for automation and nitro_send_message for transactional mail. Cold outreach: Outreach only.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2473,7 +2473,7 @@
     },
     {
       "name": "nitro_send_message",
-      "description": "Send one transactional email/SMS now. Use nitro_compose_campaign for broadcasts and nitro_compose_flow for sequences. Reuse idempotency_key only for an exact retry.",
+      "description": "Send one transactional email/SMS now; not for cold outreach. Use nitro_compose_campaign for broadcasts and nitro_compose_flow for sequences. Reuse idempotency_key only for an exact retry.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2488,11 +2488,11 @@
           },
           "to": {
             "type": "string",
-            "description": "Recipient email address or E.164 phone number"
+            "description": "Recipient email or E.164 phone"
           },
           "subject": {
             "type": "string",
-            "description": "Email subject line (required for email)"
+            "description": "Email subject (required for email)"
           },
           "body": {
             "type": "string",
@@ -2500,16 +2500,16 @@
           },
           "template_id": {
             "type": "integer",
-            "description": "Load email design from an existing template (email only)"
+            "description": "Email design from an existing template (email only)"
           },
           "data": {
             "type": "object",
-            "description": "Transactional merge variables. Use in email templates as {{ data.order_id }} or nested paths like {{ data.customer.name }}."
+            "description": "Transactional merge variables, e.g. {{ data.order_id }} or {{ data.customer.name }}."
           },
           "idempotency_key": {
             "type": "string",
             "minLength": 1,
-            "description": "Required for live sends. Reuse the same stable key on retry to prevent duplicate delivery."
+            "description": "Required for live sends; reuse the same key on retry to prevent duplicates."
           },
           "dry_run": {
             "type": "boolean",

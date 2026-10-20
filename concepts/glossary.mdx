@@ -23,7 +23,7 @@ These are the top-level areas, in the order they appear.
 | **Flows** | Automated sequences that run on a trigger rather than on a date, like a welcome series. More in [Flows](/concepts/flows). |
 | **Templates** | Reusable email designs you can start a campaign or flow step from. Carries a **New** chip. More in [Templates](/concepts/templates). |
 | **Inbox** | A shared mailbox where replies to your sending land and your AI agent can draft answers. Currently in beta, so the tab may show a **Beta** chip until it is switched on for your account. More in [Agent Inbox](/concepts/agent-inbox). |
-| **Outreach** | Finding new leads and sending them a sequence, as opposed to emailing people you already have. Marked **Soon** while it rolls out. More in [Outreach](/concepts/outreach). |
+| **Outreach** | Agentic outbound email: Nitrosend finds named people who fit, verifies their work email and runs a sequence you approve. The only place on Nitrosend for cold outreach. In private beta, so until it is switched on for your account the tab may show a **Soon** chip and the page offers **Join the waitlist**. More in [Outreach](/concepts/outreach). |
 | **Activity** | The record of what actually went out and what happened to it. See [Activity and the Send Log](#activity-and-the-send-log). |
 | **Contacts** | Everyone you can email, plus the ways of grouping them. See [Audiences](#audiences-contacts-lists-segments-and-saved-views). |
 | **Clients** | For agencies managing separate accounts on behalf of their own customers. Only appears if your account is set up for managed clients. |
@@ -67,6 +67,8 @@ This is the vocabulary people mix up most, because there are three different way
 
 **Saved view** — a filter on the contacts *table*, saved so you can come back to it. This is the one that catches people out: a saved view is a way of looking at your contacts, not an audience. You cannot send to a saved view. If you want the same rules to become something you can send to, make it a segment. More in [Contacts](/concepts/contacts).
 
+**Lead**: a person an Outreach search found. Leads are not contacts: they don't appear in Contacts, and no list, segment or campaign can reach them. Only an approved Outreach sequence can email a lead. More in [Outreach](/concepts/outreach).
+
 **Tag** — a free-form label you stick on contacts, like `vip` or `july-workshop`. Tags are a common ingredient in segment rules.
 
 **Custom field** — any extra column you brought in with your contacts, usable in segment rules and in personalization.
@@ -107,7 +109,7 @@ Actions:
 | **Unsubscribe** | Opts the contact out. |
 | **Webhook** | Calls an external URL from the flow. Not the same as [event webhooks](/integrations/webhooks), which Settings manages. |
 
-**Find Email** and **Verify Email** also appear in the palette, but they are signposts rather than steps you can add here: finding and checking addresses is lead-sourcing work, so clicking either card takes you to [Outreach](/concepts/outreach) instead of dropping a step into the flow.
+**Find Email** and **Verify Email** also appear in the palette, but they are signposts rather than steps you can add here: finding and verifying work emails happens inside an Outreach search, so clicking either card takes you to [Outreach](/concepts/outreach) instead of dropping a step into the flow.
 
 Logic:
 
