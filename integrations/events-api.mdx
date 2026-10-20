@@ -35,9 +35,22 @@ Custom events remain open: their fields are defined by your integration.
 
 ## Send an event
 
-The contact must already exist in the current Nitrosend brand. Identify it by
-`contact_id` or `contact_email`, and always supply a stable idempotency key so a
-retry cannot start the same flow twice.
+Identify the contact by `contact_id` or `contact_email`, and always supply a
+stable idempotency key so a retry cannot start the same flow twice.
+`contact_id` must name an existing contact in the current brand. When both are
+sent, `contact_email` is used.
+
+When no contact in the brand holds `contact_email`, Nitrosend creates the
+contact first: subscribed by default, or suppressed if the address is on your
+account's suppression list. Its "New contact" flows start once, before the
+event's own flows. An event never changes an existing contact's subscription,
+so unsubscribes and suppressions stay in place. An invalid `contact_email`
+returns `422`.
+
+<Warning>
+  An event for a test or staff address creates a real contact, like any other
+  address the brand has not seen.
+</Warning>
 
 ```bash
 curl -X POST https://api.nitrosend.com/v1/my/events \
@@ -99,8 +112,9 @@ The integration boundary is one explicit envelope:
 ```
 
 Use `contact_email` instead of `contact_id` when your system stores email as
-the shared identifier. If the contact does not exist in the selected brand,
-create or import it before sending the event.
+the shared identifier. An address the brand has not seen yet becomes a new
+contact with only its email, so create or import the contact first when its
+"New contact" flows need a name or other fields.
 
 See the [API Reference](/integrations/api-reference) for list, lookup, and
 filter operations on recorded events.
