@@ -3,6 +3,7 @@ import { defineConfig, markdown, mcp, openapi } from "sourcey";
 export default defineConfig({
   name: "Nitrosend",
   siteUrl: "https://docs.nitrosend.com",
+  publicDir: "public",
   prettyUrls: "strip",
   theme: {
     colors: {
