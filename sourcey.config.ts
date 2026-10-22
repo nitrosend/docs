@@ -128,7 +128,7 @@ export default defineConfig({
             },
             {
               group: "Reference",
-              pages: ["cli/reference"],
+              pages: ["cli/reference", "cli/flags"],
             },
           ],
         }),
