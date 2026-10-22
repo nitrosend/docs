@@ -686,6 +686,10 @@
                 "items": {
                   "type": "integer"
                 }
+              },
+              "start_flows": {
+                "type": "boolean",
+                "description": "Start live flows for new contacts and new list members. Default false."
               }
             }
           },

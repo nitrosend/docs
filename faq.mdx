@@ -171,10 +171,14 @@ Ask your agent: "Check flow [name] in Nitrosend: its live status, the contact's 
 ```
 
 ### I imported contacts but my flow didn't start for them.
-Imports don't start flows: a CSV import, or an import through your agent, adds contacts and list memberships without enrolling anyone, so a big import can't fire your welcome series at your whole back catalogue. To put imported people into a flow, give it a "Contact added to list" trigger, then add them to that list after the import (select them in Contacts and use Add to list, or ask your agent); only people who weren't already on the list are added, and each of them enters the flow. If they're already on the list and the flow is still a draft, switch on "Send to contacts already in this list on first publish" in the trigger before you go live (it only applies the first time a flow goes live).
+Imports start flows only when you ask. Turn on **Start flows** under Destination lists when you import, or ask your agent to import with Start flows on. Contacts the import creates then enter the live **New contact** flows they match, and contacts it adds to a list enter that list's live **Add to list** flows. Contacts that already existed don't count as new, and contacts already on the list don't enter its flows again.
+
+Start flows is off by default, so a big import can't fire your welcome series at your whole back catalogue. When it's off, the import summary names any live flows the import didn't start. Unsubscribe and block imports never start flows.
+
+To put people you've already imported into a flow, give it an **Add to list** trigger, then add them to that list (select them in Contacts and use Add to list, or ask your agent); only people who weren't already on the list are added, and each of them enters the flow. If they're already on the list and the flow is still a draft, switch on "Send to contacts already in this list on first publish" in the trigger before you go live (it only applies the first time a flow goes live).
 
 ```text
-Ask your agent: "In Nitrosend, add the contacts I imported today to the [list name] list so they enter the [flow name] flow, and tell me how many were newly added."
+Ask your agent: "Import [file] into the [list name] list in Nitrosend with Start flows on."
 ```
 
 ### The brand scan grabbed the wrong logo or colours.
