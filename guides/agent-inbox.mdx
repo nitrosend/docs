@@ -15,6 +15,20 @@ The agent inbox is in beta; request access from the **Inbox** page in your dashb
 
 Once DNS verifies, mail to that address lands in your queue.
 
+## Change your sender name
+
+Open **Inbox**, choose **Manage inboxes**, and select the inbox. Edit **Sender
+name** and choose **Save name**. The name appears on new emails and replies;
+previously sent messages keep their original name.
+
+Leave the name blank to use your company name, or the inbox address if no
+company name is set. Your campaign sender name is separate.
+
+Over REST, send `PATCH /v1/my/inboxes/{id}` with
+`{ "inbox": { "display_name": "Support team" } }`. Names are trimmed and limited
+to 255 characters; control characters are rejected. A blank or `null` value
+clears the custom name.
+
 ## Add aliases
 
 Open **Inbox**, click **Manage inboxes**, and choose your domain. Under **Addresses**, add an alias such as `ask@`. Mail to the alias lands in the same queue, and replies go out from whichever address each customer wrote to. **Make main** sets the address new messages start from; the previous main address stays as an alias.
@@ -46,6 +60,40 @@ If the recipient already has an open conversation with that inbox, your message 
 
 Hover any message in a thread and click the source icon to see the full stored headers, authentication results, and raw text and HTML content.
 
+## Read attachment availability
+
+`GET /v1/my/conversations/{id}` includes attachment metadata on its messages:
+
+```json
+{
+  "id": 311,
+  "filename": "travel-details.pdf",
+  "scan_status": "clean",
+  "downloadable": true,
+  "download_requires_confirmation": false
+}
+```
+
+The conversation response uses `scan_status`, not a `scanned` boolean:
+
+| `scan_status` | Meaning |
+|---|---|
+| `clean` | The provider or configured scanner returned a clean verdict. |
+| `not_scanned` | No scan verdict covered the file. Downloads require `acknowledge_unscanned=true`. |
+| `pending` | Attachment processing has not finished. |
+| `infected` | A threat was reported; the file is unavailable. |
+| `failed` | Processing did not return a usable verdict; the file is unavailable. |
+
+Use `downloadable` to decide whether a file is available, since its stored bytes
+may be unavailable even when a clean verdict exists. `availability_reason`
+explains a restriction. A clean SES verdict applies to the received message;
+it does not establish that Nitrosend ran a separate scan on each attachment.
+
+The `email.received` webhook currently lists downloadable files and uses a
+derived `scanned` boolean: `true` for `clean`, `false` for `not_scanned`. That
+field is not part of the conversation attachment response. A missing field in
+one response must not be interpreted as a scan failure.
+
 ## Connect your agent
 
 Agents work the queue over MCP with two tools:
@@ -71,6 +119,8 @@ Everything the dashboard does is available over REST:
 
 | Endpoint | Purpose |
 |---|---|
+| `GET /v1/my/inboxes/:id` | Read an inbox's name, addresses and settings |
+| `PATCH /v1/my/inboxes/:id` | Edit `inbox.display_name` or promote an existing alias with `inbox.address` |
 | `GET /v1/my/inbox_action_items` | List the queue (`state`, `inbox_id`, `reason_code`, `sender`, `query`, `since`, `sort` filters) |
 | `POST /v1/my/inbox_action_items/:id/act` | Apply a verb (`mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`) |
 | `POST /v1/my/inbox_action_items/act` | Apply one verb to many items (`action_item_ids`, or `filter` + `expected_count`; max 100) |

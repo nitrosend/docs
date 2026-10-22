@@ -156,6 +156,10 @@ with that address as `reply_to` (or `from`) when you want replies reported.
   `GET /v1/my/conversations/{conversation_id}/messages/{conversation_message_id}/attachments/{id}`.
   A file with `scanned: false` was not virus-scanned and downloads only with
   `?acknowledge_unscanned=true`.
+
+  The conversation API provides the more detailed `scan_status`, `downloadable`
+  and `download_requires_confirmation` fields. It does not return the webhook's
+  `scanned` boolean. See [attachment availability](/guides/agent-inbox#read-attachment-availability).
 - `auto_submitted` is `true` for automatic replies such as out-of-office
   notices.
 - Mail the inbox quarantines (spam, viruses, blocked senders) is not sent.
