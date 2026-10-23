@@ -138,7 +138,19 @@ with that address as `reply_to` (or `from`) when you want replies reported.
     "truncated": false,
     "auto_submitted": false,
     "attachments": [
-      { "id": 311, "filename": "photo.jpg", "content_type": "image/jpeg", "size": 48213, "scanned": true }
+      {
+        "id": 311, "filename": "photo.jpg", "size": 48213,
+        "content_type": "image/jpeg", "scanned": true,
+        "scan_status": "clean", "downloadable": true,
+        "download_requires_confirmation": false
+      },
+      {
+        "id": 312, "filename": "site-visit.mov", "size": 31457280,
+        "content_type": "video/quicktime", "scanned": false,
+        "scan_status": "failed", "downloadable": false,
+        "download_requires_confirmation": false,
+        "availability_reason": "too_large"
+      }
     ],
     "conversation_id": 9021,
     "conversation_message_id": 55410
@@ -151,15 +163,30 @@ with that address as `reply_to` (or `from`) when you want replies reported.
   `message_id` is `null` and `tags` is empty.
 - `text` and `html` are each capped at 64 KiB; `truncated` is `true` when
   either was cut. The full message stays in the inbox.
-- `attachments` lists the files the inbox stored, without their contents.
-  Download one with
-  `GET /v1/my/conversations/{conversation_id}/messages/{conversation_message_id}/attachments/{id}`.
-  A file with `scanned: false` was not virus-scanned and downloads only with
-  `?acknowledge_unscanned=true`.
+- `attachments` lists every file the message carried, without their contents,
+  including files Nitrosend kept back. Download a file only when its
+  `downloadable` is `true`:
 
-  The conversation API provides the more detailed `scan_status`, `downloadable`
-  and `download_requires_confirmation` fields. It does not return the webhook's
-  `scanned` boolean. See [attachment availability](/guides/agent-inbox#read-attachment-availability).
+  ```text
+  GET /v1/my/conversations/{conversation_id}/messages/{conversation_message_id}/attachments/{id}
+  ```
+
+  If `download_requires_confirmation` is also `true`, no scan covered the file,
+  and it downloads only with `?acknowledge_unscanned=true`.
+
+  When `downloadable` is `false`, the file is not available and the download
+  endpoint won't serve it. `availability_reason` says why: for example
+  `too_large` (over 25 MB), `message_limit` (the message's files total over
+  50 MB), `unsafe` (a threat was found) or `scan_failed`. Treat any other value
+  as unavailable too.
+
+  These are the conversation API's attachment fields. `scanned` is `true` only
+  for a clean scan verdict; the conversation API doesn't return it. See
+  [attachment availability](/guides/agent-inbox#read-attachment-availability).
+- `attachments_omitted` appears only when the message carried more than 50
+  files. It counts the files past that limit, which Nitrosend didn't keep. An
+  empty `attachments` list without `attachments_omitted` means the message had
+  no files.
 - `auto_submitted` is `true` for automatic replies such as out-of-office
   notices.
 - Mail the inbox quarantines (spam, viruses, blocked senders) is not sent.

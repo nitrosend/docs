@@ -100,10 +100,10 @@ may be unavailable even when a clean verdict exists. `availability_reason`
 explains a restriction. A clean SES verdict applies to the received message;
 it does not establish that Nitrosend ran a separate scan on each attachment.
 
-The `email.received` webhook currently lists downloadable files and uses a
-derived `scanned` boolean: `true` for `clean`, `false` for `not_scanned`. That
-field is not part of the conversation attachment response. A missing field in
-one response must not be interpreted as a scan failure.
+The `email.received` webhook lists every attachment, available or not, with
+these same fields. It also carries a derived `scanned` boolean, `true` only for
+`clean`. That field is not part of the conversation attachment response. A
+missing field in one response must not be interpreted as a scan failure.
 
 ## Connect your agent
 
