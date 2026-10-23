@@ -160,11 +160,13 @@ curl -s https://api.nitrosend.com/v1/my/account \
 curl -s -X POST https://api.nitrosend.com/v1/my/messages \
   -H "Authorization: Bearer $NITROSEND_API_KEY" \
   -H "Content-Type: application/json" \
+  -H "Idempotency-Key: hello-user-123" \
   -d '{
     "channel": "email",
     "to": "user@example.com",
     "subject": "Hello",
-    "body": "<h1>Welcome!</h1>"
+    "html": "<h1>Welcome!</h1>",
+    "body": "Welcome!"
   }' | python3 -m json.tool
 ```
 

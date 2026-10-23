@@ -37,6 +37,7 @@ Get your API key from **Settings > API Keys** in the Nitrosend dashboard ([app.n
 curl -X POST https://api.nitrosend.com/v1/my/messages \
   -H "Authorization: Bearer $NITROSEND_API_KEY" \
   -H "Content-Type: application/json" \
+  -H "Idempotency-Key: welcome-user-123" \
   -d '{
     "channel": "email",
     "to": "user@example.com",
