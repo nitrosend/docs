@@ -56,10 +56,6 @@ Request bodies on this path are top-level JSON fields; only signup nests its fie
   </Step>
 </Steps>
 
-<Info>
-  Node and Python `fetch` / `requests` calls work as-is. Only the bare `Python-urllib` user agent is blocked by the WAF.
-</Info>
-
 To drive the [CLI](/cli/overview) from a runner with no browser, export the key as `NITROSEND_API_KEY` or store it with `nitrosend login --api-key <key>`. Plain `nitrosend login` opens a browser for OAuth.
 
 ## Managed customer accounts
