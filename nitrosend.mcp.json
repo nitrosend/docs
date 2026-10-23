@@ -392,7 +392,7 @@
           },
           "params": {
             "type": "object",
-            "description": "Parameters named by operation. bulk_tag tag_action: add|remove|set (default add). set_subscription suppress: true stops all email incl. transactional; false lifts it."
+            "description": "Parameters named by operation. manage_list action: create (name, optional contact_ids or emails to add), rename (list_id, name), delete (list_id), add_contacts or remove_contacts (list_id, contact_ids or emails). bulk_tag tag_action: add|remove|set (default add). set_subscription suppress: true stops all email incl. transactional; false lifts it."
           },
           "dry_run": {
             "type": "boolean",
