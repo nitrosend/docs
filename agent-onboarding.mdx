@@ -62,4 +62,41 @@ Request bodies on this path are top-level JSON fields; only signup nests its fie
 
 To drive the [CLI](/cli/overview) from a runner with no browser, export the key as `NITROSEND_API_KEY` or store it with `nitrosend login --api-key <key>`. Plain `nitrosend login` opens a browser for OAuth.
 
+## Managed customer accounts
+
+For several brands that your team owns and pays for, keep using one account
+and its brands. For isolated client-owned accounts, use the existing partner
+API. CLI signup creates your own account; it does not provision a managed client.
+
+An authorized agency manager first obtains a provisioning credential with
+`provision` and `manage` scopes. Store this `nspk_live_` secret on your backend;
+it is not a customer-data credential. Each customer's setup then uses:
+
+1. `POST /v1/partner/managed_accounts`, with a stable `Idempotency-Key` and
+   `managed_account: { external_ref, owner_email, account_name }`. Store the
+   returned provisioning `id`. Replaying the same request returns the same
+   account, and creation does not send an invitation.
+2. `POST /v1/partner/managed_accounts/{id}/credentials`, with
+   `credential: { name }`. Store the one-time `nsmc_live_` secret and returned
+   `brand.sid`. This credential is restricted to that client and brand; it
+   cannot mint keys, select another client or authorize purchases.
+3. Use that client credential with the existing `/v1/my/domains`, inbox and
+   webhook endpoints. Inbox beta access and domain ownership are still required.
+   Receiving setup uses `PUT /v1/my/domains/{id}/inbound_setup`; select an existing
+   inbox with `inbox_id` when the domain has several. Register `email.received`
+   through `/v1/my/webhooks` and use its test and delivery-history endpoints to
+   check your receiver.
+4. When preparation is ready, use the provisioning credential to call
+   `POST /v1/partner/managed_accounts/{id}/send_invitation`. The client owner
+   must sign in, claim and pay through the existing flow. Preparation access
+   ends at claim; consent alone does not authorize unpaid operation. Partner
+   billing without a claim is not supported by this path.
+
+Customer setup runs over HTTP without a browser login for each provisioning
+request. Owner claim and payment remain separate requirements. Keep both secrets
+out of frontend code and agent prompts. Test real inbound mail and a reply as
+well as webhook receipt before treating a customer as ready. The
+[API schema](https://api.nitrosend.com/openapi.yaml) describes issuance,
+revocation, expiration and the individual request bodies.
+
 For the complete reference, always defer to [nitrosend.com/skill.md](https://nitrosend.com/skill.md) and the [REST API docs](/integrations/rest-api).
