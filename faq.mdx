@@ -45,6 +45,13 @@ The tool was renamed: the Brand Kit action is `nitro_set_brand_kit`, and the arg
 Ask your agent: "Sync my Nitrosend brand kit using the nitro_set_brand_kit tool with my website URL."
 ```
 
+### What if my agent can't find a Nitrosend option?
+Some agent apps, ChatGPT among them, refresh their copy of Nitrosend's tools on their own schedule, so a newer option can take a while to appear there. You can do any of these steps in the dashboard instead: activate your Nitrosend address under Settings, then Domains, or select and delete contacts in Contacts. Your agent can walk you through the dashboard steps while you complete them.
+
+```text
+Ask your agent: "Using Nitrosend, show me the dashboard steps for [task] and explain what I need to confirm."
+```
+
 ### Will my agent send emails without asking me?
 By default, campaigns and flows are created for review, and new flows land as drafts. An agent can send without another prompt only when an account owner has granted explicit, revocable authority within the account's limits. Suppressions, unsubscribes, trust checks and delivery controls still apply to every send.
 
@@ -67,6 +74,37 @@ Inbox providers report complaints differently, so the dashboard does not represe
 Ask your agent: "Show my recorded Nitrosend complaints from the last 30 days, then build a segment of subscribed contacts who opened or clicked in the last 90 days."
 ```
 
+### How do I activate my free Nitrosend sending address?
+A free Nitrosend address such as `hello@yourbrand.nitrosend.net` needs no DNS setup, and activating it sends no email. Under Settings, then Domains, select Choose address name in the Nitrosend address section, enter a name and select Use this address. For an existing address, select Activate sender if shown, or Use this sender to make it your default. If your agent reports `brand_identity_required`, give it the address name you want or complete your Brand Kit so Nitrosend can derive one from your company name.
+
+```text
+Ask your agent: "Using Nitrosend, prepare my sending address with the name [address name] and confirm whether it is ready and selected."
+```
+
+### Is there really one-click DNS setup?
+If your DNS is on one of the big hosts, yes. Hit one-click DNS setup, authorise, and we write the records for you. Works with GoDaddy, Namecheap, Cloudflare, Route 53 and more. Anyone else gets the exact records to paste.
+
+### Should I send from my main domain?
+Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify it under Settings, then Domains, then set your From address under Brand, then Sender. Your own domain avoids shared `nitrosend.net` pacing and builds its own sender reputation, while your plan allowance and other sending limits still apply. See [sending domains](/guides/sending-domains#use-your-nitrosend-address).
+
+```text
+Ask your agent: "Using Nitrosend, check the setup for [sending subdomain] and show me the DNS records and sender settings I need."
+```
+
+### How do I move from my Nitrosend address to my own domain?
+Verify your domain under Settings, then Domains. If live or paused flows use your current sender, ask support to update those flows before switching the brand sender; people already in a flow keep the previous sender, while new entrants get the new one. Otherwise, set the new From address under Brand, then Sender. Tracked links in new emails use the sending domain once its tracking DNS and HTTPS checks pass.
+
+```text
+Ask your agent: "Raise a Nitrosend support ticket to switch my brand sender and my live or paused flows to [address], keeping everyone's place in each flow."
+```
+
+### Can I email my whole list on day one?
+Start with your most engaged subscribers and build volume gradually over the first few weeks. New accounts have an initial sending allowance while they establish sending history. Ask your agent to plan the rollout around your current allowance.
+
+```text
+Ask your agent: "Plan a gradual Nitrosend rollout for my subscribed contacts, starting with the most engaged and staying within my current sending allowance."
+```
+
 ## Security and compliance
 
 Everything below is covered in depth at [nitrosend.com/security](https://nitrosend.com/security), which is the page to send prospects and vendor reviews to.
@@ -79,19 +117,6 @@ Our SOC 2 audit is under way with an independent third-party auditor, and we'll 
 
 ### Can I send patient information through Nitrosend?
 Use Nitrosend only for email that does not involve protected health information (PHI). Do not import patient lists or include PHI in messages. Contact support before importing contacts or sending if you're unsure whether your healthcare use case is suitable.
-
-### Is there really one-click DNS setup?
-If your DNS is on one of the big hosts, yes. Hit one-click DNS setup, authorise, and we write the records for you. Works with GoDaddy, Namecheap, Cloudflare, Route 53 and more. Anyone else gets the exact records to paste.
-
-### Should I send from my main domain?
-Use a dedicated sending subdomain such as `send.yourdomain.com`. Set it up under Brand, then Sender.
-
-### Can I email my whole list on day one?
-Start with your most engaged subscribers and build volume gradually over the first few weeks. New accounts have an initial sending allowance while they establish sending history. Ask your agent to plan the rollout around your current allowance.
-
-```text
-Ask your agent: "Plan a gradual Nitrosend rollout for my subscribed contacts, starting with the most engaged and staying within my current sending allowance."
-```
 
 ## Contacts and migration
 
@@ -118,6 +143,13 @@ Ask your agent or use the API to view suppressed addresses and their reasons. Su
 Ask your agent: "Show my Nitrosend suppression list with the reason for each address."
 ```
 
+### How do I delete contacts, or clear out an import?
+In Contacts, filter to the contacts you want, for example by list or tag, then select them; to include every match, tick the header box and choose Select all matching. Choose Delete and confirm the count. Deleting is permanent and removes their list memberships and events, while unsubscribes, bounces and complaints are kept, so those addresses stay blocked if you import them again. Large deletes run in the background, and the account owner gets an email when they finish.
+
+```text
+Ask your agent: "Using Nitrosend, delete the contacts in my [list name] list. Tell me how many will be deleted and wait for my confirmation."
+```
+
 ### How do I export all my contacts as a CSV?
 Ask your agent to create a contacts export containing names, subscription status, list membership and custom fields. Through the REST API, start it with `POST /v1/my/exports` and `{"resource":"contacts"}`, then check `GET /v1/my/exports/{id}` until the download is ready.
 
@@ -129,6 +161,9 @@ Ask your agent: "Create a full contacts export in Nitrosend, wait for it to fini
 
 ### Does Nitrosend do transactional email as well as marketing?
 Yes, both, through one place with one set of analytics. If your product already sends through Resend, Postmark or SendGrid, connect that API key under Integrations (Pro and up) and your provider becomes Nitrosend's delivery engine: point your transactional sends at Nitrosend, delivery keeps riding your own infrastructure, and everything you send shows on one timeline in Activity. You don't have to migrate everything on day one.
+
+### How do I get the Agent Inbox?
+The Agent Inbox, where replies land for your agent and your team to answer, is in beta. Open Inbox in the dashboard: if it's switched on for your account you can set up your first inbox there, otherwise choose Request access on that page. See [Using the Agent Inbox](/guides/agent-inbox) for setup.
 
 ### What should I check before sending with a transactional template?
 Approve the template before using it for transactional sends. Check that its event-data merge tags use the documented syntax, then test the message.
@@ -143,9 +178,6 @@ Every send on `POST /v1/my/messages` requires one: give each logical send a stab
 ```text
 Ask your agent: "Add one stable idempotency key per logical Nitrosend send, reuse it for retries of that send and handle 409 idempotency_conflict."
 ```
-
-### How do I check my plan after upgrading?
-Sign out and back in to refresh your account view after upgrading. If the displayed plan still does not match your purchase, contact support with your account email.
 
 ### Can I still use the visual editor?
 Yes, properly. Campaigns have a full WYSIWYG editor, flows have a visual builder with branching, and everything your agent creates is editable there. Plenty of customers drive with the agent and finish by hand, or skip the agent entirely for a given job. Both are first-class.
@@ -177,9 +209,6 @@ Imports don't start flows: a CSV import, or an import through your agent, adds c
 Ask your agent: "In Nitrosend, add the contacts I imported today to the [list name] list so they enter the [flow name] flow, and tell me how many were newly added."
 ```
 
-### The brand scan grabbed the wrong logo or colours.
-Run the scan again (logos on some sites take a second attempt) or edit any field by hand in Brand. Your agent can also fix it: "update my brand kit, the primary colour should be #0A0A0A."
-
 ### How do I prepare my email for dark mode?
 Email apps can display colours differently in dark mode, so test your email in the apps and on the devices your audience uses. Choose a logo that remains readable on both light and dark backgrounds. You can set a logo for an individual email in its Header section.
 
@@ -204,6 +233,13 @@ Ask your agent to check the send's current status and explain the next step. A s
 
 ```text
 Ask your agent: "Check why Nitrosend campaign [name] is waiting. Explain the current status, any retry guidance and what action I need to take."
+```
+
+### What happens when my email is held for a safety check?
+Nitrosend checks emails before they go out. `email_under_review` means that email hasn't been sent, and the account owner gets a notice explaining what was flagged and what happens next. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or reply to the notice if you think the check got it wrong. After it's cleared, the notice tells you whether sending has started or whether you need to send it again.
+
+```text
+Ask your agent: "Using Nitrosend, check the safety-review status of [email or campaign] and explain the next step before retrying any send."
 ```
 
 ### What does "Waiting for plan allowance" mean?
@@ -263,10 +299,10 @@ Ask your agent: "Check the From address and verified domain for Nitrosend [campa
 ```
 
 ### What should I do when Nitrosend says sending is paused for an account review?
-Ask support to review the account and include what you send, who receives it and whether the messages are transactional or marketing. An account-review pause needs the team's review, so repeating domain verification will not resolve it. If the notice identifies bounces or complaints, include your list-cleaning or verification results.
+This can happen on a new account before its first send, or after a send draws bounces or complaints. Raise one support request saying what you send, who receives it, how they agreed to hear from you and whether the messages are transactional or marketing. The team replies on that request, and repeating domain verification or sending follow-ups won't speed up the review. Campaigns and flows are for contacts who agreed to receive your emails, and if the notice mentions bounces or complaints, include your list verification results.
 
 ```text
-Ask your agent: "Raise a Nitrosend support ticket about my sending_paused notice. Include the exact notice, my intended audience and whether the messages are transactional or marketing."
+Ask your agent: "Raise one Nitrosend support ticket about my sending_paused notice. Include the exact notice, my intended audience, how those contacts opted in and whether the messages are transactional or marketing."
 ```
 
 ### How can I finish editing an email?
@@ -299,10 +335,10 @@ Ask your agent: "Select Nitrosend brand [name], confirm its name and ID, then pr
 The Free plan includes 8,000 free emails up front, then 500 free emails every month. You also get unlimited contacts, 3 brands and full MCP, API and CLI access. No credit card is required. See [pricing](https://nitrosend.com/pricing) for plan details, or [the pricing reference for agents](https://nitrosend.com/pricing.md).
 
 ### How do I get an invoice or update my billing details?
-Ask support for your hosted invoice link, which includes a Download PDF option. Include your company name, address and VAT or tax number if you want them added to future invoices. Billing-detail updates apply from your next payment; details on invoices already issued remain unchanged.
+Download invoices from Account, then Billing, where each invoice has its own download button. To add your company name, address or VAT or tax number to future invoices, ask support with the details. Billing-detail updates apply from your next invoice; invoices already issued remain unchanged.
 
 ```text
-Ask your agent: "Raise a Nitrosend support ticket requesting my latest invoice link and these billing details for future invoices: [company name, address, VAT or tax number]."
+Ask your agent: "Raise a Nitrosend support ticket to add these billing details to my future invoices: [company name, address, VAT or tax number]."
 ```
 
 ## Help
