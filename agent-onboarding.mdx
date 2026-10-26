@@ -77,7 +77,7 @@ it is not a customer-data credential. Each customer's setup then uses:
    `brand.sid`. This credential is restricted to that client and brand; it
    cannot mint keys, select another client or authorize purchases.
 3. Use that client credential with the existing `/v1/my/domains`, inbox and
-   webhook endpoints. Inbox beta access and domain ownership are still required.
+   webhook endpoints. Inbox access and domain ownership are still required.
    Receiving setup uses `PUT /v1/my/domains/{id}/inbound_setup`; select an existing
    inbox with `inbox_id` when the domain has several. Register `email.received`
    through `/v1/my/webhooks` and use its test and delivery-history endpoints to
