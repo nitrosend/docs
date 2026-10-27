@@ -11,7 +11,7 @@ Nitrosend's two most powerful MCP features are **Brand Kit** and **AI Memory**. 
 
 **Brand Kit** defines how your emails look and who they come from. When your AI creates an email via MCP, these settings are applied automatically — the right colors, fonts, logo, and tone, every time. Edit it under **Brand > Brand Kit** ([app.nitrosend.com/my/brand](https://app.nitrosend.com/my/brand)).
 
-In accounts with multiple brands, MCP has a current brand. Use `nitro_get_status` to inspect `current_brand` and `available_brands`, then use `nitro_select_brand` to switch the current brand for OAuth sessions. `nitro_set_brand_kit` does not switch context; it updates the Brand Kit for the currently selected brand.
+In accounts with multiple brands, MCP has a current brand. Use `nitro_get_status` to inspect `current_brand` and `available_brands`, then use `nitro_select_brand` to switch between brands allowed by your [connection access](/integrations/overview#choose-connection-access). `nitro_set_brand_kit` updates the current brand's Brand Kit.
 
 ### What Brand Kit includes
 

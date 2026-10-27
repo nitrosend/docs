@@ -34,6 +34,8 @@ claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
 
 Call `nitro_get_status` first for account context, then read the `nitro://guide` resource. Full per-client setup is in the [Quickstart](/quickstart) and [MCP integrations](/integrations/overview).
 
+During sign-in, you can [restrict the connection to one account or brand](/integrations/overview#choose-connection-access). The restriction applies to every chat using that connection; existing connections keep their current access.
+
 ## Headless path (no dashboard, no MCP client)
 
 Request bodies on this path are top-level JSON fields; only signup nests its fields, under `user`. `PATCH /v1/my/brands/{sid}` with `{ "company_name": "Acme" }` sets the company name, while `{ "brand": { "company_name": "Acme" } }` returns `200` and changes nothing.

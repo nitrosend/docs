@@ -40,7 +40,21 @@ When you connect via MCP, your AI assistant gets:
 
 ### Brands
 
-MCP always operates on one current brand. `nitro_get_status` shows `current_brand` and `available_brands`; OAuth users can switch with `nitro_select_brand`, and that selection persists per user, OAuth application, and account. API key connections are pinned to the API key's brand. `nitro_set_brand_kit` is different: it edits the selected brand's Brand Kit, such as colors, logo, company details, and voice.
+MCP always operates on one current brand. `nitro_get_status` shows `current_brand` and `available_brands`. Connections that allow brand switching can use `nitro_select_brand`; API key connections stay with the key's brand. `nitro_set_brand_kit` edits the current brand's colors, logo, company details and voice.
+
+### Choose connection access
+
+When connecting your AI tool, select an account and check **Access** before clicking **Connect**:
+
+- **All my accounts and brands** is the default. Your AI tool can switch between accounts and brands you can access.
+- **Only this account** allows brands within the selected account.
+- **Only one brand** keeps the connection within the brand you choose.
+
+Use **Change** beside Access to choose a restriction. Your existing account permissions and sending approvals still apply.
+
+The choice applies to every chat using that connection. Separate customer connections require an AI tool that supports multiple connections. To change a connection's access, disconnect it in your AI tool and connect again.
+
+Existing connections keep their current access. Restricted connections keep their chosen account or brand when sign-in is renewed automatically. `nitro_get_status` lists only the accounts and brands available to that connection.
 
 ## Choose your platform
 

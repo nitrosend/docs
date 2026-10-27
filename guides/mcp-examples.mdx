@@ -140,7 +140,7 @@ For accounts with multiple brands, switch context before making changes:
 }
 ```
 
-The AI calls `nitro_select_brand` with that SID. Future OAuth MCP tool calls use that brand. API key connections are pinned to the API key's brand and cannot switch.
+The AI calls `nitro_select_brand` with that SID. Future calls use that brand, within the [access chosen when connecting](/integrations/overview#choose-connection-access). API key connections stay with the API key's brand.
 
 ---
 
