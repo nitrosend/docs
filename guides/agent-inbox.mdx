@@ -34,15 +34,21 @@ clears the custom name.
 Open **Inbox → Manage inboxes** and choose your Nitrosend address. You can edit
 the part before `@`, or select **Change address name** to change your brand's part
 of the domain. Both changes keep the same inbox and history. Old addresses keep
-receiving mail; replies to a previous domain use the new address.
+receiving mail; replies use the current address. Each named inbox keeps its own local part when the brand address name changes.
 
 To change the name recipients see, edit **Sender name** separately. Past messages
 keep their original sender name and address. See [Sending Domains](/guides/sending-domains#change-your-nitrosend-address)
 for address-change limits and API access.
 
-## Add aliases
+## Add another inbox
 
-Open **Inbox**, click **Manage inboxes**, and choose your domain. Under **Addresses**, add an alias such as `ask@`. Mail to the alias lands in the same queue, and replies go out from whichever address each customer wrote to. **Make main** sets the address new messages start from; the previous main address stays as an alias.
+Open **Inbox**, choose **Add or manage inboxes**, then **New inbox**. Choose a receiving domain, enter the new email address and sender name, and create it. For a provider-forwarded inbox, finish its delivery setup and send a verification message.
+
+If your included capacity is in use, open **Account > Billing > Inboxes**. Choose the number of additional inboxes, review the recurring price and approve payment. Return to Inbox to continue your saved draft. Creation never starts a purchase automatically.
+
+Aliases are retired. Each new address is a separate inbox. Existing customer-added aliases become included inboxes with their old history preserved; old addresses retained after a rename keep receiving in the renamed inbox.
+
+To archive an inbox, select it in **Add or manage inboxes** and choose **Archive inbox**. New mail and replies stop; messages and the address remain reserved. Restore it when capacity is available. Archive unused inboxes before reducing paid capacity or cancelling its renewal.
 
 ## Triage the queue
 
@@ -130,8 +136,10 @@ Everything the dashboard does is available over REST:
 
 | Endpoint | Purpose |
 |---|---|
+| `GET /v1/my/inboxes/capacity?quantity=43` | Read account-wide capacity and the server quote for 43 additional inboxes |
+| `POST /v1/my/inboxes` | Create an inbox within confirmed capacity; no automatic purchase |
 | `GET /v1/my/inboxes/:id` | Read an inbox's name, addresses and settings |
-| `PATCH /v1/my/inboxes/:id` | Edit `inbox.display_name` or promote an existing alias with `inbox.address` |
+| `PATCH /v1/my/inboxes/:id` | Edit `inbox.display_name` or set `inbox.status` to `active` / `archived` |
 | `GET /v1/my/inbox_action_items` | List the queue (`state`, `inbox_id`, `reason_code`, `sender`, `query`, `since`, `sort` filters) |
 | `POST /v1/my/inbox_action_items/:id/act` | Apply a verb (`mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`) |
 | `POST /v1/my/inbox_action_items/act` | Apply one verb to many items (`action_item_ids`, or `filter` + `expected_count`; max 100) |

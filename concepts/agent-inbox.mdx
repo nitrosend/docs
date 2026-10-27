@@ -13,26 +13,30 @@ An agent inbox is a real email address on your own domain, like `support@yourcom
 
 ## Your domain, your existing mail untouched
 
-Inboxes run on your top-level domain, not a subdomain. You point your domain's MX records at Nitrosend, and Nitrosend receives mail for the addresses you claim. Everything else forwards to your existing mail provider untouched: Gmail, Google Workspace, Outlook, Zoho, whatever you use today keeps working exactly as before.
+Use your own domain or a Nitrosend address. The setup flow shows the receiving options for that domain: keep your existing provider and forward a copy, or let Nitrosend receive first with the forwarding arrangement shown in setup. Verify delivery before relying on the inbox.
 
 The exact DNS records for your domain are shown in **Settings > Domains** ([app.nitrosend.com/my/settings/domains](https://app.nitrosend.com/my/settings/domains)). Once the records verify, your claimed addresses start receiving.
 
-## One inbox, several addresses
+## Separate inboxes, one brand view
 
-An inbox on your own domain can answer to more than one address on that domain. Add aliases such as `ask@` or `billing@` to an inbox and mail to any of them lands in the same queue. Each thread shows the address the customer wrote to, and replies go out from that address. When you compose a new message, you can send from any of the inbox's addresses.
+Each email address is its own inbox, with its own sender name, mail and storage. Create several inboxes on the same domain without using another domain slot. Open **Inbox** to see all of the selected brand's inboxes together, or filter by address.
 
-Aliases need Nitrosend to receive the domain's mail through MX. A domain that forwards mail from another provider receives at the inbox's main address only.
+Free includes one inbox per account; Pro and Ultra include three. Additional inboxes cost US$1/month each, shared across the account's brands. A Pro upgrade is not required. Your existing included capacity is preserved, with no retroactive charge.
+
+Customer-added aliases are being replaced by independent inboxes with preserved capacity and history. Previous addresses kept after a rename continue receiving in the renamed inbox; they are not additional paid inboxes.
+
+Archiving stops new mail and replies while preserving history and reserving the address. Archive unused inboxes before reducing paid capacity. If payment ends, extra inboxes keep receiving, while replies pause until capacity is restored.
 
 ## The action queue
 
 Every inbound message lands in the action queue in one of four states:
 
 - **Needs you** — a human should look at this. Mail lands here when it needs judgment: a mismatched reply-to address, a provider spam flag, or suspicious content in the body.
-- **Agent ready** — clean mail your agent can answer. Passed spam, virus, and authentication checks.
+- **Agent ready** — clean mail your agent can answer. Passed the applicable provider spam, authentication and content checks.
 - **Handled** — resolved items, kept as an audit trail.
 - **Quarantine** — mail that failed security checks or arrived on a disabled inbox. Quarantined mail that failed a virus check can never be released to the agent.
 
-Nitrosend checks every inbound message against provider spam, virus, SPF, DKIM, and DMARC verdicts, and scans the body for prompt-injection attempts aimed at your agent. Flagged content is marked in the queue so a human sees exactly why an item needs attention.
+Nitrosend uses provider spam and authentication results and checks message content for prompt-injection attempts aimed at your agent. These checks do not certify attachment safety. Flagged content is marked in the queue so a human sees exactly why an item needs attention.
 
 ## Inbox vs Campaigns
 
