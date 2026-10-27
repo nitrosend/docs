@@ -13,7 +13,7 @@ Nitrosend is designed to be controlled by AI. Instead of clicking through dashbo
 
 ## MCP: The Fastest Way to Connect
 
-**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Zed, and other MCP-compatible clients can access your full email marketing platform with zero middleware.
+**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Cursor, Codex, Gemini CLI, Antigravity, VS Code, Windsurf, Zed, and other MCP-compatible clients can access your full email marketing platform with zero middleware.
 
 ### What MCP gives your AI
 
@@ -86,6 +86,9 @@ Cursor, or similar clients; the CLI is a separate terminal/CI surface.
   <Card title="Gemini CLI" icon="sparkles" href="/integrations/gemini">
     Add Nitrosend to Gemini CLI with a short `settings.json` entry.
   </Card>
+  <Card title="Google Antigravity" icon="rocket-launch" href="/integrations/antigravity">
+    Install the Nitrosend plugin with `agy plugin install`, or add the MCP server with `serverUrl`.
+  </Card>
   <Card title="VS Code" icon="code-bracket-square" href="/integrations/vscode">
     Use Nitrosend from GitHub Copilot via VS Code's MCP support.
   </Card>
@@ -96,6 +99,16 @@ Cursor, or similar clients; the CLI is a separate terminal/CI surface.
     Add Nitrosend as a remote custom server in Zed with OAuth.
   </Card>
 </CardGroup>
+
+### Agent skills
+
+The Nitrosend skills guide your agent through setup, composing, campaigns, transactional email, flows, imports and analytics. Add them to Claude Code, Codex, Cursor, Gemini CLI and other agents that read Agent Skills:
+
+```bash
+npx skills add nitrosend/claude
+```
+
+The skills call the Nitrosend MCP server, so connect it first using the guide for your client above.
 
 ### REST API connections
 

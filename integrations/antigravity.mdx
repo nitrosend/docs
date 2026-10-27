@@ -1,0 +1,105 @@
+---
+title: Google Antigravity
+description: Install the Nitrosend plugin in Google Antigravity, or connect the Nitrosend MCP server with serverUrl
+---
+
+# Google Antigravity + Nitrosend
+
+[Google Antigravity](https://antigravity.google) runs agents in its App, CLI (`agy`) and IDE extensions. The Nitrosend plugin adds the remote MCP server, seven Nitrosend skills and an email marketing agent in one install. Sign-in uses OAuth, so there is no API key to paste.
+
+## Option 1: Install the plugin (recommended)
+
+### Step 1: Install
+
+From your shell:
+
+```bash
+agy plugin install https://github.com/nitrosend/claude
+```
+
+The CLI installs plugins to `~/.gemini/config/plugins/`, which the Antigravity App and IDE also read. Check it with `agy plugin list`; you should see `nitrosend` with 7 skills, 1 agent and 1 MCP server.
+
+### Step 2: Sign in
+
+1. Open Agent settings with **Cmd + ,** (macOS) or **Ctrl + ,** (Windows and Linux).
+2. Go to **Customizations** and click **Authenticate** next to `nitrosend`.
+3. Sign in to Nitrosend in your browser, or create a free account. Choose the account and access, then click **Connect**.
+4. Copy the authorization code Antigravity shows, paste it into the settings panel and click **Submit**.
+
+Antigravity stores the token and refreshes it for you.
+
+### Step 3: Verify
+
+Ask the agent:
+
+```
+What's my Nitrosend account status?
+```
+
+It calls `nitro_get_status` and shows your account, current brand and sending readiness.
+
+### What the plugin adds
+
+| Component | Name |
+|---|---|
+| MCP server | `nitrosend` at `https://api.nitrosend.com/mcp` |
+| Skills | `nitrosend-setup`, `compose-email`, `send-campaign`, `send-transactional`, `build-flow`, `import-contacts`, `nitrosend-analytics` |
+| Agent | `email-marketer` |
+
+Composing never sends. Campaigns and flows go live only after a separate approve step, and the skills tell the agent to stop and ask you first.
+
+## Option 2: MCP server only
+
+Add Nitrosend to `~/.gemini/config/mcp_config.json` for every workspace, or to `.agents/mcp_config.json` for one workspace:
+
+```json
+{
+  "mcpServers": {
+    "nitrosend": {
+      "serverUrl": "https://api.nitrosend.com/mcp"
+    }
+  }
+}
+```
+
+Or from your shell:
+
+```bash
+agy mcp add nitrosend https://api.nitrosend.com/mcp
+```
+
+Then sign in as in Step 2 above.
+
+<Warning>
+  Antigravity needs `serverUrl` (or `url`). The `httpUrl` key from the [Gemini CLI](/integrations/gemini) config is not supported and the server will not load.
+</Warning>
+
+To add the skills without the plugin, run `npx skills add nitrosend/claude`.
+
+## Example prompts
+
+```
+Set up my Brand Kit from https://mysite.com and draft a product launch email.
+```
+
+```
+Build a welcome flow: send a welcome email when a contact subscribes, wait 3 days, then send a follow-up.
+```
+
+```
+Show me open and click rates for my last campaign compared to benchmarks.
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The plugin installs but Nitrosend tools are missing">
+    Run `agy plugin list` and check `nitrosend` is enabled with 1 MCP server. Then authenticate `nitrosend` under Agent settings, Customizations. Tools appear once sign-in completes.
+  </Accordion>
+  <Accordion title="The MCP server does not load">
+    Check the config is valid JSON and uses `serverUrl`, not `httpUrl`. Antigravity supports Streamable HTTP, which is what `https://api.nitrosend.com/mcp` serves.
+  </Accordion>
+  <Accordion title="Sign-in lands on the wrong Nitrosend account">
+    Antigravity keeps MCP tokens in `~/.gemini/antigravity/mcp_oauth_tokens.json`. Remove the `nitrosend` entry, authenticate again and pick the right account and access on the Nitrosend sign-in page. See [choose connection access](/integrations/overview#choose-connection-access).
+  </Accordion>
+</AccordionGroup>

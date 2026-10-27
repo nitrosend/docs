@@ -45,6 +45,7 @@ export default defineConfig({
                 "integrations/chatgpt",
                 "integrations/codex",
                 "integrations/gemini",
+                "integrations/antigravity",
                 "integrations/vscode",
                 "integrations/windsurf",
                 "integrations/zed",
