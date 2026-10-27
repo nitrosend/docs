@@ -66,8 +66,9 @@ For several brands that your team owns and pays for, keep using one account
 and its brands. For isolated client-owned accounts, use the existing partner
 API. CLI signup creates your own account; it does not provision a managed client.
 
-An authorized agency manager first obtains a provisioning credential with
-`provision` and `manage` scopes. Store this `nspk_live_` secret on your backend;
+An authorized agency manager first uses its direct user session to call
+`POST /v1/my/account/provisioning_credentials` with `provision` and `manage`
+scopes. Store this `nspk_live_` secret on your backend;
 it is not a customer-data credential. Each customer's setup then uses:
 
 1. `POST /v1/partner/managed_accounts`, with a stable `Idempotency-Key` and
@@ -80,6 +81,13 @@ it is not a customer-data credential. Each customer's setup then uses:
    cannot mint keys, select another client or authorize purchases.
 3. Use that client credential with the existing `/v1/my/domains`, inbox and
    webhook endpoints. Inbox access and domain ownership are still required.
+   To use a subdomain of your own verified domain, its owner first
+   [shares the exact subdomain with the client's brand](/guides/sending-domains#share-a-subdomain-with-another-brand-or-client).
+   Your backend can do this with the domain owner's existing brand API key;
+   use the destination `brand.sid` returned in step 2. The client credential
+   finishes its own setup and cannot grant access to the parent domain.
+   Continue normal DNS and inbox setup using the client credential. Several
+   named inboxes can use that subdomain; each has its own sender name and mail.
    Receiving setup uses `PUT /v1/my/domains/{id}/inbound_setup`; select an existing
    inbox with `inbox_id` when the domain has several. Register `email.received`
    through `/v1/my/webhooks` and use its test and delivery-history endpoints to
@@ -93,7 +101,11 @@ it is not a customer-data credential. Each customer's setup then uses:
 Customer setup runs over HTTP without a browser login for each provisioning
 request. Owner claim and payment remain separate requirements. Keep both secrets
 out of frontend code and agent prompts. Test real inbound mail and a reply as
-well as webhook receipt before treating a customer as ready. The
+well as webhook receipt before treating a customer as ready. Read the received
+conversation and reply through `POST /v1/my/conversations/{id}/reply`; connected
+agents use `nitro_inbox` and `nitro_inbox_action` for the same journey. Nitrosend
+selects the inbox sender and preserves the email thread. Verify webhook
+signatures and deduplicate deliveries by `webhook-id`, including retries. The
 [API schema](https://api.nitrosend.com/openapi.yaml) describes issuance,
 revocation, expiration and the individual request bodies.
 
