@@ -104,7 +104,15 @@ out of frontend code and agent prompts. Test real inbound mail and a reply as
 well as webhook receipt before treating a customer as ready. Read the received
 conversation and reply through `POST /v1/my/conversations/{id}/reply`; connected
 agents use `nitro_inbox` and `nitro_inbox_action` for the same journey. Nitrosend
-selects the inbox sender and preserves the email thread. Verify webhook
+selects the inbox sender and preserves the email thread. To start a conversation,
+use `POST /v1/my/conversations` with a `conversation` containing `inbox_id`, `to`,
+`subject` and `body`, plus an `Idempotency-Key` header. Connected agents use
+`nitro_inbox_action` with `command: "compose"` and the same fields plus
+`idempotency_key`. Set `dry_run: true` to preview without saving or sending;
+omit it to send after approval. Optional `cc`, `bcc` and `attachment_refs` use
+the same inbox delivery checks. Compose continues an open conversation with
+that recipient. Keep the same key and payload when retrying; changes to the
+sender, recipients or content require a new key. Verify webhook
 signatures and deduplicate deliveries by `webhook-id`, including retries. The
 [API schema](https://api.nitrosend.com/openapi.yaml) describes issuance,
 revocation, expiration and the individual request bodies.

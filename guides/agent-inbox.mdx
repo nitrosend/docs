@@ -73,6 +73,26 @@ Click **New message** (or press `c`). Choose the address to send from, add recip
 
 If the recipient already has an open conversation with that inbox, your message continues the existing thread.
 
+Your connected agent can do the same with `nitro_inbox_action`:
+
+```json
+{
+  "command": "compose",
+  "inbox_id": 123,
+  "to": ["maya@example.com"],
+  "subject": "A quick question",
+  "body": "Hello Maya, can we confirm the meeting time?",
+  "idempotency_key": "meeting-question-1",
+  "dry_run": true
+}
+```
+
+Preview first, then send the same request with `dry_run: false` after approving
+the message. `cc`, `bcc` and uploaded `attachment_refs` are optional. Reuse the
+same key and message for retries; use a new key for a different sender,
+recipient list or message. A successful send returns the conversation and
+message IDs. Read the conversation with `nitro_inbox` before replying.
+
 ## View a message's source
 
 Hover any message in a thread and click the source icon to see the full stored headers, authentication results, and raw text and HTML content.

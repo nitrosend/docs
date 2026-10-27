@@ -370,7 +370,7 @@
     },
     {
       "name": "nitro_manage_audience",
-      "description": "Manage contacts, subscriptions, lists, events, segments, tags and prepaid email validation. Custom fields: attributes.data. Over 100 contacts: nitro_import_contacts.",
+      "description": "Contacts, subscriptions, lists, events, segments, tags and prepaid email validation. Custom fields: attributes.data. Over 100 contacts: nitro_import_contacts.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -388,15 +388,14 @@
               "bulk_tag",
               "validate"
             ],
-            "description": "delete_contacts: one of list_id, segment_id, contact_ids. validate accepts exactly one of contact_channel_ids, contact_ids, list_id, segment_id, or all_contacts: true. Dry-run quotes without mutation; pass its quote_digest on execution to refuse audience or price drift. Execution needs idempotency_key and prepaid funds."
+            "description": "delete_contacts: one of list_id, segment_id, contact_ids. validate: exactly one of contact_channel_ids, contact_ids, list_id, segment_id, all_contacts: true. Its dry run quotes; pass quote_digest on execution to refuse audience or price drift. Execution needs idempotency_key, prepaid funds."
           },
           "params": {
             "type": "object",
-            "description": "Parameters named by operation. manage_list action: create (name, optional contact_ids or emails to add), rename (list_id, name), delete (list_id), add_contacts or remove_contacts (list_id, contact_ids or emails). bulk_tag tag_action: add|remove|set (default add). set_subscription suppress: true stops all email incl. transactional; false lifts it."
+            "description": "manage_list action: create (name[, contact_ids|emails]), rename (list_id, name), delete (list_id), add_contacts|remove_contacts (list_id, contact_ids|emails). bulk_tag tag_action: add|remove|set (default add). set_subscription suppress: true stops all email incl. transactional; false lifts it."
           },
           "dry_run": {
             "type": "boolean",
-            "description": "Preview changes without persisting",
             "default": false
           },
           "confirm": {
@@ -406,7 +405,7 @@
           },
           "idempotency_key": {
             "type": "string",
-            "description": "Optional deduplication key. Same key returns cached result."
+            "description": "Same key returns the first result."
           }
         },
         "required": [
@@ -679,13 +678,16 @@
           },
           "options": {
             "type": "object",
-            "description": "Import options, including list_ids.",
+            "description": "Import options.",
             "properties": {
               "list_ids": {
                 "type": "array",
                 "items": {
                   "type": "integer"
                 }
+              },
+              "start_flows": {
+                "type": "boolean"
               }
             }
           },
@@ -1643,6 +1645,13 @@
               "type": "object"
             }
           },
+          "section_updates": {
+            "type": "array",
+            "description": "Same entries as nitro_manage_template section_updates.",
+            "items": {
+              "type": "object"
+            }
+          },
           "theme": {
             "type": "object",
             "description": "Brand-theme overrides. logo_url must be public or a nitro_ingest media_url/image_url, never raw signed_id."
@@ -1727,7 +1736,7 @@
     },
     {
       "name": "nitro_manage_domains",
-      "description": "Activate or select the Nitrosend brand-subdomain sender, or add, verify, diagnose, list, and remove customer sending domains. Receiving MX appears only after forward-all exists.",
+      "description": "Manage the brand’s Nitrosend sender and custom sending domains. Receiving MX requires forward-all.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1737,18 +1746,40 @@
             "enum": [
               "prepare_brand_subdomain",
               "select_brand_subdomain",
+              "rename_brand_subdomain",
               "add",
               "verify",
               "check_dns",
               "list",
-              "remove"
+              "remove",
+              "list_shared_subdomains",
+              "share_subdomain",
+              "revoke_shared_subdomain"
             ],
-            "description": "prepare_brand_subdomain reserves params.subdomain (or a Brand Kit-derived name), then the sender; idempotent.\nselect_brand_subdomain selects a ready sender with optional local_part and apex.\nadd registers a customer domain and returns required DNS records.\nverify checks provider and DNS readiness. check_dns diagnoses DNS and tracking HTTPS only.\nlist returns domains, readiness, records, DMARC, and allowance use.\nremove requires domain_name and confirm; retry paired removal with unpair after showing its effect."
+            "description": "Prepare/select a hosted sender or manage customer domains.\nRename keeps old addresses receiving. Show a paired removal's effect before unpair."
           },
           "params": {
             "type": "object",
             "description": "Operation-specific parameters.",
             "properties": {
+              "domain_id": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "The current brand's domain that owns the subdomain."
+              },
+              "shared_domain_id": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Shared sending-domain claim to revoke."
+              },
+              "target_brand_sid": {
+                "type": "string",
+                "description": "Exact destination brand; must be in this account or an eligible managed client."
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1
+              },
               "domain_name": {
                 "type": "string",
                 "description": "Customer sending domain for add, verify, check_dns, or remove."
@@ -1760,6 +1791,10 @@
               "subdomain": {
                 "type": "string",
                 "description": "Sender name; needs no Brand Kit."
+              },
+              "expected_fqdn": {
+                "type": "string",
+                "description": "Current brand_subdomain.fqdn, required for rename_brand_subdomain."
               },
               "local_part": {
                 "type": "string",
@@ -1778,7 +1813,7 @@
           },
           "confirm": {
             "type": "boolean",
-            "description": "Required for remove.",
+            "description": "Required for removal, renaming and subdomain-sharing changes.",
             "default": false
           }
         },
@@ -2160,6 +2195,23 @@
       }
     },
     {
+      "name": "nitro_get_memory",
+      "description": "Read brand memory.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Read AI memory"
+      }
+    },
+    {
       "name": "nitro_set_memory",
       "description": "Read or update the AI memory document. Operations: read (get current), update (replace entirely), patch (replace a ## section by heading), append (add text to end).",
       "inputSchema": {
@@ -2239,6 +2291,12 @@
               "plan_id": {
                 "type": "integer",
                 "description": "Plan ID (required for checkout)"
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10000,
+                "description": "Additional inbox units to purchase. Only quantity-based offers accept more than one."
               },
               "product_key": {
                 "type": "string",
@@ -2513,7 +2571,7 @@
     },
     {
       "name": "nitro_inbox_action",
-      "description": "Reply, reserve attachments, triage one item or many, and set sender policy, read state, or contact linkage.",
+      "description": "Compose from an inbox, reply, reserve attachments, triage, or set sender policy, read state and contact linkage. Compose requires inbox_id, to, subject and body; reuses an open thread with that recipient.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2521,6 +2579,7 @@
           "command": {
             "type": "string",
             "enum": [
+              "compose",
               "send_reply",
               "send_reply_test",
               "mark_handled",
@@ -2563,11 +2622,11 @@
           },
           "subject": {
             "type": "string",
-            "description": "Reply subject"
+            "description": "Compose or reply subject"
           },
           "body": {
             "type": "string",
-            "description": "Plain text reply body"
+            "description": "Plain text compose or reply body"
           },
           "html": {
             "type": "string",
@@ -2618,8 +2677,24 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 5,
-            "description": "Test recipients for send_reply_test"
+            "maxItems": 10,
+            "description": "Compose recipients, or test recipients for send_reply_test (first 5)"
+          },
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "description": "Compose only"
+          },
+          "bcc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "description": "Compose only"
           },
           "idempotency_key": {
             "type": "string",
@@ -2628,7 +2703,7 @@
           "dry_run": {
             "type": "boolean",
             "default": false,
-            "description": "Validate a reply without sending"
+            "description": "Validate compose or reply without sending"
           },
           "classification": {
             "type": "string",
@@ -2639,7 +2714,7 @@
           },
           "inbox_id": {
             "type": "integer",
-            "description": "For set_sender_policy"
+            "description": "For compose or set_sender_policy"
           },
           "matcher_type": {
             "type": "string",
@@ -2841,13 +2916,7 @@
       "description": "Per-account contact field catalog grouped by category (contact, custom, enrichment, engagement, tag). Each entry includes key, category, field_type, label, promoted flag, and fill_rate (percentage of contacts with a value, null when not yet computed). Read this for field and segment-filter inspection. The authoring intent's merge grammar is authoritative for recipient-copy bindings; field-catalog membership alone does not make an entry safe or portable email content."
     },
     {
-      "uri": "ui://nitrosend/email-preview/v2.1.2.html",
-      "name": "email-preview",
-      "description": "Inline preview of a composed email: subject line plus the rendered message.",
-      "mimeType": "text/html;profile=mcp-app"
-    },
-    {
-      "uri": "ui://nitrosend/campaign-review/v2.1.2.html",
+      "uri": "ui://nitrosend/campaign-review/v2.2.0.html",
       "name": "campaign-review",
       "description": "Interactive delivery review: rendered email, audience, validation and spam state, with approve, request-changes, and test-send actions.",
       "mimeType": "text/html;profile=mcp-app"
