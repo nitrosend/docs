@@ -102,6 +102,46 @@ providers, such as Cloudflare, accept the full name too.
   verification manually.
 </Info>
 
+## Share a subdomain with another brand or client
+
+The account owner or an administrator can share an exact subdomain of a verified
+domain. For example, the owner of `alvin.finance` can give one brand
+`envoy.alvin.finance` and another `travel.alvin.finance`.
+
+1. Open **Settings → Domains** in the brand that owns the verified domain.
+2. Select **Share a subdomain**, enter a name such as `envoy`, and choose the
+   destination brand or eligible managed client.
+3. Select **Share subdomain**, then **Open domain setup** to finish the usual DNS
+   setup in that brand. Only the new subdomain's records need to change.
+4. Create the named inboxes you need on that subdomain under **Inbox → Manage inboxes**.
+
+The new brand has its own sending identity and inboxes. Sharing does not switch
+an existing sender, expose another brand's messages, or reuse its sending history.
+The sending domain (`send.envoy.alvin.finance`) and visible From domain
+(`envoy.alvin.finance`) use one custom-domain slot in the destination account.
+Inboxes use that account's existing inbox allowance and paid capacity.
+
+Managed clients still use the existing ownership claim and client-paid
+subscription. Sharing a domain does not bypass those requirements.
+
+To withdraw permission, open the same section and choose **Stop sharing**.
+Subsequent sends, including queued mail, and receiving stop for that subdomain.
+Existing messages stay in their original brand; other subdomains keep working.
+**Share again** restores permission after the owner confirms the same destination.
+If a managed relationship ends, a new relationship needs fresh sharing permission.
+
+For API clients, the owner brand uses:
+
+- `GET /v1/my/domains/{domain_id}/subdomains` to list shared children (25 per page).
+- `POST /v1/my/domains/{domain_id}/subdomains` with
+  `{ "subdomain": { "subdomain": "envoy", "brand_sid": "destination-brand-sid" } }`.
+- `DELETE /v1/my/domains/{domain_id}/subdomains/{id}` to stop sharing.
+
+The response identifies the child sending domain. Use the destination brand's
+credentials for its normal domain and inbox setup. Brand-pinned keys do not
+receive a directory of other brands. An exact creation retry reuses the same
+claim. Agents use the same sharing actions, with confirmation before changes.
+
 ## Route different mail through different subdomains
 
 You can verify more than one subdomain and push different email through each by
