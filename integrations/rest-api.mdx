@@ -203,6 +203,26 @@ Reserved provider headers and reserved Nitrosend tag keys are rejected. System
 tags such as `account_id`, `brand_id`, and `message_id` are always controlled by
 Nitrosend.
 
+`In-Reply-To` and `References` are accepted custom headers. Pass at most 20
+headers, with names up to 80 characters (`A–Z`, `a–z`, digits and hyphens) and
+values up to 2,000 characters without line breaks. The envelope headers
+`From`, `To`, `Cc`, `Bcc`, `Subject`, `Reply-To`, `Return-Path`, `DKIM-Signature`,
+`List-Unsubscribe`, `List-Unsubscribe-Post`, `Message-ID` and `MIME-Version`
+are reserved, as are headers starting with `X-Nitro-` or `Content-`.
+
+The agent tool `nitro_send_message` accepts the same `from`, `from_email`,
+`from_name`, `reply_to`, `headers` and `tags` options for transactional email.
+For Inbox conversations, use `nitro_inbox_action` with `compose` or
+`send_reply`; it handles the inbox sender and thread headers for you.
+
+After provider acceptance, `GET /v1/my/messages/{id}` returns the actual email
+`rfc_message_id`. It is `null` until available; do not derive it from
+`provider_id`. Agents can read it through `nitro_query` with
+`entity: "messages", filters: { id: message_id }`, or by retrying the original
+send with its unchanged payload and idempotency key. For a custom threaded
+transactional message, enclose the returned ID in angle brackets (if needed) in `In-Reply-To`
+and include it in `References`.
+
 Every send requires an idempotency key, in the `Idempotency-Key` header or the
 `idempotency_key` field; without one the request returns
 `400 idempotency_key_required`. Give each message its own stable key and reuse

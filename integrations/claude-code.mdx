@@ -13,19 +13,28 @@ description: Connect Nitrosend to Claude Code via MCP for terminal-based AI emai
 
 ## Setup
 
-### Step 1: Add the MCP server
+### Step 1: Install the Nitrosend plugin
 
-Run this single command in your terminal:
+Run these in your terminal:
+
+```bash
+claude plugin marketplace add nitrosend/claude
+claude plugin install nitrosend@nitrosend
+```
+
+The plugin brings the Nitrosend MCP server and Nitrosend's email skills (setup, composing, campaigns, flows, transactional email, imports and analytics). Inside a Claude Code session, the same thing is `/plugin marketplace add nitrosend/claude`, then `/plugin install nitrosend@nitrosend`.
+
+Prefer the server on its own, without the skills? One command does it:
 
 ```bash
 claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
 ```
 
-That's it — no API key needed. Or point Claude Code at the install skill, [nitrosend.com/SKILL.md](https://nitrosend.com/SKILL.md), and it runs the setup itself.
+Use one or the other, not both.
 
 ### Step 2: Sign in
 
-Start a Claude Code session and either ask Claude to use Nitrosend or run `/mcp`. Claude Code will open a Nitrosend sign-in flow or show you the login URL. Log in or create a free account.
+Start Claude Code and run `/mcp`, or ask Claude to use Nitrosend. Claude Code opens the Nitrosend sign-in or shows you the login URL. Log in or create a free account. No API key needed.
 
 ### Step 3: Verify the connection
 
@@ -35,7 +44,7 @@ Ask Claude:
 What's my Nitrosend account status?
 ```
 
-Claude will call the `nitro_get_status` tool and show your current account, sender identity, dashboard links, readiness, onboarding progress, blockers, and recommendations.
+Claude calls `nitro_get_status` and shows your current account, sender identity, readiness, blockers and recommendations.
 
 ## How MCP works
 
@@ -49,35 +58,7 @@ No data is stored locally. All state lives in your Nitrosend account.
 
 ## MCP tools available
 
-Once connected, Claude Code has access to these tools:
-
-| Tool | What it does |
-|------|-------------|
-| `nitro_get_status` | Account context, sender identity, readiness, and recommendations |
-| `nitro_search_docs` | Search the Nitrosend product documentation |
-| `nitro_select_account` | Switch the current account for OAuth MCP sessions |
-| `nitro_select_brand` | Switch the current brand for OAuth MCP sessions |
-| `nitro_ingest` | Ingest assets. V1 supports image via small inline data, public URL, upload reservation, or signed_id |
-| `nitro_manage_template` | Create, update, or clone reusable email templates |
-| `nitro_compose_campaign` | Create email or SMS campaigns with audience targeting |
-| `nitro_compose_flow` | Build automation flows with triggers, steps, and branches |
-| `nitro_manage_audience` | Create contacts, manage lists, record events, tag contacts |
-| `nitro_import_contacts` | Bulk import contacts (up to 100 inline) |
-| `nitro_search_contacts` | Search contacts by email, name, or phone |
-| `nitro_query` | Query campaigns, flows, templates, segments, messages, suppressions, and history |
-| `nitro_define_segment` | Create dynamic segments with filters |
-| `nitro_set_brand_kit` | Set up Brand Kit identity — colors, fonts, logo, voice |
-| `nitro_set_memory` | Read and update your AI memory document |
-| `nitro_manage_domains` | Add, verify, and manage sending domains |
-| `nitro_control_delivery` | Approve, send, pause, or schedule campaigns and flows |
-| `nitro_review_delivery` | Review email/SMS content and delivery readiness |
-| `nitro_send_test_message` | Send test email or SMS messages |
-| `nitro_send_message` | Send immediate single-recipient transactional email or SMS |
-| `nitro_configure_account` | Sender defaults and test email recipients |
-| `nitro_get_insights` | Email analytics with trends and benchmarks |
-| `nitro_manage_billing` | Plan and prepaid status; purchases use an [admin or API-key handoff](/guides/agent-payments) |
-| `nitro_configure_providers` | Configure a [BYO email provider](/integrations/email-providers) or check provider status |
-| `nitro_request_support` | Submit a support request to the Nitrosend team |
+Claude Code gets every public Nitrosend MCP tool. The [MCP reference](/mcp) lists every tool with its parameters.
 
 For accounts with multiple brands, ask Claude to check `nitro_get_status` first. It lists the brands allowed by your [connection access](/integrations/overview#choose-connection-access). Use `nitro_select_brand` to switch between those brands. API keys stay with their key's brand, and `nitro_set_brand_kit` edits Brand Kit identity.
 
@@ -125,7 +106,7 @@ our Q1 marketing goals.
 
 ## Scope-based configuration
 
-Add the MCP server at different scopes depending on your needs:
+If you added the bare server with `claude mcp add`, you can choose its scope:
 
 ```bash
 # User scope — available in all Claude Code sessions (recommended)
@@ -145,7 +126,7 @@ claude mcp add --transport http -s project nitrosend https://api.nitrosend.com/m
     Make sure `api.nitrosend.com` is reachable from your network. Inspect protected-resource metadata with `curl -i https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp`; it should return `200 OK` and name `https://api.nitrosend.com/mcp` as the protected resource. Separately, unauthenticated `GET /mcp` should return `401 Unauthorized` with `WWW-Authenticate: Bearer resource_metadata="https://api.nitrosend.com/.well-known/oauth-protected-resource/mcp"`. Authenticated MCP application traffic uses `POST /mcp`; because Nitrosend does not offer a GET/SSE listener, authenticated `GET /mcp` returns `405 Method Not Allowed`.
   </Accordion>
   <Accordion title="Authentication failed">
-    Run `/mcp` inside Claude Code to trigger the OAuth flow explicitly. If that still fails, remove and re-add the server: `claude mcp remove nitrosend` then re-run the add command.
+    Run `/mcp` inside Claude Code to trigger the OAuth flow explicitly. If that still fails, reinstall: `claude plugin uninstall nitrosend@nitrosend` then install it again, or for the bare server `claude mcp remove nitrosend` then re-run the add command.
   </Accordion>
   <Accordion title="Tool call timed out">
     If calls consistently time out, check your network connection. You can also try removing and re-adding the MCP server to refresh the session.

@@ -49,6 +49,7 @@ export default defineConfig({
                 "integrations/vscode",
                 "integrations/windsurf",
                 "integrations/zed",
+                "integrations/v0",
                 "integrations/mcp-brand-kit-memory",
               ],
             },

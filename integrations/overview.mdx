@@ -13,7 +13,7 @@ Nitrosend is designed to be controlled by AI. Instead of clicking through dashbo
 
 ## MCP: The Fastest Way to Connect
 
-**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Cursor, Codex, Gemini CLI, Antigravity, VS Code, Windsurf, Zed, and other MCP-compatible clients can access your full email marketing platform with zero middleware.
+**MCP (Model Context Protocol)** is an open standard that lets AI assistants connect directly to external tools. Nitrosend has a native MCP server, which means Claude, ChatGPT, Cursor, Codex, Gemini CLI, Antigravity, VS Code, Windsurf, Zed, v0, and other MCP-compatible clients can access your full email marketing platform with zero middleware.
 
 ### What MCP gives your AI
 
@@ -28,7 +28,7 @@ When you connect via MCP, your AI assistant gets:
 
 | | MCP | REST API |
 |---|---|---|
-| **Best for** | Claude, ChatGPT, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Zed | Custom apps, Zapier, n8n, Make, server-side integrations |
+| **Best for** | Claude, ChatGPT, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Zed, v0 | Custom apps, Zapier, n8n, Make, server-side integrations |
 | **Setup** | 1 click, 1 command, or a short JSON config + OAuth sign-in | API key + define function calls or curl |
 | **AI context** | Full — Brand Kit, schema, guide, account state | You provide context manually |
 | **Tools** | Purpose-built tools with validation | Raw HTTP endpoints |
@@ -72,19 +72,19 @@ Cursor, or similar clients; the CLI is a separate terminal/CI surface.
     Connect Nitrosend to Claude for collaborative email operations.
   </Card>
   <Card title="Claude Code" icon="command-line" href="/integrations/claude-code">
-    Add Nitrosend in one command for terminal-based email work.
+    Install the Nitrosend plugin, or add the server in one command.
   </Card>
   <Card title="Cursor" icon="code-bracket" href="/integrations/cursor">
     Install the official Nitrosend plugin from the Cursor Marketplace.
   </Card>
   <Card title="ChatGPT" icon="cpu-chip" href="/integrations/chatgpt">
-    Connect the official Nitrosend app from the ChatGPT app marketplace.
+    Add the official Nitrosend plugin from ChatGPT's plugin directory.
   </Card>
   <Card title="OpenAI Codex CLI" icon="command-line" href="/integrations/codex">
     Connect Codex CLI with `codex mcp add` and OAuth login.
   </Card>
   <Card title="Gemini CLI" icon="sparkles" href="/integrations/gemini">
-    Add Nitrosend to Gemini CLI with a short `settings.json` entry.
+    Add Nitrosend to Gemini CLI in one command.
   </Card>
   <Card title="Google Antigravity" icon="rocket-launch" href="/integrations/antigravity">
     Install the Nitrosend plugin with `agy plugin install`, or add the MCP server with `serverUrl`.
@@ -97,6 +97,9 @@ Cursor, or similar clients; the CLI is a separate terminal/CI surface.
   </Card>
   <Card title="Zed" icon="rectangle-stack" href="/integrations/zed">
     Add Nitrosend as a remote custom server in Zed with OAuth.
+  </Card>
+  <Card title="v0" icon="sparkles" href="/integrations/v0">
+    Pick Nitrosend from v0's MCP presets and sign in.
   </Card>
 </CardGroup>
 

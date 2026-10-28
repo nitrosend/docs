@@ -80,3 +80,12 @@ Opens and clicks recorded before you turned tracking off stay in Activity and se
 ## View in browser
 
 Emails sent from Nitrosend can include a view-in-browser snapshot. This gives recipients a stable web version of the email and gives your team a reliable way to inspect what was sent after delivery.
+
+Turn the link on for a brand under **Brand > Sender > View in browser link** ([app.nitrosend.com/my/brand/sender](https://app.nitrosend.com/my/brand/sender)) and choose where it goes:
+
+- **At the top**: a small link above the email.
+- **Beside Unsubscribe**: "View in browser | Unsubscribe" in the footer, in the same style as the Unsubscribe link.
+
+Through the API, set `email_view_online` to `true` and `email_view_online_placement` to `top` or `footer` on `PATCH /v1/my/brands/{sid}`.
+
+The link only appears once its web copy exists: your tracking domain is verified and the campaign has started sending. Previews, test sends and transactional messages never carry it, so no email links to a page that isn't there. An email with no Unsubscribe link gets the link at the top. The web copy is generic, the same page for every recipient.

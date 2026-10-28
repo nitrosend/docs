@@ -29,15 +29,14 @@ Add Nitrosend as an MCP server, then sign in. Pick your tool:
 
 <Tabs>
   <Tab title="Claude Code">
-    Run one command in your terminal:
+    Install the Nitrosend plugin, which brings the server and Nitrosend's email skills:
 
     ```bash
-    claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp
+    claude plugin marketplace add nitrosend/claude
+    claude plugin install nitrosend@nitrosend
     ```
 
-    Then run `/mcp` inside Claude Code and complete the Nitrosend sign-in.
-
-    Or point your agent at the install skill, [nitrosend.com/SKILL.md](https://nitrosend.com/SKILL.md), and it connects itself.
+    Then run `/mcp` inside Claude Code and complete the Nitrosend sign-in. Prefer the server on its own? `claude mcp add --transport http nitrosend https://api.nitrosend.com/mcp` instead. Full walkthrough in the [Claude Code guide](/integrations/claude-code).
   </Tab>
   <Tab title="Claude Desktop / Claude.ai">
     Enable the official **Nitrosend** connector, not the CLI. In Claude Desktop (or Cowork), go to **Settings** → **Connectors**, search for `Nitrosend` and click **Connect**. On Claude.ai, open [claude.ai/directory/nitrosend](https://claude.ai/directory/nitrosend) and click **Connect**.
@@ -45,11 +44,11 @@ Add Nitrosend as an MCP server, then sign in. Pick your tool:
     Sign in when prompted. No API key, no URL to paste.
   </Tab>
   <Tab title="ChatGPT">
-    Install the official Nitrosend app from the ChatGPT app directory, click **Connect**, and sign in — no config, no API key.
+    Add the official Nitrosend plugin from ChatGPT's plugin directory, click **Connect**, and sign in. No config, no API key. It then works in ChatGPT on the web, the desktop app and the mobile apps.
 
-    [Install the Nitrosend app in ChatGPT →](https://chatgpt.com/apps/nitrosend---ai-native-email/asdk_app_69c236abbea481918d9180a100abd6b0)
+    [Add Nitrosend to ChatGPT →](https://chatgpt.com/apps/nitrosend---ai-native-email/asdk_app_69c236abbea481918d9180a100abd6b0)
 
-    Don't see the direct link? Open **Settings** → **Apps** in ChatGPT, search `Nitrosend`, and connect. Full walkthrough in the [ChatGPT guide](/integrations/chatgpt).
+    If the link doesn't open the listing, search for **Nitrosend** in ChatGPT's plugin directory. Full walkthrough in the [ChatGPT guide](/integrations/chatgpt).
   </Tab>
   <Tab title="Codex CLI">
     Add the server, then sign in:
@@ -85,23 +84,17 @@ Add Nitrosend as an MCP server, then sign in. Pick your tool:
     Full walkthrough in the [Cursor guide](/integrations/cursor).
   </Tab>
   <Tab title="Gemini CLI">
-    Add Nitrosend to `~/.gemini/settings.json`:
+    Add the server, then sign in from Gemini CLI with `/mcp auth nitrosend`:
 
-    ```json
-    {
-      "mcpServers": {
-        "nitrosend": {
-          "httpUrl": "https://api.nitrosend.com/mcp"
-        }
-      }
-    }
+    ```bash
+    gemini mcp add --scope user --transport http nitrosend https://api.nitrosend.com/mcp
     ```
 
-    Restart Gemini CLI and sign in when prompted.
+    Full walkthrough in the [Gemini guide](/integrations/gemini).
   </Tab>
 </Tabs>
 
-Using **VS Code**, **Windsurf**, **Zed**, or another client? See the [full integration guides](/integrations/overview).
+Using **VS Code**, **Windsurf**, **Zed**, **v0**, or another client? See the [full integration guides](/integrations/overview).
 
 ### 3. Start prompting
 
