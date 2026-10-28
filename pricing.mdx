@@ -8,25 +8,33 @@ description: Nitrosend plans at a glance, plus the machine-readable pricing endp
 Nitrosend is **pay per send, never per contact** — every plan includes unlimited
 contacts. MCP, REST API, CLI, AI copywriting, campaigns, flows, transactional,
 templates, and analytics are available on every plan, including Free. The Free
-plan includes **8,000 free emails up front**, then **500 free emails every
-month**. No credit card required.
+plan starts with non-expiring email credits, then a monthly allowance. No
+credit card is required. Read your account's actual terms in Account Billing.
 
 <Info>
-  Looking for full, programmatic pricing (enterprise volume tiers, overage
+  Looking for full, programmatic pricing (monthly and annual plans, overage
   rates, and add-ons)? Read the machine-readable pricing document at
-  [nitrosend.com/pricing.md](https://nitrosend.com/pricing.md). It is the
+  [nitrosend.com/PRICING.md](https://nitrosend.com/PRICING.md). It is the
   source of truth for programmatic pricing, including details not shown on the
   human [pricing page](https://nitrosend.com/pricing).
 </Info>
 
 ## Plans
 
-| Plan | Price | Emails / month | Brands | Customer domains | Rolling 24h recipients: Probation / Standard / Trusted | Seats |
-|------|-------|----------------|--------|------------------|------------------------|-------|
-| **Free** | $0 | 8,000 starter budget, then 500/mo | 3 | 1 | 100 / 500 / 5,000 | 1 |
-| **Pro** | $20/mo | 20,000 | 5 | 3 | 1,000 / 10,000 / 100,000 | 3 |
-| **Ultra** | $100/mo | 125,000 | 10 | 10 | 1,000 / 62,500 / 625,000 | 10 |
-| **Enterprise** | from $300/mo | 500K–4M+ (tiered) | Unlimited | Unlimited | 1,000 for new unproven accounts / Contracted / Contracted | Unlimited |
+The new catalog contains four paid plans: **Starter, Pro, Growth and Scale**,
+plus **Free** and negotiated **Enterprise** terms. Monthly and annual base-plan payments share the same
+monthly usage allowances. Annual payment is not an annual pool of email credits.
+
+<Info>
+  The new catalog is staged, not activated. Its publication status, exact prices,
+  included usage, daily sending allowances and add-on terms are generated from
+  one commercial source in [PRICING.md](https://nitrosend.com/PRICING.md).
+  Existing customers keep their agreed base price. Ordinary packages receive
+  current allowances: previous $20 Pro aligns to Starter, and Ultra to Growth.
+  Issued credits, earned standing and admitted sends are preserved. Custom
+  Enterprise agreements and deliberate operator exceptions remain explicit.
+  Account Billing shows the applicable package, price and any account exception.
+</Info>
 
 Every brand can prepare one reserved Nitrosend brand-subdomain sender. It does
 not consume the customer-domain allowance. Hosted brand subdomains follow the
@@ -36,7 +44,8 @@ for queued or unresolved sends. Email credits are separate from daily capacity.
 Provider limits, sender health and pacing still govern actual dispatch.
 Each distinct To, CC and BCC recipient counts as one email for credits and
 sending capacity, including campaign copies. Duplicate addresses within one
-email count once. Existing plan prices and allowances are unchanged.
+email count once. Buying additional brands, customer domains or seats uses
+account-wide capacity; it does not create a separate sending allowance.
 
 Standing combines attributable delivery history, current positive list
 verification, domain strength and account signals. Sufficient evidence can
@@ -45,9 +54,12 @@ receives its full plan allowance without a second volume ramp. New sender
 contexts still require their first-send safety review, and Probation reviews
 each changed content identity. Existing reviewed Enterprise terms remain intact.
 
-Email validation has no included allowance on any plan. It is an explicit
-prepaid operation and is never started automatically during import, scheduling,
-or sending.
+List verification is always an explicitly approved operation, never an automatic
+step during import, scheduling or sending. For a term that includes monthly
+checks, those are used first; prepaid credit pays for the remainder. Existing
+operations keep their approved inclusion and rate. The quote shows the included
+checks and maximum charge before approval. Buying credit alone does not raise
+standing.
 
 Use **Contacts → Verify list** ([app.nitrosend.com/my/contacts](https://app.nitrosend.com/my/contacts)) to choose all contacts in the Brand, a contact
 list, a segment, or selected contacts. Review the exact audience and maximum
@@ -62,12 +74,17 @@ your list**. API and MCP capacity responses expose the same reasons and actions.
 Queued campaigns wait for capacity; API callers should follow the returned
 retry time rather than repeatedly retrying or treating the refusal as delivered.
 
-- **Pro and above** add BYO sending/AI keys, frontier AI models, removable
+- **All paid plans** add BYO sending/AI keys, frontier AI models, removable
   branding, and priority support.
-- **Ultra and Enterprise** add dedicated IPs as a paid add-on and more brands,
-  seats, and domains.
-- **Enterprise** adds SSO / SAML, a 99.9% SLA, a dedicated account manager, and
-  tiered volume pricing for higher-volume senders.
+- **Scale and Enterprise** can request a separately provisioned dedicated IP;
+  paying for a base plan does not automatically provision one.
+- **Enterprise** provides negotiated volume, capacity and service terms. Confirm
+  any SLA, support or security requirements in the actual agreement.
+
+Qualifying Trusted senders earn extra recurring included emails after clean
+sending history and account age meet the catalog's reward terms. The reward
+does not increase the starter grant or daily sending limit. There are no
+bounce or complaint surcharges; existing safety protections still apply.
 
 See the full feature comparison on the [pricing page](https://nitrosend.com/pricing).
 
@@ -77,7 +94,7 @@ If you are an AI agent or automation, fetch pricing programmatically instead of
 scraping the marketing page:
 
 <CardGroup cols={2}>
-  <Card title="Machine-readable pricing" icon="document-text" href="https://nitrosend.com/pricing.md">
+  <Card title="Machine-readable pricing" icon="document-text" href="https://nitrosend.com/PRICING.md">
     Plans, tiers, overage rates, and add-ons in Markdown — the source of truth.
   </Card>
   <Card title="Full LLM reference" icon="cpu-chip" href="https://nitrosend.com/llms-full.txt">
@@ -88,7 +105,8 @@ scraping the marketing page:
 Plans and prepaid balance are separate purchase paths:
 
 - Use a plan checkout to change the recurring subscription and entitlements.
-- Add prepaid funds for explicitly metered services such as email validation.
+- Add prepaid funds for explicitly approved services such as list verification
+  and contact enrichment.
 
 The `nitro_manage_billing` MCP tool supports both paths without paying on the
 agent's behalf. Billing mutations require an account-scoped API key or an
@@ -98,16 +116,32 @@ required and a purchase ID for verified status polling. Follow
 or read [Purchase lifecycle](/concepts/payment-lifecycle) for the state and
 authority model.
 
+## Lead and contact enrichment
+
+Add missing professional and company details to contacts you already have.
+Select contacts and choose **Enrich**, or open a contact and choose **Enrich**.
+Review the price and maximum charge before confirming. This uses prepaid funds,
+not your included emails. Already-current contacts, no matches and failed
+enrichments are not charged.
+
+Enrichment and list verification do different jobs: enrichment adds details;
+verification checks email addresses. Your account's quote shows the available
+service and actual price. New tier-specific enrichment rates are not activated.
+
 ## Links
 
 - Pricing page: [nitrosend.com/pricing](https://nitrosend.com/pricing)
-- Machine-readable pricing: [nitrosend.com/pricing.md](https://nitrosend.com/pricing.md)
+- Machine-readable pricing: [nitrosend.com/PRICING.md](https://nitrosend.com/PRICING.md)
 - Start free: [app.nitrosend.com/join](https://app.nitrosend.com/join)
 - Contact sales: [contact@nitrosend.com](mailto:contact@nitrosend.com)
 
 ## Inbox capacity
 
-Inbox is in private beta. Free includes one inbox per account; Pro and Ultra include three. Additional inboxes cost **US$1/month each**, with no Pro upgrade required. Capacity is shared across your brands and domains. Existing included capacity is preserved without stacking it with plan inclusion. Enterprise follows its agreed allowance and terms.
+Inbox is in private beta. Included and paid inbox capacity follows your account's
+actual contract and the terms in [PRICING.md](https://nitrosend.com/PRICING.md).
+Capacity is shared across brands and domains; there is no requirement to upgrade
+to Pro just to buy an additional inbox. Existing included capacity is preserved
+without stacking it with plan inclusion. Enterprise follows its agreed terms.
 
 Each new email address is a separate inbox. Several inboxes can use the same domain without another domain slot. A new domain does not add an included inbox. Customer-added aliases become included inboxes; old addresses retained after a rename remain receiving routes to that inbox.
 
