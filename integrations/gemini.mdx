@@ -11,7 +11,13 @@ Gemini CLI has native MCP support, giving you the full Nitrosend toolkit — eve
 
 ### Step 1: Add the MCP server
 
-Add to your Gemini CLI settings (`~/.gemini/settings.json`):
+Run this in your terminal:
+
+```bash
+gemini mcp add --scope user --transport http nitrosend https://api.nitrosend.com/mcp
+```
+
+`--scope user` makes Nitrosend available in every project. Prefer to edit the config yourself? Add this to `~/.gemini/settings.json` instead:
 
 ```json
 {
@@ -27,7 +33,7 @@ Using Google Antigravity? It needs `serverUrl` instead of `httpUrl`. See the [An
 
 ### Step 2: Sign in
 
-On first use, Gemini opens your browser for Nitrosend sign-in. Log in or create a free account — no API key needed.
+Start Gemini CLI and run `/mcp auth nitrosend`. Your browser opens the Nitrosend sign-in: log in or create a free account. No API key needed.
 
 ### Step 3: Use it
 
@@ -39,7 +45,7 @@ gemini "Check my Nitrosend account status and draft a welcome email"
 gemini "Create a campaign for our product launch and target my VIP segment"
 ```
 
-Gemini now has access to the full public set of Nitrosend MCP tools — composing emails, managing contacts, building flows, checking analytics, and more.
+Gemini now has every public Nitrosend MCP tool: composing emails, managing contacts, building flows, checking analytics and more.
 
 <Tip>
   MCP gives Gemini your full Brand Kit context — colors, fonts, tone of voice — so emails it creates are on-brand without extra prompting.
@@ -65,87 +71,6 @@ gemini "Create a welcome flow that sends 3 emails over a week when someone subsc
 gemini "Show me insights for my last campaign compared to benchmarks"
 ```
 
-## Function Calling via Google AI SDK (Alternative)
+## Building your own app instead
 
-For programmatic integration or Google AI Studio, you can define Nitrosend operations as function declarations and call the REST API directly. This requires an API key from **Settings > API Keys** in the Nitrosend dashboard ([app.nitrosend.com/my/settings/api-keys](https://app.nitrosend.com/my/settings/api-keys)).
-
-### Define function declarations
-
-```python
-from google import genai
-from google.genai import types
-
-client = genai.Client()
-
-nitrosend_tools = types.Tool(
-    function_declarations=[
-        types.FunctionDeclaration(
-            name="send_email",
-            description="Send a transactional email to one recipient immediately",
-            parameters=types.Schema(
-                type=types.Type.OBJECT,
-                properties={
-                    "to": types.Schema(type=types.Type.STRING, description="Recipient email"),
-                    "subject": types.Schema(type=types.Type.STRING, description="Subject line"),
-                    "html": types.Schema(type=types.Type.STRING, description="Email body as HTML")
-                },
-                required=["to", "subject", "html"]
-            )
-        ),
-        types.FunctionDeclaration(
-            name="list_campaigns",
-            description="List all email campaigns with their status",
-            parameters=types.Schema(
-                type=types.Type.OBJECT,
-                properties={
-                    "status": types.Schema(
-                        type=types.Type.STRING,
-                        description="Filter by status: draft, active, paused, completed"
-                    )
-                }
-            )
-        )
-    ]
-)
-```
-
-### Handle function calls
-
-```python
-import requests
-
-NITROSEND_API_KEY = "nskey_live_your_key_here"  # From Settings > API Keys: https://app.nitrosend.com/my/settings/api-keys
-BASE_URL = "https://api.nitrosend.com/v1/my"
-HEADERS = {
-    "Authorization": f"Bearer {NITROSEND_API_KEY}",
-    "Content-Type": "application/json"
-}
-
-def execute_nitrosend_function(name, args):
-    if name == "send_email":
-        resp = requests.post(f"{BASE_URL}/messages", headers=HEADERS, json={
-            "channel": "email", "to": args["to"],
-            "subject": args["subject"], "html": args["html"]
-        })
-        return resp.json()
-    elif name == "list_campaigns":
-        params = {"status": args["status"]} if "status" in args else {}
-        resp = requests.get(f"{BASE_URL}/campaigns", headers=HEADERS, params=params)
-        return resp.json()
-```
-
-## Key API endpoints
-
-| Function name | API call | What it does |
-|---------------|----------|-------------|
-| `send_email` | `POST /v1/my/messages` | Send a single email immediately |
-| `list_campaigns` | `GET /v1/my/campaigns` | List all campaigns |
-| `create_campaign` | `POST /v1/my/campaigns` | Create a new campaign |
-| `list_contacts` | `GET /v1/my/contacts` | List contacts in your audience |
-| `get_account` | `GET /v1/my/account` | Check account status and limits |
-
-See the full [API Reference](/api/) for all available endpoints.
-
-<Info>
-  MCP via Gemini CLI is the recommended setup — OAuth sign-in, no API keys to manage. The function calling method is for programmatic use where you need direct API access.
-</Info>
+Calling Nitrosend from your own code with the Google AI SDK rather than from Gemini CLI? Use the [REST API](/integrations/rest-api) with an API key. The [API reference](/api/) is generated from the OpenAPI spec.

@@ -1,0 +1,46 @@
+---
+title: v0
+description: Connect Nitrosend to v0 by Vercel from its MCP presets and build your app's emails in your brand
+---
+
+# v0 + Nitrosend
+
+[v0](https://v0.app) is Vercel's AI app builder. Nitrosend is one of v0's built-in MCP presets, so v0 can compose emails, build flows and send you tests for the app you are building, in your brand.
+
+## Setup
+
+### Step 1: Add Nitrosend in a chat
+
+In a v0 chat, open the **+** menu in the prompt form, choose **MCPs**, then pick **Nitrosend** from the presets.
+
+### Step 2: Sign in
+
+v0 opens the Nitrosend sign-in. Log in or create a free account. No API key needed.
+
+### Step 3: Verify
+
+Ask v0:
+
+```
+What's my Nitrosend account status?
+```
+
+v0 calls `nitro_get_status` and shows your account, sender identity, readiness and next steps.
+
+## Example workflows
+
+```
+Add a signup form to this app, and in Nitrosend build a welcome email in my brand that new signups get. Send me a test.
+```
+
+```
+Draft a launch announcement for this app in Nitrosend and send me a test before anything goes to my list.
+```
+
+## No Nitrosend preset?
+
+In the same **MCPs** menu, configure a custom MCP server instead: URL `https://api.nitrosend.com/mcp`, authentication **OAuth**. It is the same server and the same sign-in.
+
+## Sending from the app you deploy
+
+Emails your deployed app sends from its own code, such as signup confirmations and receipts, use the [REST API](/integrations/rest-api) with an API key rather than MCP.
