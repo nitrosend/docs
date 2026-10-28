@@ -38,19 +38,20 @@ In accounts with multiple brands, MCP has a current brand. Use `nitro_get_status
     ```
     Set up my Brand Kit from https://mywebsite.com
     ```
-    Claude will scrape your website for brand colors, fonts, and logo, then configure everything automatically. You can also set fields directly:
+    Your assistant scans your website for brand colors, fonts, logo, and voice, then saves them. To see what the scan finds before anything is saved, ask it to preview first: a scan with `dry_run: true` returns what it found, saves nothing, and gives a `scan_id` that saves exactly that scan. NitroLLM in the dashboard always shows you the scan and asks before saving. You can also set fields directly:
     ```
     Update my brand color to #6366F1 and company name to "Acme Inc"
     ```
   </Tab>
   <Tab title="Via API">
     ```bash
-    # Auto-scrape from website
-    curl -X POST https://api.nitrosend.com/mcp \
+    # Scan your website in the background
+    curl -X POST https://api.nitrosend.com/v1/my/brands/$BRAND_SID/scrape \
       -H "Authorization: Bearer $NITROSEND_API_KEY" \
       -H "Content-Type: application/json" \
-      -d '{"method": "nitro_set_brand_kit", "params": {"url": "https://mywebsite.com"}}'
+      -d '{"url": "https://mywebsite.com"}'
     ```
+    Your brand's `sid` is in `GET /v1/my/brands`. The scan returns `202` at once; read the results with `GET /v1/my/brands/$BRAND_SID`.
   </Tab>
 </Tabs>
 

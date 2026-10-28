@@ -253,6 +253,9 @@
           "document": {
             "type": "string"
           },
+          "scan_id": {
+            "type": "string"
+          },
           "dry_run": {
             "type": "boolean",
             "default": false
