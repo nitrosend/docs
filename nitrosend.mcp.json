@@ -1120,6 +1120,11 @@
                 ],
                 "description": "Text provenance."
               },
+              "transactional": {
+                "type": "boolean",
+                "default": false,
+                "description": "Email: true for requested receipts/alerts, never promotions. Set on initial intent; copy edits preserve it. Suppression and abuse checks apply."
+              },
               "preheader": {
                 "type": "string"
               },
@@ -2351,7 +2356,7 @@
     },
     {
       "name": "nitro_send_message",
-      "description": "Send one transactional email/SMS now. Use nitro_compose_campaign for broadcasts and nitro_compose_flow for sequences. Reuse idempotency_key only for an exact retry.",
+      "description": "Send one transactional email/SMS. Broadcasts: nitro_compose_campaign; sequences: nitro_compose_flow. Retry with unchanged payload and key.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2361,38 +2366,72 @@
             "enum": [
               "email",
               "sms"
-            ],
-            "description": "Delivery channel"
+            ]
           },
           "to": {
             "type": "string",
-            "description": "Recipient email address or E.164 phone number"
+            "description": "Email or E.164 phone"
           },
           "subject": {
-            "type": "string",
-            "description": "Email subject line (required for email)"
+            "type": "string"
           },
           "body": {
             "type": "string",
-            "description": "Message body. Required for SMS. Optional plain text for email."
+            "description": "Plain text; required for SMS"
           },
           "template_id": {
             "type": "integer",
-            "description": "Load email design from an existing template (email only)"
+            "description": "Email template ID"
           },
           "data": {
             "type": "object",
-            "description": "Transactional merge variables. Use in email templates as {{ data.order_id }} or nested paths like {{ data.customer.name }}."
+            "description": "Merge variables, e.g. {{ data.order_id }}"
+          },
+          "from": {
+            "type": "string",
+            "description": "Email sender: Name <address>"
+          },
+          "from_email": {
+            "type": "string",
+            "description": "Verified brand sender address"
+          },
+          "from_name": {
+            "type": "string",
+            "description": "Sender name"
+          },
+          "reply_to": {
+            "type": "string",
+            "description": "Reply address"
+          },
+          "headers": {
+            "type": "object",
+            "maxProperties": 20,
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Email headers; reserved names rejected"
+          },
+          "tags": {
+            "type": "object",
+            "maxProperties": 20,
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            "description": "Email tags"
           },
           "idempotency_key": {
             "type": "string",
             "minLength": 1,
-            "description": "Required for live sends. Reuse the same stable key on retry to prevent duplicate delivery."
+            "description": "Reuse only for an exact retry"
           },
           "dry_run": {
             "type": "boolean",
             "default": false,
-            "description": "Validate and preview without sending"
+            "description": "Preview without sending"
           }
         },
         "required": [

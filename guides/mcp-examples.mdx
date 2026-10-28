@@ -13,6 +13,39 @@ These examples show the full loop: what you say, what your AI calls, and what co
 
 ---
 
+## Operational email flows
+
+For an event-triggered receipt or an internal operational alert, set
+`transactional: true` on the email step in the initial `nitro_compose_flow`
+request. Leave it omitted for marketing, including promotional follow-ups.
+For example:
+
+```json
+{
+  "composition_mode": "intent",
+  "name": "Shipping needs attention",
+  "goal": "Notify our operations mailbox when an order needs shipping attention",
+  "trigger": { "event": "shipping_attention" },
+  "steps": [{
+    "type": "email",
+    "key": "shipping_alert",
+    "transactional": true,
+    "subject": "Shipping needs attention",
+    "body": "An order needs your attention. Open the shipping dashboard."
+  }]
+}
+```
+
+Follow the returned `next_call` to finish the draft. Nitrosend preserves that
+step's classification while you edit its copy; do not add the flag to the
+returned copy draft. New steps default to marketing. Existing flows and
+contacts retain their current settings. Review and activate the completed flow
+through `nitro_control_delivery`.
+
+Operational email does not require marketing subscription, but hard
+suppression, account restrictions, content review and sending limits still
+apply. Marking promotional email as transactional does not authorize it.
+
 ## Example 1: Check account health
 
 **You say:**
