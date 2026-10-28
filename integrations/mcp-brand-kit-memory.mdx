@@ -13,6 +13,8 @@ Nitrosend's two most powerful MCP features are **Brand Kit** and **AI Memory**. 
 
 In accounts with multiple brands, MCP has a current brand. Use `nitro_get_status` to inspect `current_brand` and `available_brands`, then use `nitro_select_brand` to switch between brands allowed by your [connection access](/integrations/overview#choose-connection-access). `nitro_set_brand_kit` updates the current brand's Brand Kit.
 
+Your assistant can also add a brand: ask it, for example, to "add a brand for Acme and set it up from acme.com". `nitro_set_brand_kit` with `new_brand` (the brand's name) and an `idempotency_key` creates the brand, switches the connection to it and sets its Brand Kit in the same call; a retry with the same key never makes a second brand. It counts against your plan's brand limit, which `nitro_get_status` reports as `brand_limit`; at the limit it returns `brand_limit_reached` and creates nothing. Adding a brand needs an OAuth connection with access to the whole account: API keys belong to one brand. In the dashboard, use **Add brand** in the brand switcher.
+
 ### What Brand Kit includes
 
 | Setting | What it controls |

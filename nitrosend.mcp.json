@@ -184,7 +184,7 @@
     },
     {
       "name": "nitro_set_brand_kit",
-      "description": "Set Brand Kit from a website, typed fields, document, or logo URL. Fields override scraping; async is URL-only.",
+      "description": "Set Brand Kit from a website, fields, document, or logo URL. Fields override scraping; async is URL-only.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -256,6 +256,9 @@
           "scan_id": {
             "type": "string"
           },
+          "new_brand": {
+            "type": "string"
+          },
           "dry_run": {
             "type": "boolean",
             "default": false
@@ -271,7 +274,7 @@
           "idempotency_key": {
             "type": "string",
             "maxLength": 128,
-            "description": "Required for live URL scraping or remote logo fetch; reuse only for an exact retry."
+            "description": "Required for URL scraping or remote logo fetch; reuse only for an exact retry."
           }
         },
         "additionalProperties": false
