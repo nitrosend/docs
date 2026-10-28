@@ -203,6 +203,10 @@ Reserved provider headers and reserved Nitrosend tag keys are rejected. System
 tags such as `account_id`, `brand_id`, and `message_id` are always controlled by
 Nitrosend.
 
+For SES senders, custom tag names and values may contain only ASCII letters,
+numbers, underscores and hyphens. Unsupported tags return `422` naming the tag
+before a message is queued. Other providers retain their own tag rules.
+
 `In-Reply-To` and `References` are accepted custom headers. Pass at most 20
 headers, with names up to 80 characters (`A–Z`, `a–z`, digits and hyphens) and
 values up to 2,000 characters without line breaks. The envelope headers
@@ -228,6 +232,16 @@ Every send requires an idempotency key, in the `Idempotency-Key` header or the
 `400 idempotency_key_required`. Give each message its own stable key and reuse
 it only to retry that message: the same key with the same payload returns the
 original message, and with a different payload returns `409 idempotency_conflict`.
+
+Ordinary HTML author comments do not count as personalization placeholders.
+Visible content, including Outlook conditional content, still needs valid,
+resolvable placeholders.
+
+Temporary provider refusals, such as throttling or paused sending, remain
+queued for retry on the original message. Permanent refusals become failed.
+An uncertain provider outcome is not automatically resent, because the
+provider might already have accepted it. Keep the original idempotency key
+when checking or retrying your request.
 
 To learn what happened to a message after it is accepted (sent, delivered,
 bounced, failed and more) without polling, register a
