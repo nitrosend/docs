@@ -51,12 +51,15 @@ same Stripe account work on the same Nitrosend account.
 
 ## Tiers and billing
 
-Tiers are the public Nitrosend plans: Free, Pro and Ultra. Every tier has
-unlimited contacts; agent and API calls are not metered. Enrichment and
-email validation are metered per use on every tier.
+Current packages are Free, Starter, Pro, Growth and Scale. Every package has
+unlimited contacts and includes agent/API access. Monthly and annual payment
+options, included verification and prepaid enrichment follow the
+[pricing catalog](https://nitrosend.com/PRICING.md). The CLI shows the offers
+available through your billing connection; existing prices stay on their
+original provider references until you choose a different offer.
 
 ```bash
-stripe projects upgrade nitrosend      # pick pro or ultra
+stripe projects upgrade nitrosend      # choose an available paid offer
 stripe projects downgrade nitrosend    # back to free
 ```
 
@@ -64,9 +67,9 @@ A paid tier is charged to the card on your Stripe Projects billing profile
 through a Shared Payment Token. Nitrosend runs the subscription in its own
 Stripe account with that token as the payment method, so the first charge and
 every renewal stay inside your Stripe Projects spending limit and show in
-`stripe projects spend`. An upgrade is charged the difference at once. Ultra
-costs more than the default Stripe Projects spending limit, so raise your
-limit in your Stripe account settings before choosing it. The dashboard shows
+`stripe projects spend`. Review the charge before confirming an upgrade.
+Your spending limit must cover the quoted charge, including the full upfront
+amount for annual payment. The dashboard shows
 the plan and routes plan changes back to the CLI.
 
 ## Credentials

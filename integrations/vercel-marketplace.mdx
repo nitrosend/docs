@@ -1,12 +1,12 @@
 ---
 title: Vercel Marketplace
-description: How Nitrosend's Vercel Marketplace integration will provision AI SDK and MCP secrets once Vercel approves the listing
+description: Connect Nitrosend to Vercel projects and understand resource setup and Marketplace billing
 ---
 
 # Vercel Marketplace
 
 <Info>
-The Nitrosend listing is awaiting Vercel provider approval and can't be installed yet. Until it is live, use the regular Nitrosend dashboard and API key flow.
+The integration is currently unlisted. Open its [direct integration page](https://vercel.com/integrations/nitrosend); Marketplace billing is available only when Vercel shows a product and plan quote. Otherwise, use the regular Nitrosend dashboard and API key flow.
 </Info>
 
 Nitrosend's Vercel Marketplace integration is a thin native adapter over the
@@ -93,6 +93,13 @@ email get a Nitrosend account created for them.
 Marketplace-billed resources are billed through Vercel. Nitrosend keeps a local
 entitlement subscription so account limits work, but it does not create a
 separate direct subscription for the same Marketplace resource.
+
+The current Marketplace catalog uses monthly offers for Free, Starter, Pro,
+Growth and Scale. The quote shown by Vercel determines the price and available
+interval; annual website prices are not a promise of annual Vercel billing.
+Existing resource prices and provider plan references stay intact until you
+explicitly choose another offer. Do not create a second direct subscription to
+change a Vercel-owned account.
 
 Paid Marketplace plans use resource-level billing, usage reporting, invoice
 submission, and invoice lifecycle webhooks. Free resources do not submit
