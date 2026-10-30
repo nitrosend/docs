@@ -196,7 +196,7 @@ Ask your agent: "Set my Nitrosend brand's mailing address to [address], then che
 Go to Brand, then Sender, then Engagement tracking, where open and click tracking have separate switches. Turning off open tracking removes the tracking pixel; turning off click tracking leaves links pointing directly to their destinations. The settings apply to emails rendered after you save. Unsubscribe links are never rewritten, and transactional messages skip click tracking. With an API key, you can also update `email_track_opens` and `email_track_clicks` through `PATCH /v1/my/brands/{sid}`.
 
 ### Can I see who opened or clicked my emails?
-Yes. Open any contact to see their activity timeline, with each delivery, open and click and when it happened. To work with those people as a group, build a segment with the Engagement filters, such as everyone who opened in the last 3 days or everyone who clicked, and send to it. The Activity page lists recent campaigns with their sent count and open and click rates, and your agent can report a campaign's opens, clicks, bounces and unsubscribes.
+Yes. Open any contact to see their activity timeline, with each recorded delivery, open and click and when it happened. To work with those people as a group, build a segment with the Engagement filters, such as everyone who opened in the last 3 days or everyone who clicked, and send to it. The Activity page lists recent campaigns with their sent count and open and click rates, and your agent can report a campaign's opens, clicks, bounces and unsubscribes.
 
 ```text
 Ask your agent: "Using Nitrosend, build a segment of contacts who opened an email in the last 3 days, then show me the opens, clicks and unsubscribes for campaign [name]."
