@@ -13,6 +13,8 @@ Go to **Contacts > Import** ([app.nitrosend.com/my/contacts/import](https://app.
 
 Imports run in the background and show live progress while rows are processed. You can leave the page and return to the progress tray later.
 
+Imports start no flows unless you turn on **Start flows** under Destination lists. With it on, contacts the import creates enter the live New contact flows they match, and new list members enter that list's live Add to list flows. With it off, the import summary names any live flows the import didn't start. Unsubscribe and block imports can't start flows.
+
 You can also connect Mailchimp from **Integrations** to migrate audiences and members directly into Nitrosend. Mailchimp contacts keep their source metadata, and only Mailchimp members with `subscribed` status are opted in for email in Nitrosend.
 
 Editing a contact or importing it again preserves its existing subscription. Contacts who have unsubscribed or been suppressed remain protected when an integration syncs again.
