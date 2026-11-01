@@ -41,14 +41,14 @@
     },
     {
       "name": "nitro_select_account",
-      "description": "Switch this OAuth MCP connection to an account listed by nitro_get_status; the next call uses it. Credential-authenticated connections are pinned and cannot switch.",
+      "description": "Switch this OAuth MCP connection to an account listed by nitro_get_status; the next call uses it.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "account_id": {
             "type": "integer",
-            "description": "ID of the account to switch to. Get IDs from nitro_get_status.available_accounts.items[*].id."
+            "description": "From nitro_get_status available_accounts.items[*].id."
           }
         },
         "required": [
@@ -66,7 +66,7 @@
     },
     {
       "name": "nitro_select_brand",
-      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools. Credential-authenticated connections are pinned to one brand and cannot switch.",
+      "description": "Select the current brand for this OAuth MCP connection. Use this instead of passing brand_sid to other tools.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -121,11 +121,11 @@
           },
           "page": {
             "type": "integer",
-            "description": "Page number (default 1)"
+            "description": "Default 1."
           },
           "per": {
             "type": "integer",
-            "description": "Results per page (max 50, default 25)"
+            "description": "Max 50, default 25."
           }
         },
         "required": [
@@ -149,8 +149,7 @@
         "type": "object",
         "properties": {
           "query": {
-            "type": "string",
-            "description": "Email address, name, or phone number"
+            "type": "string"
           },
           "mode": {
             "type": "string",
@@ -162,11 +161,11 @@
           },
           "page": {
             "type": "integer",
-            "description": "Page number (default 1)"
+            "description": "Default 1."
           },
           "per": {
             "type": "integer",
-            "description": "Results per page (max 50, default 25)"
+            "description": "Max 50, default 25."
           }
         },
         "required": [
@@ -198,7 +197,6 @@
           },
           "fields": {
             "type": "object",
-            "description": "Typed Brand Kit fields.",
             "properties": {
               "brand_color": {
                 "type": "string",
@@ -376,7 +374,7 @@
     },
     {
       "name": "nitro_manage_audience",
-      "description": "Contacts, subscriptions, lists, events, segments, tags and prepaid email validation. Custom fields: attributes.data. Over 100 contacts: nitro_import_contacts.",
+      "description": "Contacts, subscriptions, lists, events, segments, tags and prepaid email validation. Custom fields: attributes.data. Bulk adds and unsubscribes: nitro_import_contacts.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -398,7 +396,7 @@
           },
           "params": {
             "type": "object",
-            "description": "manage_list action: create (name[, contact_ids|emails]), rename (list_id, name), delete (list_id), add_contacts|remove_contacts (list_id, contact_ids|emails). bulk_tag tag_action: add|remove|set (default add). set_subscription suppress: true stops all email incl. transactional; false lifts it."
+            "description": "manage_list action: create (name[, contact_ids|emails]), rename (list_id, name), delete (list_id), add_contacts|remove_contacts (list_id, contact_ids|emails). bulk_tag tag_action: add|remove|set (default add). set_subscription opt_out: true unsubscribes; suppress: true stops all email incl. transactional, false lifts it."
           },
           "dry_run": {
             "type": "boolean",
@@ -406,7 +404,7 @@
           },
           "confirm": {
             "type": "boolean",
-            "description": "Required for delete_segment, delete_contacts, manage_list delete",
+            "description": "Required for every delete.",
             "default": false
           },
           "idempotency_key": {
@@ -724,7 +722,7 @@
         "properties": {
           "sections": {
             "type": "array",
-            "description": "Email sections. Follow next_call for composition; use nitro://schema only for full authoring. Images use public or nitro_ingest media_url/image_url, never signed_id.",
+            "description": "Email sections; use nitro://schema only for full authoring. Images use public or nitro_ingest media_url/image_url, never signed_id.",
             "items": {
               "type": "object"
             }
@@ -808,7 +806,6 @@
           },
           "validate_only": {
             "type": "boolean",
-            "description": "Alias for validate; never persists.",
             "default": false
           },
           "design_mode_override": {
@@ -829,7 +826,7 @@
           },
           "creative_route_id": {
             "type": "string",
-            "description": "Intent-only route id; unavailable or invalid routes fail explicitly."
+            "description": "Intent-only route id."
           },
           "source_text": {
             "type": "string",
@@ -878,7 +875,7 @@
           },
           "draft_meta": {
             "type": "object",
-            "description": "Optional authoring provenance; never blocks validation or persistence.",
+            "description": "Optional authoring provenance; never blocks.",
             "properties": {
               "creative_route_id": {
                 "type": "string"
@@ -1294,7 +1291,6 @@
           },
           "validate_only": {
             "type": "boolean",
-            "description": "Alias for validate; never persists.",
             "default": false
           },
           "design_mode_override": {
@@ -1315,7 +1311,7 @@
           },
           "creative_route_id": {
             "type": "string",
-            "description": "Intent-only sequence-wide route id; invalid choices fail."
+            "description": "Intent-only sequence-wide route id."
           },
           "email_baseline_selections": {
             "type": "array",
@@ -1391,7 +1387,7 @@
           },
           "draft_meta": {
             "type": "object",
-            "description": "Optional authoring provenance; never blocks validation or persistence.",
+            "description": "Optional authoring provenance; never blocks.",
             "properties": {
               "creative_route_id": {
                 "type": "string"
@@ -1436,7 +1432,7 @@
           },
           "steps": {
             "type": "array",
-            "description": "Ordered graph steps; exact typed fields are in $defs.flowStep.",
+            "description": "Ordered graph steps.",
             "items": {
               "$ref": "#/$defs/flowStep"
             }
@@ -1483,8 +1479,7 @@
               "patch",
               "replace"
             ],
-            "default": "create",
-            "description": "create a draft; patch supplied fields; replace all draft state and requires confirm."
+            "default": "create"
           },
           "campaign_id": {
             "type": "integer"
@@ -1496,7 +1491,7 @@
               "sms"
             ],
             "default": "email",
-            "description": "email or sms; immutable after creation."
+            "description": "Immutable after creation."
           },
           "goal": {
             "type": "string"
@@ -1532,7 +1527,6 @@
           },
           "validate_only": {
             "type": "boolean",
-            "description": "Alias for validate; never persists.",
             "default": false
           },
           "design_mode_override": {
@@ -1553,7 +1547,7 @@
           },
           "creative_route_id": {
             "type": "string",
-            "description": "Intent-only route id; unavailable or invalid routes fail explicitly."
+            "description": "Intent-only route id."
           },
           "source_text": {
             "type": "string",
@@ -1602,7 +1596,7 @@
           },
           "draft_meta": {
             "type": "object",
-            "description": "Optional authoring provenance; never blocks validation or persistence.",
+            "description": "Optional authoring provenance; never blocks.",
             "properties": {
               "creative_route_id": {
                 "type": "string"
@@ -1684,8 +1678,7 @@
                   "lists",
                   "segment",
                   "all_contacts"
-                ],
-                "description": "lists, segment, or all_contacts."
+                ]
               },
               "contact_list_ids": {
                 "type": "array",
@@ -1857,8 +1850,7 @@
             "description": "Exact visible From address to select. May use the apex when a ready aligned sending subdomain authorizes it."
           },
           "reply_to": {
-            "type": "string",
-            "description": "Reply-to email address"
+            "type": "string"
           },
           "test_email_recipients": {
             "type": "array",
@@ -1867,7 +1859,7 @@
               "format": "email"
             },
             "maxItems": 5,
-            "description": "Saved email addresses for test sends (max 5). Pass empty array to clear."
+            "description": "Saved test-send addresses; [] clears."
           }
         },
         "additionalProperties": false
@@ -1882,7 +1874,7 @@
     },
     {
       "name": "nitro_review_delivery",
-      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends. For flows, an omitted revision_id uses the current draft and a supplied revision_id asserts that it is still current.",
+      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1893,13 +1885,11 @@
               "template",
               "flow",
               "campaign"
-            ],
-            "description": "Entity type to review"
+            ]
           },
           "target_id": {
             "type": "integer",
-            "minimum": 1,
-            "description": "Entity ID to review"
+            "minimum": 1
           },
           "revision_id": {
             "type": "integer",
@@ -1909,18 +1899,18 @@
           "contact_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Optional contact ID for merge-tag personalization during review"
+            "description": "Merge-tag personalization contact."
           },
           "subject": {
             "type": "string",
             "maxLength": 998,
-            "description": "Subject for a self-contained inline email review"
+            "description": "Inline email review subject."
           },
           "html": {
             "type": "string",
             "minLength": 1,
             "maxLength": 262144,
-            "description": "Rendered HTML for a self-contained inline email review"
+            "description": "Inline email review HTML."
           }
         },
         "additionalProperties": false
@@ -1947,17 +1937,16 @@
               "flow",
               "campaign"
             ],
-            "description": "Target entity type. Use with target_id unless latest_campaign or template_id is used."
+            "description": "Use with target_id unless latest_campaign or template_id is used."
           },
           "target_id": {
             "type": "integer",
-            "minimum": 1,
-            "description": "Target entity ID. Use with target_type."
+            "minimum": 1
           },
           "latest_campaign": {
             "type": "boolean",
             "default": false,
-            "description": "Use the most recently created campaign in this brand."
+            "description": "Most recently created campaign in this brand."
           },
           "template_id": {
             "type": "integer",
@@ -1967,12 +1956,12 @@
           "action_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Flow action ID to test when a flow has multiple message steps."
+            "description": "For a flow with multiple message steps."
           },
           "revision_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Required for flow targets. Exact immutable flow revision to test."
+            "description": "Required for flow targets: the exact flow revision."
           },
           "channel": {
             "type": "string",
@@ -1982,12 +1971,12 @@
               "sms"
             ],
             "default": "auto",
-            "description": "Channel to test. Use auto unless a standalone template is ambiguous."
+            "description": "Use auto unless a standalone template is ambiguous."
           },
           "contact_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Contact ID for recipient and merge-tag personalization. If present, this contact supplies the recipient address/phone."
+            "description": "Supplies the recipient and merge-tag personalization."
           },
           "to": {
             "type": "array",
@@ -1995,7 +1984,7 @@
               "type": "string"
             },
             "maxItems": 5,
-            "description": "Explicit test recipients. Use email addresses for email targets and E.164 phone numbers for SMS targets."
+            "description": "Email addresses, or E.164 phone numbers for SMS."
           },
           "data": {
             "type": "object",
@@ -2009,7 +1998,7 @@
           "idempotency_key": {
             "type": "string",
             "minLength": 1,
-            "description": "Required for live test sends. Reuse the same stable key on retry to prevent duplicate delivery."
+            "description": "Required for live test sends; reuse only for an exact retry."
           }
         },
         "additionalProperties": false
@@ -2121,8 +2110,7 @@
               "flow",
               "campaign",
               "message"
-            ],
-            "description": "Scope of insights: account-wide, per flow, per campaign, or per message"
+            ]
           },
           "entity_id": {
             "type": "integer",
@@ -2136,8 +2124,7 @@
               "30d",
               "90d"
             ],
-            "default": "30d",
-            "description": "Time period for metrics (default 30d)"
+            "default": "30d"
           }
         },
         "required": [
@@ -2307,7 +2294,7 @@
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 10000,
-                "description": "Additional inbox units to purchase. Only quantity-based offers accept more than one."
+                "description": "Number of units for a quantity-based offer, as returned by features. Other offers require one."
               },
               "product_key": {
                 "type": "string",
@@ -2636,8 +2623,7 @@
               "set_read_state",
               "set_contact",
               "reserve_attachment_upload"
-            ],
-            "description": "Inbox action command"
+            ]
           },
           "action_item_id": {
             "type": "integer",
@@ -2815,7 +2801,7 @@
     },
     {
       "name": "nitro_request_support",
-      "description": "Submit support only when asked or tools cannot resolve the issue; never promote it. Send a complete message within 1500 characters; there is no truncation.",
+      "description": "Submit support only when asked or tools cannot resolve the issue; never promote it.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2852,11 +2838,11 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "What to look up, e.g. 'verify sending domain', 'rest api authentication', 'cli install', 'connect cursor'"
+            "description": "e.g. 'verify sending domain' or 'cli install'"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum results to return (default 6, max 10)",
+            "description": "Max 10.",
             "default": 6
           }
         },
