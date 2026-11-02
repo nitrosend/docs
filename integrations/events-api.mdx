@@ -94,6 +94,90 @@ Create and test the event contract before activating the flow. This keeps the
 producer and the email content aligned without requiring Nitrosend to own your
 application schema.
 
+## Orders and revenue
+
+Use `order_placed` or `purchase` to record an order as well as an event:
+
+```json
+{
+  "event": "order_placed",
+  "contact_email": "customer@example.com",
+  "data": {
+    "order_id": "order_8472",
+    "order_number": "8472",
+    "total": "47.94",
+    "currency": "EUR",
+    "items": [{
+      "product_id": "prod_123",
+      "product_name": "Kip met Peer",
+      "quantity": 1,
+      "item_price": "42.99",
+      "product_url": "https://shop.example/products/123",
+      "image_url": "https://shop.example/images/123.jpg"
+    }]
+  }
+}
+```
+
+Amounts are major units, with at most two decimal places. Zero is valid;
+missing is not zero. Currency is a three-letter code. `resource_uid` and
+top-level `amount` can supply the order ID and total instead. Without both an
+ID and a total, these remain ordinary events. `test: true` never records an
+order or changes revenue.
+
+The event and order commit together. Order history feeds the existing customer
+commerce fields and revenue reports in the background. Up to 50 items are stored
+on the Order, with truncation recorded; the event retains its original payload.
+Only observed orders count, not an assumed history from before connection.
+
+Use one financial feed per store. If your store already sends orders through
+the Shopify or Stripe integration, do not send the same orders through this API
+as well. IDs are not automatically matched across providers.
+
+For a proven subscription renewal, send `order_type: "subscription_renewal"`.
+It still contributes to customer order history and spend, but is not an
+attributed conversion. First purchases and unclassified orders retain the
+existing seven-day last-click attribution rule.
+
+### Refunds and cancellations
+
+`order_canceled` needs `data.order_id`. `order_refunded` needs the same order ID,
+a stable `data.refund_id` and a positive `data.refund_amount` in major units.
+Each refund amount is incremental, not the replacement order total. A refund ID
+applies once per order even if delivered under another event key. Supplied
+currency must match; refunds cannot exceed the remaining order amount.
+
+If the order has not arrived, Nitrosend returns retryable `409` with code
+`order_not_recorded`. Record the purchase, then retry the correction with its
+original idempotency key. No phantom order or consumed correction event remains.
+Malformed amounts or conflicting currency return `422`.
+
+### Products in emails
+
+In a flow email's existing product, product-grid or gallery controls, choose
+**From the trigger event**. Campaigns have no trigger event and use fixed products.
+Reusable templates may keep the binding for use in a flow. For example:
+
+```json
+{
+  "type": "products",
+  "binding": { "path": "event.items", "limit": 6 },
+  "props": { "columns": "2", "button_text": "View product" }
+}
+```
+
+A single card can use `event.product`, or `event.items` with an explicit
+`index: 0`. Collection limits are 1–50. Grids and galleries are top-level;
+a single card can sit inside columns. Empty collections show no placeholder
+products. Include a product name and actual link; images and prices are optional.
+Prices use the supplied unit amount and currency, never a current catalog price.
+
+The original trigger event stays with the journey after a wait or resume. No
+store crawl or dispatch-time product lookup runs. Paste a data object into
+**Preview event products** to preview and test it. REST preview/test-send and
+MCP test-send accept `event_data` for the same purpose; this does not record a
+real event. Preview reports how many items are shown and whether they are limited.
+
 ## Supabase and other data stores
 
 Send the event from trusted server-side code after your application commits

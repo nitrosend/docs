@@ -1086,7 +1086,7 @@
               },
               "key": {
                 "type": "string",
-                "description": "Scaffold identity for a retained new node."
+                "description": "Retained new-node identity."
               },
               "type": {
                 "type": "string",
@@ -1112,16 +1112,14 @@
                 "enum": [
                   "designed",
                   "plain"
-                ],
-                "description": "Match source."
+                ]
               },
               "plain_text_mode": {
                 "type": "string",
                 "enum": [
                   "derived",
                   "custom"
-                ],
-                "description": "Text provenance."
+                ]
               },
               "transactional": {
                 "type": "boolean",
@@ -1146,7 +1144,7 @@
               },
               "if_version": {
                 "type": "integer",
-                "description": "Version required for an existing email patch."
+                "description": "Required for existing email edits."
               },
               "template_version": {
                 "type": "integer"
@@ -1158,6 +1156,15 @@
               "duration": {
                 "type": "integer",
                 "description": "Wait seconds."
+              },
+              "send_at": {
+                "type": "string",
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "description": "Local HH:MM after delay; allows duration 0."
+              },
+              "time_zone": {
+                "type": "string",
+                "description": "IANA; defaults to account, pinned on approval."
               },
               "event_name": {
                 "type": "string",
@@ -1172,7 +1179,7 @@
                 "items": {
                   "type": "string"
                 },
-                "description": "Frozen non-secret keys; copy from next_call."
+                "description": "Frozen non-secret keys; copy next_call."
               },
               "forward_event_data": {
                 "type": "boolean",
@@ -1185,7 +1192,7 @@
               },
               "endpoint_configured": {
                 "type": "boolean",
-                "description": "Frozen endpoint marker; copy from next_call."
+                "description": "Frozen; copy next_call."
               },
               "method": {
                 "type": "string",
@@ -1254,18 +1261,18 @@
               "patch"
             ],
             "default": "create",
-            "description": "create: new graph; replace: whole draft graph; patch: name or selected email actions"
+            "description": "create: new; replace: whole graph; patch: name/email actions"
           },
           "flow_id": {
             "type": "integer"
           },
           "expected_updated_at": {
             "type": "string",
-            "description": "Legacy compatibility token; prefer draft revision id."
+            "description": "Prefer expected_draft_revision_id."
           },
           "expected_draft_revision_id": {
             "type": "integer",
-            "description": "Latest draft revision id for conflict-safe writes."
+            "description": "Conflict-safe draft revision."
           },
           "goal": {
             "type": "string"
@@ -1281,7 +1288,7 @@
               "validate",
               "generate"
             ],
-            "description": "intent plans; validate checks; draft persists; generate composes and persists."
+            "description": "intent: plan; validate: check; draft/generate: persist."
           },
           "contract_id": {
             "type": "string"
@@ -1407,9 +1414,18 @@
                 "type": "string",
                 "description": "Built-in or lowercase underscore event name."
               },
+              "exit_events": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "description": "Stop future steps on new matching events; pinned."
+              },
               "action_name": {
                 "type": "string",
-                "description": "Persisted trigger identity; preserve it."
+                "description": "Preserve trigger identity."
               },
               "segment_id": {
                 "type": "integer"
@@ -1432,7 +1448,6 @@
           },
           "steps": {
             "type": "array",
-            "description": "Ordered graph steps.",
             "items": {
               "$ref": "#/$defs/flowStep"
             }
@@ -1925,7 +1940,7 @@
     },
     {
       "name": "nitro_send_test_message",
-      "description": "Send one real email/SMS test for a template, campaign, or exact flow revision. Never approves or sends to an audience.",
+      "description": "Send one real email/SMS test. Never approves or sends to an audience. Flows require an exact revision.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1937,7 +1952,7 @@
               "flow",
               "campaign"
             ],
-            "description": "Use with target_id unless latest_campaign or template_id is used."
+            "description": "With target_id, or use template_id/latest_campaign."
           },
           "target_id": {
             "type": "integer",
@@ -1946,22 +1961,22 @@
           "latest_campaign": {
             "type": "boolean",
             "default": false,
-            "description": "Most recently created campaign in this brand."
+            "description": "Latest campaign in this brand."
           },
           "template_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Template to test directly, or the specific flow/campaign template to choose."
+            "description": "Template id; may select a flow/campaign email."
           },
           "action_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "For a flow with multiple message steps."
+            "description": "Select a flow message step."
           },
           "revision_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Required for flow targets: the exact flow revision."
+            "description": "Exact revision; required for flows."
           },
           "channel": {
             "type": "string",
@@ -1971,12 +1986,12 @@
               "sms"
             ],
             "default": "auto",
-            "description": "Use auto unless a standalone template is ambiguous."
+            "description": "Prefer auto."
           },
           "contact_id": {
             "type": "integer",
             "minimum": 1,
-            "description": "Supplies the recipient and merge-tag personalization."
+            "description": "Recipient and personalization."
           },
           "to": {
             "type": "array",
@@ -1984,21 +1999,25 @@
               "type": "string"
             },
             "maxItems": 5,
-            "description": "Email addresses, or E.164 phone numbers for SMS."
+            "description": "Email addresses or SMS E.164 numbers."
           },
           "data": {
             "type": "object",
-            "description": "Sample values for required data.* merge fields in an email test."
+            "description": "Sample email data.* values."
+          },
+          "event_data": {
+            "type": "object",
+            "description": "Sample email event.* data; no Event/Order writes."
           },
           "dry_run": {
             "type": "boolean",
             "default": false,
-            "description": "Validate target and recipients without sending."
+            "description": "Validate without sending."
           },
           "idempotency_key": {
             "type": "string",
             "minLength": 1,
-            "description": "Required for live test sends; reuse only for an exact retry."
+            "description": "Required to send; exact retries only."
           }
         },
         "additionalProperties": false
