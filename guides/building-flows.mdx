@@ -24,8 +24,33 @@ A flow starts with a **trigger** — an event that kicks off the automation. The
 - **Send SMS** — send a text message
 - **Wait** — pause for a duration (e.g., 2 days)
 - **Condition** — branch based on contact properties or behavior
-- **Update Contact** — modify contact fields
+- **Emit event** — record a business event
+- **Subscribe / Unsubscribe** — change a contact channel's subscription
 
 ## Testing
 
-Use the **Test** button to simulate a flow run with a test contact before activating.
+Use **Test** to send a message to your approved test recipients before activating.
+Testing an email does not enroll a customer or simulate an entire journey.
+
+## Stop future steps after a purchase
+
+In the trigger settings, add your purchase event to **Stop this flow when…**
+(for example, `purchase` or `order_placed`). A new matching event for the same
+brand and contact stops the next step before it starts. A purchase from before
+the journey began does not stop it. An email already being sent cannot be recalled.
+
+This setting is part of the approved flow revision. Editing a draft does not
+silently change journeys already in progress.
+
+## Continue at a local time
+
+On a Wait step, enable **Continue at a specific time**, choose a time and review
+the timezone. The duration starts when the contact reaches the wait. The next
+step is scheduled for the first chosen local time at or after that duration.
+For example, a two-day delay followed by 09:00 waits at least two days, then
+continues at the next 09:00 in the selected timezone.
+
+The timezone is pinned with the approved revision. Resuming a paused flow does
+not restart the delay or move an already-due step to tomorrow. During a daylight
+saving gap, the first valid instant is used; during a repeated hour, the first
+occurrence that meets the original delay is used.

@@ -1159,6 +1159,15 @@
                 "type": "integer",
                 "description": "Wait seconds."
               },
+              "send_at": {
+                "type": "string",
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "description": "Optional local time after the original duration; zero duration is allowed with send_at."
+              },
+              "time_zone": {
+                "type": "string",
+                "description": "IANA time zone for send_at, pinned on approval; defaults from the account."
+              },
               "event_name": {
                 "type": "string",
                 "description": "Lowercase underscore event name."
@@ -1406,6 +1415,15 @@
               "event": {
                 "type": "string",
                 "description": "Built-in or lowercase underscore event name."
+              },
+              "exit_events": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "description": "New matching events for this contact stop future steps. Pinned in the approved revision."
               },
               "action_name": {
                 "type": "string",
@@ -1989,6 +2007,10 @@
           "data": {
             "type": "object",
             "description": "Sample values for required data.* merge fields in an email test."
+          },
+          "event_data": {
+            "type": "object",
+            "description": "Sample original trigger-event data for event variables and bound products. Not a new event or order."
           },
           "dry_run": {
             "type": "boolean",
