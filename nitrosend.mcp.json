@@ -1768,7 +1768,6 @@
               "rename_brand_subdomain",
               "add",
               "verify",
-              "check_dns",
               "list",
               "remove",
               "list_shared_subdomains",
@@ -1801,7 +1800,7 @@
               },
               "domain_name": {
                 "type": "string",
-                "description": "Customer sending domain for add, verify, check_dns, or remove."
+                "description": "Customer sending domain for add, verify, or remove."
               },
               "author_domain": {
                 "type": "string",
