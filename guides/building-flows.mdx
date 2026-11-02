@@ -32,6 +32,35 @@ A flow starts with a **trigger** — an event that kicks off the automation. The
 Use **Test** to send a message to your approved test recipients before activating.
 Testing an email does not enroll a customer or simulate an entire journey.
 
+**Quick preview** opens a centered viewer with desktop and mobile widths. For
+products supplied by an event, expand **Preview event products** and paste the
+event's `data` object, not the full event envelope. The designer uses the same
+sample-data control. Previews do not record events, create orders or enroll
+contacts.
+
+## Your first ecommerce flow
+
+Start with one flow, not your whole email program:
+
+1. Choose the event your store actually sends, such as `cart_add`. Your existing
+   application sends it through the [Events API](/integrations/events-api); no
+   catalog sync or custom store connector is required.
+2. Add a wait, then an email. Use **From the trigger event** in the product
+   controls and supply product names, actual links and any prices/images in
+   the event. Preview and test a representative payload before going live.
+3. In the trigger settings, choose the purchase event your store sends under
+   **Stop this flow when…**. If you send `order_placed`, select that exact name.
+4. Check the wait's timezone and your sender. A ready Nitrosend-provided sender
+   does not require custom DNS setup. Keep one financial order feed per store
+   so an API order is not also recorded through Shopify or Stripe.
+5. Activate the agreed flow, then verify both paths with your own test contact:
+   an abandoned cart continues; a purchase during the wait stops future steps.
+   The contact's activity shows **Left flow after order placed** (or your
+   selected event) and the flow name. A test email alone does not prove exits.
+
+Activating a flow does not import past orders or replay past events. Keep
+customer consent, sending allowances and existing delivery safeguards in place.
+
 ## Stop future steps after a purchase
 
 In the trigger settings, add your purchase event to **Stop this flow when…**
