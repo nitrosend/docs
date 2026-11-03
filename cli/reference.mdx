@@ -5,7 +5,7 @@ description: Every Nitrosend CLI command and global option, generated from the C
 
 # Command reference
 
-This page is generated from the command descriptors of `@nitrosend/cli` 0.3.9. `nitrosend <command> --help` prints the same usage and examples, and `nitrosend describe <command> --json` returns the full descriptor: every flag with its type and allowed values, which are required, the safety class and the idempotency policy.
+This page is generated from the command descriptors of `@nitrosend/cli` 0.3.10. `nitrosend <command> --help` prints the same usage and examples, and `nitrosend describe <command> --json` returns the full descriptor: every flag with its type and allowed values, which are required, the safety class and the idempotency policy.
 
 <Tip>
   In agent runners, prefer `nitrosend describe` over this page. The descriptor returned by the CLI always matches the binary you're running.
@@ -35,7 +35,7 @@ This page is generated from the command descriptors of `@nitrosend/cli` 0.3.9. `
 
 | Command | Summary |
 |---|---|
-| `nitrosend send --to <recipient> (--subject <text> --body <text>\|--template-id <id>) [--channel email\|sms] [--idempotency-key <key>] [--dry-run]` | Send one transactional email or SMS now from the account's sender. |
+| `nitrosend send --to <recipient> (--subject <text> --body <text>\|--template-id <id>) [--cc <addresses>] [--bcc <addresses>] [--channel email\|sms] [--idempotency-key <key>] [--dry-run]` | Send one transactional email or SMS now from the account's sender. |
 
 ## Contacts
 
@@ -66,7 +66,7 @@ Read and act on the agent inbox. An account without the agent inbox reports that
 | `nitrosend inbox queue [--state <state>] [--inbox-id <id>] [--query <text>] [--sender <text>] [--reason-code <code>] [--since <iso8601>] [--sort queue\|newest] [--view compact\|full] [--page <n>] [--per <n>]` | List prioritized inbox action items as compact rows. |
 | `nitrosend inbox get <conversation-id>` | Read one sanitized agent inbox thread. |
 | `nitrosend inbox item <action-item-id>` | Read one prioritized inbox action item and its bounded thread context. |
-| `nitrosend inbox reply <conversation-id> (--body <text>\|--html <html>) [--subject <text>] [--test-to <email>] [--idempotency-key <key>] [--dry-run] --confirm <conversation-id>` | Reply to a conversation, or send the reply draft to a test recipient. |
+| `nitrosend inbox reply <conversation-id> (--body <text>\|--html <html>) [--subject <text>] [--reply-all] [--cc <addresses>] [--bcc <addresses>] [--test-to <email>] [--idempotency-key <key>] [--dry-run] --confirm <conversation-id>` | Reply to a conversation, or send the reply draft to a test recipient. |
 | `nitrosend inbox action <action-item-id> <mark-handled\|request-human\|release-to-agent\|mark-quarantine> [--idempotency-key <key>]` | Apply a handled, human, agent, or quarantine disposition to a queue item. |
 | `nitrosend inbox triage <mark-handled\|request-human\|release-to-agent\|mark-quarantine\|classify-spam\|classify-not-spam> (--ids <id,id,...> \| [--state <state>] [--inbox-id <id>] [--query <text>] [--sender <text>] [--reason-code <code>] [--since <iso8601>] --expected-count <n>) [--idempotency-key <key>]` | Apply one disposition to many queue items, by id list or by the same filters as inbox queue. |
 
