@@ -96,6 +96,26 @@ same key and message for retries; use a new key for a different sender,
 recipient list or message. A successful send returns the conversation and
 message IDs. Read the conversation with `nitro_inbox` before replying.
 
+## Reply with your team copied
+
+Open a thread and choose **Reply all** to include the sender and visible To/Cc participants. Your inbox's own addresses are excluded. Use **Cc** or **Bcc** to edit copies before sending. Hidden recipients from incoming mail are never carried into a reply.
+
+For MCP, `send_reply` and `validate_reply` accept `reply_all: true`, `cc` and `bcc`. An explicit `cc` list replaces the suggested reply-all copies. The preview returns the resolved `recipients`; check those before sending. `send_reply_test` sends only to your chosen test recipients, never the real thread participants.
+
+The REST reply body accepts the same options:
+
+```json
+{
+  "reply": {
+    "body": "Thanks, everyone. The report is ready.",
+    "reply_all": true,
+    "bcc": ["records@example.com"]
+  }
+}
+```
+
+Send it to `POST /v1/my/conversations/:id/reply` with an `Idempotency-Key`. Each recipient list supports up to 10 addresses. Each distinct recipient uses one email credit and counts toward your sending allowance. Retry with the same key and unchanged request; an accepted reply keeps its original recipients even if more mail arrives on the thread.
+
 ## View a message's source
 
 Hover any message in a thread and click the source icon to see the full stored headers, authentication results, and raw text and HTML content.
