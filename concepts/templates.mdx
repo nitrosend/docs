@@ -25,6 +25,7 @@ Lifetime spend: {{ data.shopify.customers.amount_spent }}
 - **Custom fields**: `data.<key>` reads a field from the contact's `data` object (see [custom fields](/concepts/contacts#custom-fields)). Use dots for nested fields, for example `data.preferences.locale`.
 - **Integration fields**: synced fields live under the integration's name, for example `data.shopify.customers.amount_spent`. They render in campaigns and flows; transactional messages render contact and custom fields only.
 - **Fallbacks**: in campaigns and flows, a field the contact doesn't have renders empty. `{{ data.plan | default: "free" }}` renders `free` instead. Other filters include `upcase`, `capitalize`, `number`, `currency` and `date`.
+- **Transactional sends**: every `data` field without a default must come from the send's `data` or the recipient's contact. A send missing one is refused when you make it, naming each missing field, and a dry run reports the same.
 
 Values are HTML-escaped in the HTML version of the email, so a field can't add markup.
 
