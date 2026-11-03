@@ -91,6 +91,8 @@ export default defineConfig({
                 "guides/creating-campaigns",
                 "guides/images-and-gifs",
                 "guides/agent-inbox",
+                "guides/inbox-coexist",
+                "guides/inbox-storage",
               ],
             },
             {
