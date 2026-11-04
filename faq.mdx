@@ -57,6 +57,12 @@ By default, campaigns and flows are created for review, and new flows land as dr
 
 ## Domains and deliverability
 
+### Does verified authentication guarantee delivery to Outlook's Inbox?
+No. Microsoft also checks reputation, content, links and the recipient's policies.
+A delivery event means the receiving server accepted the message, which may
+still reach Junk. See [Sending to Outlook and Microsoft 365](/guides/microsoft-delivery)
+for authentication, unsubscribe requirements and the right investigation path.
+
 ### What should I check if my sending domain is unverified?
 Enter each record's Host, type and value exactly as shown on the Domains screen. Some DNS providers append your domain automatically, so using the supplied Host value avoids duplicating it. Allow time for DNS changes to appear, then ask your agent to compare the published records with the required values. If a previously verified domain becomes unverified, check whether a record has changed or been removed.
 
