@@ -63,27 +63,20 @@ parameters, and `confirm: true`.
    automatically — once they resolve, the domain flips to **Verified** and becomes
    available as a send-from address.
 
-## Use a subdomain, not your primary domain
+## Use a dedicated sending subdomain
 
-<Warning>
-  Always send from a subdomain (`send.yourdomain.com`), never your bare apex /
-  primary domain (`yourdomain.com`).
-</Warning>
+A subdomain such as `send.yourdomain.com` helps separate sending configuration
+from your team's everyday mail. Add the records Nitrosend supplies without
+replacing the MX records used by your existing inbox provider.
 
-A subdomain **isolates** your marketing and product sending — its DNS records and
-its sending reputation — from the domain that runs your everyday inbox (for
-example Google Workspace or Gmail on `yourdomain.com`).
+The technical sending domain and the address recipients see can differ. Use
+the verified From address offered by Nitrosend; a technical sending subdomain
+does not mean your visible address must also use it.
 
-That matters for two reasons:
-
-- **It keeps your corporate mail untouched.** Your primary domain already has mail
-  authentication set up for your team's inboxes. Sending bulk email from it can
-  interfere with that setup — a subdomain leaves it alone.
-- **It protects your reputation.** Sending volume builds a reputation with inbox
-  providers. Keeping it on a dedicated subdomain means a bad send never drags down
-  the domain your team emails from.
-
-This is the setup inbox providers like Gmail expect from senders.
+Subdomains help separate mail streams, but inbox providers can consider the
+parent domain, related domains, shared IPs and links together. They do not
+guarantee independent reputation or Inbox placement. See
+[Sending to Outlook and Microsoft 365](/guides/microsoft-delivery).
 
 ## Add the DNS records
 
@@ -153,10 +146,10 @@ changing the send-from address:
 - `hello@news.yourdomain.com` — marketing campaigns
 - `hello@txn.yourdomain.com` — transactional / product email
 
-Splitting sending this way isolates reputation between mail types, so a large
-promotional send can't drag down your receipts and password resets. This is mostly
-useful for **large-volume senders** — most brands are perfectly fine with a single
-subdomain.
+Splitting sending this way helps manage mail types separately. Providers may
+still associate their reputation, so it cannot guarantee that a promotional
+send will never affect receipts or password resets. This is most useful for
+**large-volume senders**; many brands can use a single sending subdomain.
 
 ## Set a reply-to address
 
@@ -166,7 +159,8 @@ the subdomain you send from.
 
 For example, send from `news@send.yourdomain.com` but have replies arrive at
 `hello@yourdomain.com`. The Reply-To can be any mailbox you actually monitor, on
-any domain.
+another domain used by your business. Keep sender details accurate and use a
+working mailbox your team monitors.
 
 ## How sending capacity grows
 

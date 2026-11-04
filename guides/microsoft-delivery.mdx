@@ -1,0 +1,124 @@
+---
+title: Sending to Outlook and Microsoft 365
+description: Authenticate your sender, honour opt-outs, and investigate Microsoft delivery results
+---
+
+# Sending to Outlook and Microsoft 365
+
+Microsoft checks authentication, sender reputation, content and links. Passing
+authentication is required for reliable sending, but does not guarantee Inbox
+placement. A delivery event means the receiving server accepted the email; it
+does not tell you which folder received it.
+
+## Authenticate the provider that sends your mail
+
+For domains sending more than 5,000 messages a day to Microsoft's consumer
+services, Outlook.com, Hotmail and Live, Microsoft requires SPF and DKIM to pass,
+plus DMARC with at least `p=none`. The visible From domain must align with the
+SPF or DKIM domain. This consumer threshold is distinct from Microsoft 365's
+rules for mail sent to business tenants. Use all three protections at any volume.
+
+Add the exact records shown in **Settings → Domains**. For a Nitrosend address,
+Nitrosend manages the platform domain's records. With your own domain or a BYO
+provider, publish and maintain the records supplied for that sending provider.
+Do not add Microsoft's SPF include just because your recipients use Outlook.
+Keep one SPF record per domain and account for its DNS lookup limit.
+
+A dedicated sending subdomain helps separate configuration and mail streams.
+It does not guarantee that reputation problems cannot affect the parent domain
+or related senders. The technical sending domain and visible From domain may
+differ when correctly verified and aligned. See [Sending domains](/guides/sending-domains).
+
+Use an accurate sender name and a working From or Reply-To mailbox that your
+team monitors. Subjects, links and sender details must represent the business
+and message honestly.
+
+## Send marketing to people who asked for it
+
+Follow the [Nitrosend terms](https://nitrosend.com/terms#acceptable-use): no
+purchased, rented, scraped or harvested lists, impersonation, phishing or
+deceptive messages. Keep records of where and when recipients agreed to receive
+your marketing. Importing an address or seeing **Subscribed** in Nitrosend is
+not evidence that the recipient gave permission.
+
+Carry over unsubscribes and delivery suppressions when migrating an audience.
+Do not work around them by importing again, changing an address or switching
+brands, accounts or providers. See [Managing contacts](/guides/managing-contacts).
+
+## Make unsubscribing easy
+
+Marketing email needs a visible, working unsubscribe link and the sender's
+required postal details. Nitrosend's campaign and marketing-flow paths include
+the compliance footer and the `List-Unsubscribe` and `List-Unsubscribe-Post`
+headers used for one-click unsubscribe. Keep these in the final email when
+using a custom footer or BYO provider.
+
+The footer link opens a confirmation page. A recipient's email app can also
+submit the one-click request directly, without a Nitrosend login. Nitrosend
+applies that unsubscribe to the contact's email marketing for the sending brand.
+It keeps the contact record; another brand's subscription is separate. Process
+opt-out requests received by reply too, promptly and within applicable legal
+and mailbox-provider deadlines.
+
+Hard bounces and complaints have separate delivery protections and can also
+prevent transactional sends. Transactional messages are for requested or
+necessary service communications; do not label a promotion transactional to
+avoid an unsubscribe.
+
+Test sends use a preview unsubscribe link and omit the live marketing
+unsubscribe headers. They are useful delivery checks, but do not prove that a
+live campaign's unsubscribe works or that every recipient will reach Inbox.
+
+## Handle bounces and complaints
+
+Stop sending to addresses with hard bounces or complaints. Investigate repeated
+temporary failures and remove invalid addresses from your next audience. Do
+not keep resubmitting a message Microsoft permanently rejected with a `5xx`
+response. A sender authentication or policy error needs a sender correction;
+it does not by itself prove that the recipient address is invalid.
+
+Nitrosend records provider feedback and checks applicable suppressions before
+sending. With BYO, configure the provider's feedback connection as described
+in its integration guide. A provider that never reports outcomes cannot give
+Nitrosend a complete bounce or complaint history.
+
+The sending provider owns the outbound server's reverse DNS, transport security
+and SMTP behaviour. With BYO, confirm these with that provider. A connected
+Microsoft 365 mailbox is also subject to Microsoft's mailbox sending limits;
+Microsoft does not support Exchange Online as a bulk-marketing delivery service.
+
+## Investigate the actual delivery result
+
+- **Rejected:** keep the full SMTP response, time, sender, recipient and message
+  ID. Correct the reported problem before another send. Microsoft's delisting
+  portal is for the block codes it identifies, rather than every Junk result.
+- **Accepted into Junk:** ask the recipient's Microsoft 365 administrator to
+  inspect the message in Defender's Email entity page. Compare the original
+  and latest verdict, delivery location, detection technology, policy overrides,
+  timeline and URL verdicts. Check the message's bulk complaint level against
+  the effective anti-spam policy; authentication alone does not explain it.
+- **Link warning:** inspect the exact link and its redirect destinations
+  separately from the sender verdict. Report a legitimate link or message to
+  Microsoft as a false positive. A clean review does not guarantee later Inbox
+  placement or recovery in every tenant.
+
+SNDS provides data about sending IPs you control, and JMRP supplies Outlook.com
+complaint feedback. Shared-provider IPs belong to that provider; ask it to
+investigate. There is no public check that proves an entire domain is clear of
+all Microsoft filtering. Allow-listing a test sender does not establish that
+delivery to customers has recovered.
+
+Report unwanted or deceptive Nitrosend mail to
+[contact@nitrosend.com](mailto:contact@nitrosend.com). Include the original
+message or full headers and explain the problem. For a delivery investigation,
+include an affected message ID and the recipient provider's diagnostic result.
+
+## Microsoft's published guidance
+
+- [Outlook.com high-volume sender requirements](https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/strengthening-email-ecosystem-outlook%E2%80%99s-new-requirements-for-high%E2%80%90volume-senders/4399730)
+- [Microsoft 365 external sender policies](https://learn.microsoft.com/en-us/defender-office-365/external-senders-policies-practices-guidelines)
+- [Microsoft anti-spam header definitions](https://learn.microsoft.com/en-us/defender-office-365/message-headers-eop-mdo)
+- [Microsoft 365 bulk-mail handling](https://learn.microsoft.com/en-us/defender-office-365/anti-spam-bulk-complaint-level-bcl-about)
+- [Microsoft 365 outbound spam and bulk-mail guidance](https://learn.microsoft.com/en-us/defender-office-365/outbound-spam-protection-about)
+- [Microsoft 365 blocked-IP delisting](https://learn.microsoft.com/en-us/defender-office-365/external-senders-use-the-delist-portal-to-unblock-yourself)
+- [Outlook.com Postmaster](https://substrate.office.com/ip-domain-management-snds/postmaster)

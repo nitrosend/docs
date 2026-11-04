@@ -85,6 +85,7 @@ export default defineConfig({
                 "guides/mcp-examples",
                 "guides/sending-emails",
                 "guides/sending-domains",
+                "guides/microsoft-delivery",
                 "guides/managing-contacts",
                 "guides/website-signup-forms",
                 "guides/building-flows",
