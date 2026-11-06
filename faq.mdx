@@ -81,7 +81,7 @@ Ask your agent: "Show my recorded Nitrosend complaints from the last 30 days, th
 ```
 
 ### How do I activate my free Nitrosend sending address?
-A free Nitrosend address such as `hello@yourbrand.nitrosend.net` needs no DNS setup, and activating it sends no email. Under Settings, then Domains, select Choose address name in the Nitrosend address section, enter a name and select Use this address. For an existing address, select Activate sender if shown, or Use this sender to make it your default. If your agent reports `brand_identity_required`, give it the address name you want or complete your Brand Kit so Nitrosend can derive one from your company name.
+A free Nitrosend address such as `hello@yourbrand.nitrosend.net` needs no DNS setup, and activating it sends no email. Under Settings, then Domains, open your Nitrosend address, choose a name if asked and select Use this address. An address already set up is made your default the same way. It has to warm up its sending reputation over time, so start with your most engaged contacts; your own domain is better for reaching the inbox. If your agent reports `brand_identity_required`, give it the address name you want or complete your Brand Kit so Nitrosend can derive one from your company name.
 
 ```text
 Ask your agent: "Using Nitrosend, prepare my sending address with the name [address name] and confirm whether it is ready and selected."
@@ -91,7 +91,7 @@ Ask your agent: "Using Nitrosend, prepare my sending address with the name [addr
 If your DNS is on one of the big hosts, yes. Hit one-click DNS setup, authorise, and we write the records for you. Works with GoDaddy, Namecheap, Cloudflare, Route 53 and more. Anyone else gets the exact records to paste.
 
 ### Should I send from my main domain?
-Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify it under Settings, then Domains, then set your From address under Brand, then Sender. Your own domain avoids shared `nitrosend.net` pacing and builds its own sender reputation, while your plan allowance and other sending limits still apply. See [sending domains](/guides/sending-domains#use-your-nitrosend-address).
+Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify it under Settings, then Domains, then set your From address under Brand, then Sender. Your own domain is better for reaching the inbox: it avoids shared `nitrosend.net` pacing and builds its own sender reputation, while your plan allowance and other sending limits still apply. See [sending domains](/guides/sending-domains#use-your-nitrosend-address).
 
 ```text
 Ask your agent: "Using Nitrosend, check the setup for [sending subdomain] and show me the DNS records and sender settings I need."
@@ -169,7 +169,7 @@ Ask your agent: "Create a full contacts export in Nitrosend, wait for it to fini
 Yes, both, through one place with one set of analytics. If your product already sends through Resend, Postmark or SendGrid, connect that API key under Integrations (Starter and up) and your provider becomes Nitrosend's delivery engine: point your transactional sends at Nitrosend, delivery keeps riding your own infrastructure, and everything you send shows on one timeline in Activity. You don't have to migrate everything on day one.
 
 ### How do I get the Agent Inbox?
-The Agent Inbox is where replies land for your agent and your team to answer. Open Inbox in the dashboard: if it's switched on for your account you can set up your first inbox there, otherwise choose Request access on that page. See [Using the Agent Inbox](/guides/agent-inbox) for setup.
+The Agent Inbox is where replies land for your agent and your team to answer. Open Inbox in the dashboard to set up your first inbox. See [Using the Agent Inbox](/guides/agent-inbox) for setup.
 
 ### What should I check before sending with a transactional template?
 Approve the template before using it for transactional sends. Check that its event-data merge tags use the documented syntax, then test the message.
@@ -329,7 +329,7 @@ Open the existing draft in the app's editor to make your changes. For a long ema
 Yes. Every email from a brand ends with the same footer, and you can write it however you like: an authorisation statement, a licence or ABN, why people get your email. Open **Brand Kit** and double-click the footer in the **Footer** card, or double-click the footer of any email in the editor. Either way the change applies to every email from that brand, and **Reset to default** brings back the company name, address and unsubscribe link. Marketing email always carries your address and an unsubscribe link, so if your footer leaves either out it's added underneath.
 
 ### How do I remove the "sent with Nitrosend" badge from my emails?
-Emails sent on the Free plan include the Nitrosend badge, unless you add **Remove Nitrosend footer** under Account, then Billing. On Starter and above, or once that add-on is active, turn the badge off in **Brand Kit**, in the **Footer** card.
+On the Free plan your emails carry the Nitrosend badge, whether they come from a Nitrosend address or your own domain. Adding **Remove Nitrosend footer** under Account, then Billing, turns it off for you. On Starter and above the badge stays on until you turn it off in **Brand Kit**, in the **Footer** card, unless you upgraded from a prompt to remove it.
 
 ## Teams and agencies
 

@@ -1,13 +1,28 @@
 ---
 title: Sending Domains
-description: Choose a Nitrosend address or connect your own sending domain
+description: Connect your own sending domain or choose a Nitrosend address
 ---
 
 # Sending Domains
 
-You can send from a Nitrosend address such as
-`hello@your-brand.nitrosend.net`, or connect a domain you own. A Nitrosend address
-needs no DNS setup and does not use your custom-domain allowance.
+You can send from a domain you own or from a Nitrosend address such as
+`hello@your-brand.nitrosend.net`. Your own domain is the better choice for
+reaching the inbox. A Nitrosend address needs no DNS setup and does not use your
+custom-domain allowance, so you can start now and connect your domain later.
+
+## What to know before you choose
+
+- **Reputation:** a Nitrosend address has to warm up its sending reputation over
+  time, so start with your most engaged contacts and build up. That reputation
+  stays with the address and does not move to your own domain when you switch.
+- **Capacity:** a Nitrosend address shares sending capacity with other senders,
+  so big lists go out more slowly than from your own domain.
+- **DNS:** your own domain needs DNS records, which can take from a few minutes
+  to a couple of days to take effect. You can leave while they do. We keep
+  checking and email you when the domain is ready to send from.
+- **The Nitrosend footer:** on the Free plan your emails carry the footer from a
+  Nitrosend address and from your own domain alike.
+  [How to remove it](/faq#how-do-i-remove-the-sent-with-nitrosend-badge-from-my-emails).
 
 ## Use your Nitrosend address
 
@@ -16,9 +31,8 @@ first, Nitrosend can suggest a name from your company name. Activating an addres
 does not send any email. An existing custom sender stays selected until you
 choose to replace it.
 
-Under **Settings → Domains**, the **Nitrosend address** section appears below your
-custom domains. Select **Activate sender** if needed, or **Use this sender** to
-make it your default.
+Under **Settings → Domains**, your Nitrosend address is listed with your domains.
+Open it and select **Use this address** to make it your default.
 
 The shared `nitrosend.net` sender is paced across the service at 20 recipients
 per second, with a 5-per-second share for each account across its brands.
@@ -32,8 +46,8 @@ and safety limits still apply. Upgrading alone does not remove shared-domain pac
 
 ## Change your Nitrosend address
 
-In **Settings → Domains**, select **Change address name** under your Nitrosend
-address. You can also make this change from **Inbox → Manage inboxes**.
+In **Settings → Domains**, open your Nitrosend address and select **Change
+address**, then **Change address name**. You can also make this change from **Inbox → Manage inboxes**.
 For example, `hello@old-name.nitrosend.net` can become
 `hello@new-name.nitrosend.net`.
 
@@ -56,12 +70,19 @@ parameters, and `confirm: true`.
 ## Add a sending subdomain
 
 1. Go to **Settings → Domains** ([app.nitrosend.com/my/settings/domains](https://app.nitrosend.com/my/settings/domains)).
-2. Under **Add a sending domain**, enter a subdomain you own — for example
-   `send.yourdomain.com`.
-3. Nitrosend generates the DNS records for that subdomain and shows them on screen.
-4. Add those records at your DNS provider (see below). Nitrosend verifies them
-   automatically — once they resolve, the domain flips to **Verified** and becomes
-   available as a send-from address.
+2. Choose your own domain and enter it. Nitrosend sets up
+   `send.yourdomain.com` so your emails come from `hello@yourdomain.com`. Select
+   **Change domain** to use a different one. If you already have a domain, choose
+   **Add another domain** and enter the subdomain.
+3. If your DNS provider supports one-click setup, select **Connect** and authorise
+   it. Otherwise, Nitrosend shows the DNS records for that subdomain to add at your
+   DNS provider (see below).
+4. Nitrosend verifies the records automatically. Once they resolve, the domain
+   flips to **Verified** and we email the account owner, the first time it verifies.
+
+Verifying alone does not change your From address. Open the domain and select
+**Send from**, or set your From address under **Brand → Sender**. If you chose the
+domain for your first send, Nitrosend moves it for you.
 
 ## Use a dedicated sending subdomain
 
@@ -91,8 +112,8 @@ providers, such as Cloudflare, accept the full name too.
 
 <Info>
   DNS changes can take anywhere from a few minutes to a couple of days to
-  propagate. Nitrosend re-checks automatically — you don't need to trigger
-  verification manually.
+  propagate. Nitrosend re-checks automatically, so you don't need to trigger
+  verification or stay on the page.
 </Info>
 
 ## Share a subdomain with another brand or client
