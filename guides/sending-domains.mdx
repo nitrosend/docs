@@ -34,11 +34,10 @@ choose to replace it.
 Under **Settings → Domains**, your Nitrosend address is listed with your domains.
 Open it and select **Use this address** to make it your default.
 
-The shared `nitrosend.net` sender is paced across the service at 20 recipients
-per second, with a 5-per-second share for each account across its brands.
-Small bursts are allowed. Individual flow and transactional messages receive
-priority headroom ahead of campaigns. Queued mail continues automatically;
-these rates are separate from your plan's rolling 24-hour allowance.
+The shared `nitrosend.net` sender is paced, so larger sends go out gradually.
+Small bursts are allowed, and individual flow and transactional messages go
+ahead of campaigns. Queued mail continues automatically, and this pacing is
+separate from your plan's rolling 24-hour allowance.
 
 For sustained campaign volume, connect your own sending subdomain. It does
 not use the shared-domain rate pool; your plan allowance and other provider
@@ -56,9 +55,9 @@ receiving mail, and new replies use the new address. Past emails stay unchanged.
 Old names remain reserved to your brand, so another customer cannot claim them.
 System names and names that impersonate other businesses are unavailable.
 
-Address changes share your existing address allowance. You can claim at most two
-new names per brand per hour, including the first address. A campaign, flow or
-reply still using the address must finish or be updated before you change it.
+Address changes share your existing address allowance. If you change the name too
+often, you'll be asked to wait an hour. A campaign, flow or reply still using the
+address must finish or be updated before you change it.
 The new sender goes through the usual sending checks.
 
 For API clients, send `subdomain` and the current `brand_subdomain.fqdn` as
