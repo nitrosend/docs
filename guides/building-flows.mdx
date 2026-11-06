@@ -25,12 +25,31 @@ A flow starts with a **trigger** — an event that kicks off the automation. The
 - **Wait** — pause for a duration (e.g., 2 days)
 - **Condition** — branch based on contact properties or behavior
 - **Emit event** — record a business event
+- **Categorize reply** — route a received reply into your named paths, plus Other
+- **Reply to email** — send a reply you've written in the original conversation
 - **Subscribe / Unsubscribe** — change a contact channel's subscription
 
 ## Testing
 
 Use **Test** to send a message to your approved test recipients before activating.
 Testing an email does not enroll a customer or simulate an entire journey.
+
+## Handle replies
+
+To stop follow-ups, open the trigger settings and turn on **Stop this flow when
+someone replies**. Check the receiving address shown there. This stops only the
+answered journey; it doesn't send an automatic response.
+
+For a response, choose **Automate replies** to create a separate draft with the
+original flow selected. Add **Reply to email** for a reply you've written, or
+**Categorize reply** if different replies need different paths. Give each
+category a clear meaning. Other handles replies that don't fit; a failed check
+never takes a business path. Review the draft before going live.
+
+Replies need a monitored Inbox or supported receiving mailbox. If receiving
+needs repair, fix it and use **Resume follow-ups** to review the retained work.
+Reconnect never releases old follow-ups by itself. See [Replies in flows](/concepts/flows)
+for source selection, costs and recovery.
 
 **Quick preview** opens a centered viewer with desktop and mobile widths. For
 products supplied by an event, expand **Preview event products** and paste the

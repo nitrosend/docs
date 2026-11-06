@@ -12,6 +12,7 @@ Flows are event-driven automation sequences. When a trigger fires, the flow exec
 - **New contact** — fires when a contact is created by a signup form, the API, or an import with Start flows on
 - **Add to list** — fires when a contact joins a specific list
 - **Event received** — fires when a custom event is tracked for a contact
+- **Email reply received** — a new human reply to a tracked email. Choose replies to a particular flow, campaign, email, or any tracked email from the brand.
 
 ## Steps
 
@@ -22,13 +23,44 @@ Flows support multiple step types that can be chained together:
 - **Condition** — branch the flow based on contact data or behavior
 - **Emit event** — record the next business event
 - **Subscribe / Unsubscribe** — change the selected contact channel's subscription
+- **Categorize reply** — describe 2–6 categories and give each its own path. Other catches replies that don't fit. Each execution uses one AI action; receiving a reply or stopping a flow uses none.
+- **Reply to email** — send a reply you've written in the same conversation. The recipient, subject and sender come from the thread. Reply all, Cc and Bcc use the same controls as Inbox. Every recipient counts toward credits and allowance.
+
+Categorize reply and Reply to email need an Email reply received trigger and a stored, readable reply. They don't generate a response or choose a different recipient. Automatic replies and delivery reports don't start these flows.
+
+## Stop follow-ups when someone replies
+
+In the trigger settings, turn on **Stop this flow when someone replies**. It is off by default. A proven reply to an email from the flow stops only that person's answered journey, not every journey they have or the whole flow. A delay followed by another email is the no-response path; a separate reply-triggered flow handles the reply path.
+
+The editor shows where replies go. Use an active Nitrosend Inbox or a supported receiving mailbox. Gmail connections that only allow sending don't monitor replies; use a separately monitored Reply-To address.
+
+**Automate replies** opens a new draft flow with the original flow selected. Review and publish it separately. Existing flows and Outreach sequences never gain automatic response behavior just because this feature is available.
+
+## When receiving needs attention
+
+Temporary mailbox syncing retries without discarding the journey. A receiver that needs repair pauses affected follow-ups. Reconnecting does not silently release old work: choose **Resume follow-ups**, review the affected contacts, and either stop those journeys or continue on their retained schedule. Sending limits and safety checks still apply.
+
+A reply that needs review, a missing body, a newer reply or a failed categorization takes no category branch. Open the original reply in Inbox to handle it. Other is a successful classification, never a fallback for a failed check.
+
+## API and agents
+
+REST, MCP, the SDK and CLI use the same flow definition. For example:
+
+```json
+{
+  "trigger": {"event": "message", "reply_source": {"type": "flow", "id": 123}},
+  "steps": [{"type": "reply", "body": "Thanks {{ contact.first_name }}. How can we help?", "reply_all": false}]
+}
+```
+
+Use the existing compose-flow tool or flows API. Drafting doesn't send. Category keys are stable snake_case handles; every named branch and `other` must be present, even when empty. Changes apply to future enrollments; existing journeys keep their approved revision.
 
 ## Flow states
 
 | State | Description |
 |-------|-------------|
 | Draft | Being designed |
-| Active | Running and processing contacts |
+| Live | Running and processing contacts |
 | Paused | Temporarily stopped |
 | Archived | No longer in use |
 
