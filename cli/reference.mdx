@@ -5,7 +5,7 @@ description: Every Nitrosend CLI command and global option, generated from the C
 
 # Command reference
 
-This page is generated from the command descriptors of `@nitrosend/cli` 0.3.10. `nitrosend <command> --help` prints the same usage and examples, and `nitrosend describe <command> --json` returns the full descriptor: every flag with its type and allowed values, which are required, the safety class and the idempotency policy.
+This page is generated from the command descriptors of `@nitrosend/cli` 0.3.11. `nitrosend <command> --help` prints the same usage and examples, and `nitrosend describe <command> --json` returns the full descriptor: every flag with its type and allowed values, which are required, the safety class and the idempotency policy.
 
 <Tip>
   In agent runners, prefer `nitrosend describe` over this page. The descriptor returned by the CLI always matches the binary you're running.
@@ -27,7 +27,10 @@ This page is generated from the command descriptors of `@nitrosend/cli` 0.3.10. 
 | Command | Summary |
 |---|---|
 | `nitrosend login [--api-key <key>] [--no-browser] [--api-url <url>] [--profile <name>]` | Store an API-key profile, or start browser OAuth when no API key is provided. |
-| `nitrosend signup --email <email> --password-stdin [--utm-source <s>] [--utm-medium <m>] [--utm-campaign <c>] [--api-url <url>] [--profile <name>]` | Create a Nitrosend account without a browser, then store an API-key profile for it. |
+| `nitrosend signup --email <email> --password-stdin [--utm-source <s>] [--utm-medium <m>] [--utm-campaign <c>] [--api-url <url>] [--profile <name>]` | Begin email-verified signup without changing the current profile. |
+| `nitrosend signup verify --verification-stdin [--api-url <url>] [--profile <name>]` | Verify email, choose the final password and save an API-key profile. |
+| `nitrosend signup resend --email <email> [--api-url <url>]` | Request another verification email; address and global limits apply. |
+| `nitrosend signup resume --email <email> --password-stdin [--api-url <url>] [--profile <name>]` | Recover a verified signup after an interrupted activation or profile write. |
 | `nitrosend logout` | Remove the active local profile. |
 | `nitrosend whoami [--json]` | Show active auth source, profile, and API endpoint. |
 

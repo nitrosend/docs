@@ -41,8 +41,8 @@ During sign-in, you can [restrict the connection to one account or brand](/integ
 Request bodies on this path are top-level JSON fields; only signup nests its fields, under `user`. `PATCH /v1/my/brands/{sid}` with `{ "company_name": "Acme" }` sets the company name, while `{ "brand": { "company_name": "Acme" } }` returns `200` and changes nothing.
 
 <Steps>
-  <Step title="Create an account">
-    `POST /v1/signup` with `{ "user": { "email", "password" } }`. Returns a 15-day JWT in the `Authorization` response header.
+  <Step title="Begin signup and verify email">
+    `POST /v1/signup` with `{ "user": { "email": "you@example.com", "password": "initial-password" } }` returns HTTP `409` with `status: "verification_required"`, `error_code: "verification_required"` and `next_action: "verify_email"`. It creates no account or session yet. Read the email, then explicitly `POST /v1/signup/verify` with `{ "token": "email-token", "password": "final-password" }`. The final password replaces the initial one. Success returns HTTP `200`, the user and `meta.account_id`, and a JWT in the `Authorization` response header. No browser or CAPTCHA is required.
   </Step>
   <Step title="Mint an API key">
     `POST /v1/my/api_keys` with that JWT. The response includes the full `nskey_live_...` secret once, in `secret_key`. Store it as a secret then. Later reads mask it; reveal it again with `GET /v1/my/api_keys/{id}?reveal=true`.
@@ -57,6 +57,8 @@ Request bodies on this path are top-level JSON fields; only signup nests its fie
     A customer-owned sending subdomain builds portable reputation and never consumes the reserved Nitrosend brand-subdomain sender. Paid plans and checkout remain optional; `$0` plans need no card.
   </Step>
 </Steps>
+
+Links expire in 30 minutes and are used once. `POST /v1/signup/resend` with `{ "email": "you@example.com" }` returns a generic `202`; it is limited to three requests per address per UTC day and a one-minute cooldown, with a global daily mail budget. Resending preserves an unexpired link. If proof succeeded but activation or client storage failed, `POST /v1/signup/activate` with `{ "email": "you@example.com", "password": "final-password" }` returns the active session without creating another account. Respect `Retry-After` on `429`; keep working credentials until completion. An existing address gets the same signup response; established users can sign in normally.
 
 To drive the [CLI](/cli/overview) from a runner with no browser, export the key as `NITROSEND_API_KEY` or store it with `nitrosend login --api-key <key>`. Plain `nitrosend login` opens a browser for OAuth.
 

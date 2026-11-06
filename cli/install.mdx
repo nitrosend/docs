@@ -76,13 +76,29 @@ Environment variables take precedence over stored profiles, which makes the CLI 
 
 ### Sign up without a browser
 
-An agent or script with no account yet can create one from the CLI (0.3.8 or later). The password is read from stdin, never from a flag:
+An agent or script with no account yet can create one from the CLI (0.3.11 or later). The password is read from stdin, never from a flag:
 
 ```bash
 printf '%s' "$PASSWORD" | nitrosend signup --email you@example.com --password-stdin
 ```
 
-It creates the account, makes an API key for its brand, and stores that key as the profile, so the next command is already signed in. `--profile <name>` names the profile; `--utm-source`, `--utm-medium` and `--utm-campaign` record where the signup came from.
+Signup returns `verification_required` and leaves your current profile untouched. Read the verification email, then supply JSON containing its `token` and your **final** `password` through stdin:
+
+```bash
+nitrosend signup verify --verification-stdin --profile default < verification.json
+```
+
+Keep that input file private and remove it after use, or stream the JSON directly from your secret store. Do not put passwords or verification tokens in command arguments. Verification creates the account, makes an API key, and saves that key as the profile. The final password replaces the password used to start signup.
+
+If the link expires, run `nitrosend signup resend --email you@example.com`. If verification succeeded but activation, key creation or local profile storage was interrupted, resume without another email:
+
+```bash
+printf '%s' "$PASSWORD" | nitrosend signup resume --email you@example.com --password-stdin --profile default
+```
+
+Use the same `--api-url` and `--profile` throughout. Resending has a one-minute cooldown and three-per-address daily limit; global acquisition limits also apply. Respect `Retry-After` on HTTP 429. Existing API-key and browser OAuth login remain available.
+
+`--utm-source`, `--utm-medium` and `--utm-campaign` record where the signup came from.
 
 <Tip>
   In `--non-interactive` or `--machine` mode, OAuth login is rejected — interactive auth would block the run. Use an API key or a pre-existing profile for those workflows.

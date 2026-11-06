@@ -5,7 +5,7 @@ description: How to authenticate with the Nitrosend API
 
 # Authentication
 
-All API requests require authentication via an API key.
+Authenticated API operations accept an API key or a supported user session. Account signup and email verification are public endpoints; they do not require an API key.
 
 ## API Keys
 
@@ -33,6 +33,12 @@ curl https://api.nitrosend.com/v1/my/account \
 <Warning>
   Keep your secret keys (`nskey_live_…`) secret. Never expose them in client-side code or commit them to version control.
 </Warning>
+
+## Email verification and account signup
+
+Password signup stays available to browsers and agents. [Headless onboarding](/agent-onboarding#headless-path-no-dashboard-no-mcp-client) describes the pending → proof → activation exchange. Only a completed signup receives a session and can create API keys. Existing customers can continue signing in without a retroactive email-verification requirement.
+
+When changing your profile email, the current email remains your sign-in address until you explicitly confirm the link sent to the new address. Confirming an email change does not issue another session or change your password.
 
 ## Public keys for website forms
 
