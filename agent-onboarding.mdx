@@ -42,7 +42,7 @@ Request bodies on this path are top-level JSON fields; only signup nests its fie
 
 <Steps>
   <Step title="Begin signup and verify email">
-    `POST /v1/signup` with `{ "user": { "email": "you@example.com", "password": "initial-password" } }` returns HTTP `409` with `status: "verification_required"`, `error_code: "verification_required"` and `next_action: "verify_email"`. It creates no account or session yet. Read the email, then explicitly `POST /v1/signup/verify` with `{ "token": "email-token", "password": "final-password" }`. The final password replaces the initial one. Success returns HTTP `200`, the user and `meta.account_id`, and a JWT in the `Authorization` response header. No browser or CAPTCHA is required.
+    `POST /v1/signup` with `{ "user": { "email": "you@example.com" } }` returns HTTP `409` with `status: "verification_required"`, `error_code: "verification_required"` and `next_action: "verify_email"`. It creates no account or session yet. Read the email, then explicitly `POST /v1/signup/verify` with `{ "token": "email-token", "password": "final-password" }`. That password is the one the account uses, and it replaces any `password` sent at signup, which is optional. Success returns HTTP `200`, the user and `meta.account_id`, and a JWT in the `Authorization` response header. No browser or CAPTCHA is required.
   </Step>
   <Step title="Mint an API key">
     `POST /v1/my/api_keys` with that JWT. The response includes the full `nskey_live_...` secret once, in `secret_key`. Store it as a secret then. Later reads mask it; reveal it again with `GET /v1/my/api_keys/{id}?reveal=true`.
