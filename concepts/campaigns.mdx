@@ -56,6 +56,10 @@ When a locked campaign receives content edits (trigger, template, channel, sched
 }
 ```
 
+## Testing subject lines
+
+A send to 1,000 people or more can carry up to six subject lines: yours and NitroLLM's suggested alternatives, edited or not, or lines you write. Everyone can get one at random, or a test part of the list can, with the winning line going to the rest. See [Test subject lines](/guides/creating-campaigns#test-subject-lines).
+
 ## Duplicating a sent campaign
 
 `POST /v1/my/campaigns/{id}/duplicate` returns a fresh draft that copies the source's audience (trigger.audience_type, contact_list_ids, segment_id) and template content (design, subject, preheader, body, from_name, from_email, reply_to). It does **not** copy schedule, approval, send history, or metrics — the new campaign starts clean with `status: draft`, `approval_state: pending_review`, and name `"Copy of {original}"`.

@@ -38,6 +38,19 @@ If no audience is selected, the campaign stays a draft and delivery is blocked. 
 
 After sending, the **Activity** page in the sidebar lists recent campaigns with their sent count and open and click rates, and each contact's activity timeline shows their recorded opens and clicks. Ask your agent for a campaign's bounces and unsubscribes. Open and click tracking can be turned off per brand; see [Open and click tracking](/guides/sending-emails#open-and-click-tracking).
 
+## Test subject lines
+
+When a campaign goes to 1,000 people or more, the send review can test other subject lines against yours. NitroLLM has some suggested alternatives ready, each taking a different approach and using only what's in your email. Edit or remove any of them, or write your own. Your own subject line is always version A.
+
+- **Split everyone** is the default. Each person gets one line at random. Two days after the last email goes out, the campaign page shows how each line did and whether one clearly won.
+- **Send the winner** gives the test to part of the list. After 2, 4, 8 or 24 hours, the line with the most opens (or clicks, if you choose) goes to everyone else. If no line clearly won, the rest gets your own line.
+
+How many lines you can test follows the audience: two from 1,000 recipients, three from 2,500, five from 5,000 and six from 20,000. When you send the winner, the test part follows the same table, and at least 5% of the list is held back for the winner.
+
+Rates stay hidden until the result is decided, because opens keep arriving after a send. A line wins only when it beats every other line by more than chance would explain. Under Safe Mode, the account owner approves the whole set of subject lines before anything sends.
+
+Agents send versions with `nitro_control_delivery` (`versions`, and `winner` to send the winner). `nitro_review_delivery` returns the suggested lines in `preflight.versions`.
+
 ## Iterate on a sent campaign
 
 Sent campaigns are locked — their content, audience, schedule, and template can't be changed so the record stays faithful to what went out. To send a variant, click **Edit as new campaign** on the locked banner (or **Duplicate** from the overflow menu on any row). You get a fresh draft that inherits the audience and email but resets the schedule and approval, ready for you to tweak and re-send.
