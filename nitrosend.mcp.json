@@ -959,7 +959,7 @@
     },
     {
       "name": "nitro_compose_flow",
-      "description": "Draft inactive automations. Creative email: composition_mode=intent, follow exact next_call. replace needs flow_id+confirm+draft revision; patch preserves other nodes. Activate: nitro_control_delivery.",
+      "description": "Live/paused flow saves publish. Creative email: composition_mode=intent, follow exact next_call. replace needs flow_id+confirm+draft revision; patch keeps other nodes. Go live: nitro_control_delivery.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1085,8 +1085,7 @@
                 "description": "Stable existing-node identity; preserve exactly."
               },
               "key": {
-                "type": "string",
-                "description": "Retained new-node identity."
+                "type": "string"
               },
               "type": {
                 "type": "string",
@@ -1095,6 +1094,9 @@
                   "sms",
                   "wait",
                   "split",
+                  "random_split",
+                  "classify_reply",
+                  "reply",
                   "emit_event",
                   "webhook",
                   "subscribe",
@@ -1139,8 +1141,7 @@
                 "type": "string"
               },
               "design": {
-                "type": "object",
-                "description": "Email {sections, theme} design."
+                "type": "object"
               },
               "if_version": {
                 "type": "integer",
@@ -1149,50 +1150,72 @@
               "template_version": {
                 "type": "integer"
               },
+              "reply_all": {
+                "type": "boolean",
+                "default": false
+              },
+              "cc": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
               "bcc": {
-                "type": "string",
-                "description": "BCC for a new-flow email only."
+                "type": [
+                  "string",
+                  "array"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "categories": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "random_split: 2 to 6 { key, label, weight } summing to 100."
+              },
+              "branches": {
+                "type": "object"
               },
               "duration": {
-                "type": "integer",
-                "description": "Wait seconds."
+                "type": "integer"
               },
               "send_at": {
                 "type": "string",
-                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
-                "description": "Local HH:MM after delay; allows duration 0."
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
               },
               "time_zone": {
-                "type": "string",
-                "description": "IANA; defaults to account, pinned on approval."
+                "type": "string"
               },
               "event_name": {
-                "type": "string",
-                "description": "Lowercase underscore event name."
+                "type": "string"
               },
               "event_data": {
-                "type": "object",
-                "description": "Static emitted-event data."
+                "type": "object"
               },
               "event_data_keys": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                },
-                "description": "Frozen non-secret keys; copy next_call."
+                }
               },
               "forward_event_data": {
                 "type": "boolean",
-                "default": false,
-                "description": "Forward triggering event data."
+                "default": false
               },
               "url": {
-                "type": "string",
-                "description": "Webhook URL; supports merge tags."
+                "type": "string"
               },
               "endpoint_configured": {
-                "type": "boolean",
-                "description": "Frozen; copy next_call."
+                "type": "boolean"
               },
               "method": {
                 "type": "string",
@@ -1423,6 +1446,34 @@
                 },
                 "description": "Stop future steps on new matching events; pinned."
               },
+              "stop_on_reply": {
+                "type": "boolean",
+                "default": false,
+                "description": "Requires monitored receiving."
+              },
+              "reply_source": {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "flow",
+                      "campaign",
+                      "message"
+                    ]
+                  },
+                  "id": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "description": "Match replies to an owned source."
+              },
               "action_name": {
                 "type": "string",
                 "description": "Preserve trigger identity."
@@ -1471,7 +1522,7 @@
       "annotations": {
         "destructiveHint": true,
         "idempotentHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "readOnlyHint": false,
         "title": "Compose flow"
       }
@@ -1888,7 +1939,7 @@
     },
     {
       "name": "nitro_review_delivery",
-      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends.",
+      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends. For an email campaign, preflight.versions has suggested alternatives to its subject line, to test as versions with nitro_control_delivery.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -1939,7 +1990,7 @@
     },
     {
       "name": "nitro_send_test_message",
-      "description": "Send one real email/SMS test. Never approves or sends to an audience. Flows require an exact revision.",
+      "description": "Send one real email/SMS test. Never approves or sends to an audience. Flows require an exact revision.\nSuccess confirms the mail provider accepted the send. Confirm receipt before approving; it does not prove inbox placement.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2097,6 +2148,65 @@
           "idempotency_key": {
             "type": "string",
             "description": "Campaign-live retry key; reuse only for the same send."
+          },
+          "versions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "Campaign live/schedule: other subject lines to test against the campaign's own (version A, never listed). Use the suggested lines from nitro_review_delivery's versions block, edited or not, or your own. Caps follow the audience.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "subject": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "generation_event_id": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "From a suggested line."
+                },
+                "candidate_locator": {
+                  "type": "string",
+                  "description": "From a suggested line."
+                }
+              },
+              "required": [
+                "subject"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "winner": {
+            "type": "object",
+            "description": "Optional with versions: send the versions to a test part of the list, then the winner to the rest. Omit to split everyone.",
+            "properties": {
+              "test_share_percent": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 95
+              },
+              "wait_hours": {
+                "type": "integer",
+                "enum": [
+                  2,
+                  4,
+                  8,
+                  24
+                ]
+              },
+              "measure": {
+                "type": "string",
+                "enum": [
+                  "opens",
+                  "clicks"
+                ]
+              }
+            },
+            "required": [
+              "test_share_percent"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -2367,7 +2477,7 @@
     },
     {
       "name": "nitro_send_message",
-      "description": "Send one transactional email/SMS. Broadcasts: nitro_compose_campaign; sequences: nitro_compose_flow. Retry with unchanged payload and key.",
+      "description": "Send one transactional email/SMS. For bulk use campaigns/flows. Retry unchanged payload/key.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -2413,6 +2523,20 @@
           "reply_to": {
             "type": "string",
             "description": "Reply address"
+          },
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10
+          },
+          "bcc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10
           },
           "headers": {
             "type": "object",
@@ -2597,6 +2721,24 @@
           "html": {
             "type": "string"
           },
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10
+          },
+          "bcc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10
+          },
+          "reply_all": {
+            "type": "boolean",
+            "default": false
+          },
           "attachment_refs": {
             "type": "array",
             "items": {
@@ -2735,15 +2877,19 @@
               "type": "string"
             },
             "maxItems": 10,
-            "description": "Compose only"
+            "description": "Overrides reply-all Cc"
           },
           "bcc": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "maxItems": 10,
-            "description": "Compose only"
+            "maxItems": 10
+          },
+          "reply_all": {
+            "type": "boolean",
+            "default": false,
+            "description": "Copy visible thread participants, excluding self"
           },
           "idempotency_key": {
             "type": "string",
