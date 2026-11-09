@@ -47,9 +47,9 @@ When a campaign goes to 1,000 people or more, the send review can test other sub
 
 How many lines you can test follows the audience: two from 1,000 recipients, three from 2,500, five from 5,000 and six from 20,000. When you send the winner, the test part follows the same table, and at least 5% of the list is held back for the winner.
 
-Rates stay hidden until the result is decided, because opens keep arriving after a send. A line wins only when it beats every other line by more than chance would explain. Under Safe Mode, the account owner approves the whole set of subject lines before anything sends.
+Rates stay hidden until the result is decided, because opens keep arriving after a send. Then each line shows its open, click and unsubscribe rates as they stood at that moment, so later opens never change a result. A line wins only when it beats every other line by more than chance would explain. Under Safe Mode, the account owner approves the whole set of subject lines before anything sends.
 
-Agents send versions with `nitro_control_delivery` (`versions`, and `winner` to send the winner). `nitro_review_delivery` returns the suggested lines in `preflight.versions`.
+Agents send versions with `nitro_control_delivery` (`versions`, and `winner` to send the winner). `nitro_review_delivery` returns the suggested lines in `preflight.versions`, with the call that sends them.
 
 ## Iterate on a sent campaign
 
