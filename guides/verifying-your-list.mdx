@@ -1,0 +1,64 @@
+---
+title: Verifying Your List
+description: Check addresses before you send, read the results, and keep your list healthy
+---
+
+# Verifying Your List
+
+Every address that bounces costs you sender reputation. Too many bounces and inbox providers start filtering your mail, and Nitrosend pauses sending on your account to protect it. Verifying a list before you send finds the addresses that won't take mail, so they never get the chance to bounce.
+
+Verify any list you didn't collect yourself recently: an import from another tool, an older list, an event or partner list, or anything that hasn't been emailed in a while.
+
+## Verify a list
+
+Go to **Contacts** ([app.nitrosend.com/my/contacts](https://app.nitrosend.com/my/contacts)), choose **Verify list**, and pick the audience: all contacts, a list, or a segment. You'll see a quote before anything starts. Addresses that were checked recently are reused at no charge, and you're only charged for addresses we actually check. See [pricing](https://nitrosend.com/pricing).
+
+To check a few contacts, select them in the table and choose **Verify email addresses**.
+
+Or ask your agent:
+
+```
+Verify my "Newsletter" list and tell me how many addresses are valid.
+```
+
+Verification runs in the background. When it finishes you'll see the results page, and every checked contact shows its result in the **Verified** column on Contacts.
+
+## What the results mean
+
+| Result | What it means | What happens |
+| --- | --- | --- |
+| **Valid** | The mail server confirmed the address. | Stays in your sends. |
+| **Invalid** | The address doesn't exist or can't receive mail. | Left out of sends. |
+| **Disposable** | A temporary inbox, usually used once and abandoned. | Left out of sends. |
+| **Unknown** | The mail server wouldn't confirm the address either way. | Left out of sends by default. |
+| **Catch-all** | The domain accepts mail for any address, so this inbox can't be confirmed. | Left out of sends by default. |
+
+Unknown and Catch-all addresses are called **unconfirmed**. They bounce far more often than valid addresses, which is why they're left out of sends by default.
+
+Nothing is deleted and no one is unsubscribed. Every contact stays in your Contacts and lists, marked with its result in the Verified column, so you can find them, segment them or follow up another way.
+
+## Including unconfirmed addresses
+
+If you know an unconfirmed group is genuine, for example your own company's domain that accepts all mail, open the verification's results page and choose **Include in sends**. You'll see a warning first, because these addresses may bounce and too many bounces can pause sending for your whole account.
+
+Including them changes nothing about their results. Each verification is its own choice, and the next verification leaves unconfirmed addresses out again by default. Changed your mind? Choose **Leave them out of sends** on the same page.
+
+## Keep your list healthy
+
+Verification removes the dead addresses. These habits keep new ones from piling up:
+
+- **Collect addresses with permission.** Use [signup forms](/guides/website-signup-forms) and keep a record of how each contact opted in. Bought or scraped lists bounce, complain and get you blocked.
+- **Verify before the first send to any imported list.** Old addresses go stale; people change jobs and providers close accounts.
+- **Warm up a list that hasn't heard from you in 6 months or more.** Send in smaller batches of a few hundred, most recent contacts first. Make the first email a short "click to stay subscribed" note, remove anyone who doesn't click after a second reminder, and only send to more once bounces stay under 2%.
+- **Send regularly.** Lists that hear from you on a steady schedule stay cleaner and more engaged than lists emailed once a year.
+- **Let suppressions do their job.** Hard bounces, complaints and unsubscribes are suppressed automatically. Don't import them back in from another tool.
+
+## If sending is paused
+
+If your bounce rate gets too high, Nitrosend pauses sending and tells you why. Verify the list you sent to. When the verification finishes, we automatically ask Nitrosend support to review the account, and they'll reply by email.
+
+## Related
+
+- [Managing contacts](/guides/managing-contacts)
+- [Sending domains](/guides/sending-domains)
+- [Sender requirements for Microsoft and others](/guides/microsoft-delivery)
