@@ -1,0 +1,588 @@
+---
+title: Flag reference
+description: Every per-command flag, type, safety class and idempotency policy, generated from the CLI command descriptors
+---
+
+# Flag reference
+
+This page is generated from the command descriptors of `@nitrosend/cli` 0.3.9, the same source the [command reference](/cli/reference) is generated from. It lists the flags each command accepts, their types, whether they are required, the allowed values, and the safety class, idempotency policy and cache mode the command runs with.
+
+<Tip>
+  `nitrosend describe <command> --json` returns the same descriptor for the binary you are running, including the input schema this page is generated from.
+</Tip>
+
+## Core
+
+### `nitrosend`
+
+Show local profile state, cached account state, blockers, and suggested next actions.
+
+This command takes no flags of its own.
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `read-through` (300s).
+
+Examples:
+- Show the dashboard — `nitrosend`
+
+### `nitrosend status [--json]`
+
+Show live authenticated account health, onboarding state, and next actions.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `read-through` (300s).
+
+Examples:
+- Show account status — `nitrosend status`
+
+### `nitrosend describe <command> [--json]`
+
+Return descriptor, schemas, examples, and safety metadata for a command.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Describe a command — `nitrosend describe mcp tools list --json`
+
+### `nitrosend completion <bash\|zsh\|fish>`
+
+Generate shell completion for bash, zsh, or fish.
+
+This command takes no flags of its own.
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Generate zsh completion — `nitrosend completion zsh`
+
+### `nitrosend recent [--json]`
+
+Show redacted recent commands.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Show history — `nitrosend recent`
+
+### `nitrosend redo [index] [--explain]`
+
+Show or re-run a recent command.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--explain` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Explain last command — `nitrosend redo 1 --explain`
+
+## Auth
+
+### `nitrosend login [--api-key <key>] [--no-browser] [--api-url <url>] [--profile <name>]`
+
+Store an API-key profile, or start browser OAuth when no API key is provided.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--api-key <key>` | string | no | — | <key> |
+| `--no-browser` | boolean | no | — | — |
+| `--api-url <url>` | string | no | — | <url> |
+| `--profile <name>` | string | no | — | <name> |
+
+Safety class `local-state` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Log in with API key — `nitrosend login --api-key nskey_test_...`
+- Start browser OAuth login — `nitrosend login`
+
+### `nitrosend signup --email <email> --password-stdin [--utm-source <s>] [--utm-medium <m>] [--utm-campaign <c>] [--api-url <url>] [--profile <name>]`
+
+Create a Nitrosend account without a browser, then store an API-key profile for it.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--email` | string | yes | — | <email> |
+| `--password-stdin` | boolean | yes | — | — |
+| `--utm-source <s>` | string | no | — | <s> |
+| `--utm-medium <m>` | string | no | — | <m> |
+| `--utm-campaign <c>` | string | no | — | <c> |
+| `--api-url <url>` | string | no | — | <url> |
+| `--profile <name>` | string | no | — | <name> |
+
+Safety class `external-effect` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Sign up with a password from stdin — `printf '%s' "$PASSWORD" \| nitrosend signup --email you@example.com --password-stdin`
+
+### `nitrosend logout`
+
+Remove the active local profile.
+
+This command takes no flags of its own.
+
+Safety class `local-state` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Log out — `nitrosend logout`
+
+### `nitrosend whoami [--json]`
+
+Show active auth source, profile, and API endpoint.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Show profile — `nitrosend whoami`
+
+## Messages
+
+### `nitrosend send --to <recipient> (--subject <text> --body <text>\|--template-id <id>) [--channel email\|sms] [--idempotency-key <key>] [--dry-run]`
+
+Send one transactional email or SMS now from the account's sender.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--to` | string | yes | — | <recipient> |
+| `--subject` | string | no | — | <text> |
+| `--body` | string | no | — | <text> |
+| `--template-id` | string | no | — | <id> |
+| `--channel` | string | no | `email`, `sms` | email |
+| `--idempotency-key <key>` | string | no | — | <key> |
+| `--dry-run` | boolean | no | — | — |
+
+Safety class `external-effect` · dry-run supported · confirmation not required · idempotency `auto` · cache `none`.
+
+Examples:
+- Send one email — `nitrosend send --to you@example.com --subject 'Hello' --body 'First send.'`
+- Validate a send without sending — `nitrosend send --to you@example.com --subject 'Hello' --body 'First send.' --dry-run`
+
+## Contacts
+
+### `nitrosend contacts import <file> --list-id <id> [--json]`
+
+Direct-upload a CSV file and create a contact import.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--list-id` | string | yes | — | <id> |
+| `--json` | boolean | no | — | — |
+
+Safety class `mutating` · dry-run supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Import contacts into a list — `nitrosend contacts import ./contacts.csv --list-id 88`
+
+## Data
+
+### `nitrosend flows list [--status <status>] [--search <text>] [--page <n>] [--per <n>]`
+
+List flows.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--status <status>` | string | no | — | <status> |
+| `--search <text>` | string | no | — | <text> |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List flows. — `nitrosend flows list --status draft --per 10`
+
+### `nitrosend campaigns list [--status <status>] [--search <text>] [--page <n>] [--per <n>]`
+
+List campaigns.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--status <status>` | string | no | — | <status> |
+| `--search <text>` | string | no | — | <text> |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List campaigns. — `nitrosend campaigns list --status draft --per 10`
+
+### `nitrosend contacts list [--query <text>] [--list-id <id>] [--page <n>] [--per <n>]`
+
+List contacts.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--query <text>` | string | no | — | <text> |
+| `--list-id <id>` | string | no | — | <id> |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List contacts. — `nitrosend contacts list --query alice --per 10`
+
+### `nitrosend lists list [--search <text>] [--page <n>] [--per <n>]`
+
+List contact lists.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--search <text>` | string | no | — | <text> |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List contact lists. — `nitrosend lists list --search newsletter`
+
+### `nitrosend templates list [--search <text>] [--page <n>] [--per <n>]`
+
+List templates.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--search <text>` | string | no | — | <text> |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List templates. — `nitrosend templates list --search welcome`
+
+### `nitrosend suppressions list [--email <email>] [--reason <reason>] [--source-provider <provider>] [--active <true\|false>] [--page <n>] [--per <n>]`
+
+List account suppressions with bounce diagnostics.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--email <email>` | string | no | — | <email> |
+| `--reason <reason>` | string | no | — | <reason> |
+| `--source-provider <provider>` | string | no | — | <provider> |
+| `--active <true|false>` | string | no | `true`, `false` | <true\|false> |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List account suppressions with bounce diagnostics. — `nitrosend suppressions list --reason hard_bounce --per 10`
+
+## Inbox
+
+### `nitrosend inbox list [--query <text>] [--inbox-id <id>] [--status <status>] [--view compact\|full] [--page <n>] [--per <n>]`
+
+List and search mailbox conversations.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--query <text>` | string | no | — | <text> |
+| `--inbox-id <id>` | string | no | — | <id> |
+| `--status <status>` | string | no | — | <status> |
+| `--view` | string | no | `compact`, `full` | compact |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Search inbox conversations — `nitrosend inbox list --query sourcey --per 10`
+
+### `nitrosend inbox queue [--state <state>] [--inbox-id <id>] [--query <text>] [--sender <text>] [--reason-code <code>] [--since <iso8601>] [--sort queue\|newest] [--view compact\|full] [--page <n>] [--per <n>]`
+
+List prioritized inbox action items as compact rows.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--state <state>` | string | no | — | <state> |
+| `--inbox-id <id>` | string | no | — | <id> |
+| `--query <text>` | string | no | — | <text> |
+| `--sender <text>` | string | no | — | <text> |
+| `--reason-code <code>` | string | no | — | <code> |
+| `--since <iso8601>` | string | no | — | <iso8601> |
+| `--sort` | string | no | `queue`, `newest` | queue |
+| `--view` | string | no | `compact`, `full` | compact |
+| `--page <n>` | string | no | — | <n> |
+| `--per <n>` | string | no | — | <n> |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List items needing attention — `nitrosend inbox queue --state needs_attention --per 10`
+- Find quarantined spam — `nitrosend inbox queue --state quarantine --reason-code spam_fail --per 100`
+
+### `nitrosend inbox get <conversation-id>`
+
+Read one sanitized agent inbox thread.
+
+This command takes no flags of its own.
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Read a thread — `nitrosend inbox get 123`
+
+### `nitrosend inbox item <action-item-id>`
+
+Read one prioritized inbox action item and its bounded thread context.
+
+This command takes no flags of its own.
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Read a queue item — `nitrosend inbox item 456`
+
+### `nitrosend inbox reply <conversation-id> (--body <text>\|--html <html>) [--subject <text>] [--test-to <email>] [--idempotency-key <key>] [--dry-run] --confirm <conversation-id>`
+
+Reply to a conversation, or send the reply draft to a test recipient.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--body` | string | no | — | <text> |
+| `--html` | string | no | — | <html> |
+| `--subject <text>` | string | no | — | <text> |
+| `--test-to <email>` | string | no | — | <email> |
+| `--idempotency-key <key>` | string | no | — | <key> |
+| `--dry-run` | boolean | no | — | — |
+| `--confirm` | string | yes | — | <conversation-id> |
+
+Safety class `external-effect` · dry-run supported · confirmation required · idempotency `auto` · cache `none`.
+
+Examples:
+- Validate a reply without sending — `nitrosend inbox reply 123 --body 'Thanks, we will follow up.' --dry-run`
+
+### `nitrosend inbox action <action-item-id> <mark-handled\|request-human\|release-to-agent\|mark-quarantine> [--idempotency-key <key>]`
+
+Apply a handled, human, agent, or quarantine disposition to a queue item.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--idempotency-key <key>` | string | no | — | <key> |
+
+Safety class `mutating` · dry-run not supported · confirmation not required · idempotency `auto` · cache `none`.
+
+Examples:
+- Mark a queue item handled — `nitrosend inbox action 456 mark-handled`
+
+### `nitrosend inbox triage <mark-handled\|request-human\|release-to-agent\|mark-quarantine\|classify-spam\|classify-not-spam> (--ids <id,id,...> \| [--state <state>] [--inbox-id <id>] [--query <text>] [--sender <text>] [--reason-code <code>] [--since <iso8601>] --expected-count <n>) [--idempotency-key <key>]`
+
+Apply one disposition to many queue items, by id list or by the same filters as inbox queue.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--ids` | string | no | — | <id,id,...> |
+| `--state <state>` | string | no | — | <state> |
+| `--inbox-id <id>` | string | no | — | <id> |
+| `--query <text>` | string | no | — | <text> |
+| `--sender <text>` | string | no | — | <text> |
+| `--reason-code <code>` | string | no | — | <code> |
+| `--since <iso8601>` | string | no | — | <iso8601> |
+| `--expected-count` | string | no | — | <n> |
+| `--idempotency-key <key>` | string | no | — | <key> |
+
+Safety class `mutating` · dry-run not supported · confirmation not required · idempotency `auto` · cache `none`.
+
+Examples:
+- Handle three items — `nitrosend inbox triage mark-handled --ids 12,15,19`
+- Confirm all quarantined spam — `nitrosend inbox triage classify-spam --state quarantine --reason-code spam_fail --expected-count 17`
+
+## MCP
+
+### `nitrosend mcp initialize [--json]`
+
+Initialize MCP handshake.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Initialize MCP handshake. — `nitrosend mcp initialize`
+
+### `nitrosend mcp tools list [--json]`
+
+List MCP tools.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List MCP tools. — `nitrosend mcp tools list`
+
+### `nitrosend mcp tools call <name> [--args '{...}']`
+
+Call an MCP tool.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--args` | string | no | — | '{...}' |
+
+Safety class `external-effect` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Call an MCP tool. — `nitrosend mcp tools call <name> --args '{...}'`
+
+### `nitrosend mcp resources list [--json]`
+
+List MCP resources.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List MCP resources. — `nitrosend mcp resources list`
+
+### `nitrosend mcp resources read <uri>`
+
+Read an MCP resource.
+
+This command takes no flags of its own.
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Read an MCP resource. — `nitrosend mcp resources read <uri>`
+
+### `nitrosend mcp prompts list [--json]`
+
+List MCP prompts.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- List MCP prompts. — `nitrosend mcp prompts list`
+
+### `nitrosend mcp prompts get <name> [--args '{...}']`
+
+Get an MCP prompt.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--args` | string | no | — | '{...}' |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Get an MCP prompt. — `nitrosend mcp prompts get <name> --args '{...}'`
+
+## Agent
+
+### `nitrosend approve <token>`
+
+Approve a pending agent operation token.
+
+This command takes no flags of its own.
+
+Safety class `external-effect` · dry-run not supported · confirmation not required · idempotency `auto` · cache `none`.
+
+Examples:
+- Approve a token — `nitrosend approve tok_...`
+
+### `nitrosend reject <token>`
+
+Reject a pending agent operation token.
+
+This command takes no flags of its own.
+
+Safety class `external-effect` · dry-run not supported · confirmation not required · idempotency `auto` · cache `none`.
+
+Examples:
+- Reject a token — `nitrosend reject tok_...`
+
+## Fixtures
+
+### `nitrosend fixture destroy <name> --confirm <name>`
+
+Exercise destructive safety UX without touching live Nitrosend data.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--confirm` | string | yes | — | <name> |
+
+Safety class `destructive` · dry-run supported · confirmation required · idempotency `auto` · cache `none`.
+
+Examples:
+- Preview fixture destruction — `nitrosend fixture destroy demo --dry-run`
+
+## Release
+
+### `nitrosend version [--json]`
+
+Show CLI version and runtime details.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Show version details — `nitrosend version --json`
+
+### `nitrosend update [--json]`
+
+Show update guidance for the installed CLI.
+
+| Flag | Type | Required | Allowed values | Description |
+|---|---|---|---|---|
+| `--json` | boolean | no | — | — |
+
+Safety class `read` · dry-run not supported · confirmation not required · idempotency `none` · cache `none`.
+
+Examples:
+- Show update command — `nitrosend update`
+
+## Coverage
+
+This page covers 37 commands and 91 per-command flags, plus 15 global options. 29 commands take at least one flag.
+
+6 of the 91 per-command flags carry a description of their own. 69 carry only their value placeholder as the description, and 16 carry no description at all, so `--help` and this page can show their type but not what they do:
+
+- `--no-browser` (`boolean`) on `login`
+- `--password-stdin` (`boolean`) on `signup`
+- `--json` (`boolean`) on `whoami`
+- `--json` (`boolean`) on `status`
+- `--dry-run` (`boolean`) on `send`
+- `--json` (`boolean`) on `contacts import`
+- `--dry-run` (`boolean`) on `inbox reply`
+- `--json` (`boolean`) on `describe`
+- `--json` (`boolean`) on `recent`
+- `--explain` (`boolean`) on `redo`
+- `--json` (`boolean`) on `version`
+- `--json` (`boolean`) on `update`
+- `--json` (`boolean`) on `mcp initialize`
+- `--json` (`boolean`) on `mcp tools list`
+- `--json` (`boolean`) on `mcp resources list`
+- `--json` (`boolean`) on `mcp prompts list`
+
+Flag descriptions live in the command descriptors in `@nitrosend/cli`; adding one there is what makes it appear here and in `nitrosend <command> --help`.
