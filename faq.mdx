@@ -91,17 +91,17 @@ Ask your agent: "Using Nitrosend, prepare my sending address with the name [addr
 If your DNS is on one of the big hosts, yes. Hit one-click DNS setup, authorise, and we write the records for you. Works with GoDaddy, Namecheap, Cloudflare, Route 53 and more. Anyone else gets the exact records to paste.
 
 ### Should I send from my main domain?
-Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify it under Settings, then Domains, then set your From address under Brand, then Sender. Your own domain is better for reaching the inbox: it avoids shared `nitrosend.net` pacing and builds its own sender reputation, while your plan allowance and other sending limits still apply. See [sending domains](/guides/sending-domains#use-your-nitrosend-address).
+Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify it under Settings, then Domains, then set your From address under Brand, then Sender. Add the DNS records Nitrosend supplies, including any for your visible From domain, and leave the MX records for your existing inbox provider, such as Google Workspace, Microsoft 365 or Zoho, as they are. Your own domain is better for reaching the inbox: it avoids shared `nitrosend.net` pacing and builds its own sender reputation, while your plan allowance and other sending limits still apply. See [sending domains](/guides/sending-domains#use-your-nitrosend-address).
 
 ```text
 Ask your agent: "Using Nitrosend, check the setup for [sending subdomain] and show me the DNS records and sender settings I need."
 ```
 
 ### How do I move from my Nitrosend address to my own domain?
-Verify your domain under Settings, then Domains. If live or paused flows use your current sender, ask support to update those flows before switching the brand sender; people already in a flow keep the previous sender, while new entrants get the new one. Otherwise, set the new From address under Brand, then Sender. Tracked links in new emails use the sending domain once its tracking DNS and HTTPS checks pass.
+Verify your domain under Settings, then Domains, then move any live or paused flows that use your current sender: in each email step's delivery settings, choose the new domain under From domain and save the flow, or ask your agent to switch the steps to your new address. Saving publishes the change once the flow's checks pass; if the flow says your latest change isn't live yet, follow the steps it shows. People already in a flow finish with the previous sender, while new entrants get the new one. Once those changes are published and any active campaigns or outstanding emails from the old address have finished, set the new From address under Brand, then Sender. Tracked links in new emails use the sending domain once its tracking DNS and HTTPS checks pass.
 
 ```text
-Ask your agent: "Raise a Nitrosend support ticket to switch my brand sender and my live or paused flows to [address], keeping everyone's place in each flow."
+Ask your agent: "Using Nitrosend, switch every email step in my live and paused flows to [address], keeping their content, timing and status, and save each flow. Confirm each change is published before setting [address] as my brand sender."
 ```
 
 ### Can I email my whole list on day one?
@@ -212,7 +212,7 @@ Ask your agent: "Using Nitrosend, build a segment of contacts who opened an emai
 ```
 
 ### What should I check before a flow sends?
-Check that the flow is live, the contact is subscribed and the event matches its trigger. Each email step must use a From address authorised by a domain verified for that brand. Update any mismatched sender and republish the flow so the live version uses the change.
+Check that the flow is live, the contact is subscribed and the event matches its trigger. Each email step must use a From address authorised by a domain verified for that brand. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
 
 ```text
 Ask your agent: "Check flow [name] in Nitrosend: its live status, the contact's subscription status, the matching trigger event and the From address on each email step."
@@ -249,7 +249,7 @@ Ask your agent: "Using Nitrosend, make a short GIF from [video], use it as my ne
 ## Sends that pause, hold or stall
 
 ### How do I check why a send is waiting?
-Ask your agent to check the send's current status and explain the next step. A send may be waiting for plan allowance or a review. For "Waiting for plan allowance", remaining messages continue automatically as capacity becomes available; follow the review instructions for other notices.
+Ask your agent to check the send's current status and explain the next step. A send may be waiting for plan allowance, new-account capacity or a review. For "Waiting for plan allowance" and "Waiting for new-account sending capacity", remaining messages continue automatically as capacity becomes available; follow the review instructions for other notices.
 
 ```text
 Ask your agent: "Check why Nitrosend campaign [name] is waiting. Explain the current status, any retry guidance and what action I need to take."
@@ -267,6 +267,13 @@ Your account has a monthly email allowance and a rolling 24-hour recipient allow
 
 ```text
 Ask your agent: "Show my remaining Nitrosend monthly and rolling 24-hour allowances, and explain when campaign [name] can continue."
+```
+
+### What does "New-account sending capacity is in use" mean?
+New accounts share a sending allowance while they build delivery history, so a campaign can go out gradually in batches, and the rest waits until capacity frees up. Campaigns show this as "Waiting for new-account sending capacity", and queued email is retried automatically as capacity becomes available, so don't resend it or create a duplicate campaign. Upgrading or connecting your own email provider doesn't remove this limit. Your account moves past it as your sender standing builds, from evidence such as a verified sending domain of your own, a verified list and clean sends to engaged contacts; see [Waiting for plan allowance](#what-does-waiting-for-plan-allowance-mean) for how standing works.
+
+```text
+Ask your agent: "Check Nitrosend campaign [name]: how many messages have sent, how many are still queued and what the current status requires."
 ```
 
 ### What should I do when sending is paused for a high bounce rate?
@@ -337,7 +344,7 @@ On the Free plan your emails carry the Nitrosend badge, whether they come from a
 ## Teams and agencies
 
 ### Can my team share an account?
-Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats.
+Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats. To accept an invitation, sign out of Nitrosend first, then open the invitation link. Sign in with the email address the invitation was sent to, or choose Create a free account on that page and verify your email.
 
 ### How can an agency set up and hand over a client account?
 Use the Clients page to create the client's account, and ask support if you need access to that page. Build their brand kit, domain and flows before choosing Invite owner to invite them. The client owns and pays for the account and can remove your access at any time. Choose Release when your work ends. Give clients who need their own login a separate account, because team members invited to your agency account can see all its brands.
