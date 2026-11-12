@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx sourcey build",
+  "buildCommand": "npx sourcey build && node scripts/inject-qa.js && node scripts/verify-qa-injection.mjs",
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "cleanUrls": true,
