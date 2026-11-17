@@ -227,6 +227,18 @@ send with its unchanged payload and idempotency key. For a custom threaded
 transactional message, enclose the returned ID in angle brackets (if needed) in `In-Reply-To`
 and include it in `References`.
 
+One message read through `nitro_query` by its `id`, or by its send's key with
+`filters: { idempotency_key: "..." }`, also returns what was sent: the key,
+`from_email`, `from_name`, `reply_to`, `in_reply_to`, `references` and the
+plain-text `body`. A key no send used returns no items. Agents use it to check
+a send against what they approved, or to find a send whose answer was lost.
+
+`nitro_send_message` also takes `unless_inbound_since`, an RFC 3339 time. An
+email isn't sent when its recipient has written to the Brand since then: the
+tool returns `inbound_since` with that reply's `message_id` and `received_at`,
+and keeps nothing. Read their message first. A retry under a key that already
+sent still returns the original message.
+
 Every send requires an idempotency key, in the `Idempotency-Key` header or the
 `idempotency_key` field; without one the request returns
 `400 idempotency_key_required`. Give each message its own stable key and reuse
@@ -256,6 +268,17 @@ source feedback event.
 
 Common filters include `email`, `reason`, `source_provider`, and `active=false`
 for expired suppressions.
+
+Each suppression says what it stops in `blocks`. `marketing` is an unsubscribe
+or withheld marketing consent: it stops campaigns, flows and outreach, not
+transactional mail. `all` is every other reason, and stops transactional mail
+too.
+
+Agents can ask what would stop the connected Brand's mail to one address with
+`nitro_query`, `entity: "suppressions"` and
+`filters: { email: "...", blocking: true }`. It returns the active suppressions
+a send from that Brand meets: Nitrosend-wide ones, the account's, and the
+Brand's own. Another Brand's suppressions are left out.
 
 ## Delivery capacity
 
