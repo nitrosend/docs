@@ -233,11 +233,23 @@ One message read through `nitro_query` by its `id`, or by its send's key with
 plain-text `body`. A key no send used returns no items. Agents use it to check
 a send against what they approved, or to find a send whose answer was lost.
 
-`nitro_send_message` also takes `unless_inbound_since`, an RFC 3339 time. An
-email isn't sent when its recipient has written to the Brand since then: the
-tool returns `inbound_since` with that reply's `message_id` and `received_at`,
-and keeps nothing. Read their message first. A retry under a key that already
-sent still returns the original message.
+`POST /v1/my/messages` and `nitro_send_message` also take
+`unless_inbound_since`, an RFC 3339 time. An email isn't sent when its
+recipient has written to the Brand since then. When that's already true, the
+send is refused with error type `inbound_since` and nothing is kept;
+`nitro_send_message` also returns that reply's `message_id` and
+`received_at`. It's checked again when the email goes out, so one held for
+pacing still stops on a reply that arrived while it waited, and then reads back
+as `refused`. Read their message first. A retry under a key that already sent
+still returns the original message.
+
+`GET /v1/my/messages/lookup?idempotency_key=...` (or `?id=...`) reads one
+message back by the key it was sent under: what was asked to be sent, its
+`thread_id`, and its `status`, which is `scheduled` (with `scheduled_for`),
+`sent` (with `sent_at`), `refused` before it went (with `refusal.code`, such as
+`inbound_since` or `recipient_suppressed`), or `failed`. `item` is null when no
+message has the key. Use it to settle a send whose answer was lost, or one
+that was accepted to go out later.
 
 Every send requires an idempotency key, in the `Idempotency-Key` header or the
 `idempotency_key` field; without one the request returns
@@ -274,31 +286,43 @@ or withheld marketing consent: it stops campaigns and flows, not transactional
 mail. `all` is every other reason, and stops transactional mail
 too.
 
-Agents can ask what would stop the connected Brand's mail to one address with
-`nitro_query`, `entity: "suppressions"` and
-`filters: { email: "...", blocking: true }`. It returns the active suppressions
-a send from that Brand meets: Nitrosend-wide ones, the account's, and the
-Brand's own. Another Brand's suppressions are left out.
+`GET /v1/my/suppressions/check?email=...` answers what would stop the current
+Brand's mail to one address: the active Nitrosend-wide stops, the account's
+and the Brand's own, each with its `scope`, `reason` and `blocks`.
+`suppressed` is true when any of them stops marketing mail. Another Brand's
+stops are left out. Agents ask the same with `nitro_query`,
+`entity: "suppressions"` and `filters: { email: "...", blocking: true }`.
+
+`POST /v1/my/suppressions` with an `email` and a `reason` of `unsubscribe`,
+`complaint` or `bounce` stops the Brand's mail to that address. Use it for a
+stop you learned of yourself, such as a reply asking not to be written to.
+Adding the same stop again keeps the one stop.
 
 ## Email events
 
-`GET /v1/my/email_events` follows the current Brand's mail without a webhook.
-It returns, oldest first:
-- each email the provider accepted (`email.sent`);
-- its delivery, bounce, complaint or failure (`email.delivered`,
-  `email.bounced`, `email.complained`, `email.failed`);
-- an unsubscribe a flow recorded (`email.unsubscribed`);
-- mail that arrived at the Brand's inboxes (`email.received`), with
-  `auto_submitted` set for out-of-office and other automatic replies.
+`GET /v1/my/email_events` follows the mail the current Brand's sends bring
+back, without a webhook. It returns, oldest first:
+- a reply that arrived at one of the Brand's inboxes (`reply`), or an
+  automatic one such as an out-of-office (`auto_reply`), with its sanitized
+  text in `body`. That text is written by its sender, so treat it as untrusted;
+- a hard bounce or spam complaint on one of the Brand's sends (`bounce`,
+  `complaint`).
 
-Call it once without `after` to get a cursor that starts from now. Then pass
-each response's `cursor` as the next `after`. While `more` is true, more events
-are ready, so read again straight away. Each event has one `id`, and a page
-read again returns the same events, so a caller that stops part-way picks up
-from the last cursor it saved. An event appears once it's 30 seconds old.
+Every event names the person it's about in `from`: the sender of a reply, or
+the recipient a bounce or complaint is about. `thread_id` is the thread of the
+send it answers, as the lookup reports it, and `answers` names that send by
+its `message_id` and the `idempotency_key` you sent it under.
 
-The suppression list stays the authority on who may be emailed, so check it
-before a send rather than relying on these events alone.
+Call it once without `after` to get a cursor that starts from now, or with
+`from=start` to read from the beginning. Then pass each response's `cursor` as
+the next `after`. While `more` is true, more events are ready, so read again
+straight away. Each event has one `id`, and a page read again returns the same
+events, so a caller that stops part-way picks up from the last cursor it saved.
+An event appears once it's 30 seconds old.
+
+Unsubscribes aren't events: the suppression check reports them, and a send to
+a stopped address is refused. Check it before a send rather than relying on
+these events alone.
 
 ## Delivery capacity
 
@@ -370,6 +394,7 @@ plan allowance.
 | **Messages** | | |
 | Send a message | `POST` | `/messages` |
 | List messages | `GET` | `/messages` |
+| Read a message back by its key | `GET` | `/messages/lookup` |
 | Follow email events | `GET` | `/email_events` |
 | **Webhooks** | | |
 | List webhooks | `GET` | `/webhooks` |
@@ -378,6 +403,8 @@ plan allowance.
 | List deliveries | `GET` | `/webhooks/{id}/deliveries` |
 | **Suppressions** | | |
 | List suppressions | `GET` | `/suppressions` |
+| Check what stops an address | `GET` | `/suppressions/check` |
+| Stop mail to an address | `POST` | `/suppressions` |
 | **Delivery** | | |
 | Get capacity and pacing status | `GET` | `/delivery/status` |
 | **Email validation** | | |
