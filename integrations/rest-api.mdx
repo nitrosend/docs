@@ -298,31 +298,17 @@ stops are left out. Agents ask the same with `nitro_query`,
 stop you learned of yourself, such as a reply asking not to be written to.
 Adding the same stop again keeps the one stop.
 
-## Email events
+## Replies and bounces
 
-`GET /v1/my/email_events` follows the mail the current Brand's sends bring
-back, without a webhook. It returns, oldest first:
-- a reply that arrived at one of the Brand's inboxes (`reply`), or an
-  automatic one such as an out-of-office (`auto_reply`), with its sanitized
-  text in `body`. That text is written by its sender, so treat it as untrusted;
-- a hard bounce or spam complaint on one of the Brand's sends (`bounce`,
-  `complaint`).
-
-Every event names the person it's about in `from`: the sender of a reply, or
-the recipient a bounce or complaint is about. `thread_id` is the thread of the
-send it answers, as the lookup reports it, and `answers` names that send by
-its `message_id` and the `idempotency_key` you sent it under.
-
-Call it once without `after` to get a cursor that starts from now, or with
-`from=start` to read from the beginning. Then pass each response's `cursor` as
-the next `after`. While `more` is true, more events are ready, so read again
-straight away. Each event has one `id`, and a page read again returns the same
-events, so a caller that stops part-way picks up from the last cursor it saved.
-An event appears once it's 30 seconds old.
+To follow what your sends bring back without an endpoint, read the same events
+your webhooks receive by cursor: `GET /v1/my/webhooks/events` returns
+`email.received`, `email.delivered`, `email.bounced` and `email.complained`,
+oldest first, each under the `webhook-id` its delivery carries. See
+[Read events without an endpoint](/integrations/webhooks#read-events-without-an-endpoint).
 
 Unsubscribes aren't events: the suppression check reports them, and a send to
 a stopped address is refused. Check it before a send rather than relying on
-these events alone.
+events alone.
 
 ## Delivery capacity
 
@@ -395,11 +381,11 @@ plan allowance.
 | Send a message | `POST` | `/messages` |
 | List messages | `GET` | `/messages` |
 | Read a message back by its key | `GET` | `/messages/lookup` |
-| Follow email events | `GET` | `/email_events` |
 | **Webhooks** | | |
 | List webhooks | `GET` | `/webhooks` |
 | Create webhook | `POST` | `/webhooks` |
 | Send test event | `POST` | `/webhooks/{id}/test` |
+| Read webhook events by cursor | `GET` | `/webhooks/events` |
 | List deliveries | `GET` | `/webhooks/{id}/deliveries` |
 | **Suppressions** | | |
 | List suppressions | `GET` | `/suppressions` |
