@@ -18,7 +18,7 @@ Flows are event-driven automation sequences. When a trigger fires, the flow exec
 
 Flows support multiple step types that can be chained together:
 
-- **Send Email / SMS** — deliver a message
+- **Email / SMS**: deliver a message (SMS is in limited release and not yet on for every account)
 - **Wait** — pause for a duration, optionally continuing at a chosen local time
 - **Condition** — branch the flow based on contact data or behavior
 - **Emit event** — record the next business event
@@ -53,7 +53,7 @@ REST, MCP, the SDK and CLI use the same flow definition. For example:
 }
 ```
 
-Use the existing compose-flow tool or flows API. Drafting doesn't send. Category keys are stable snake_case handles; every named branch and `other` must be present, even when empty. Changes apply to future enrollments; existing journeys keep their approved revision.
+Use the existing compose-flow tool or flows API. Drafting doesn't send. Saving a live or paused flow publishes the change: agent saves through `nitro_compose_flow` publish automatically, and through REST you send `publish: true` with the flow update. `saves_publish` on a flow says whether a save will publish, and `unpublished_change` reports a saved change that isn't live yet and why. Category keys are stable snake_case handles; every named branch and `other` must be present, even when empty. Changes apply to future enrollments; existing journeys keep their approved revision.
 
 ## Flow states
 

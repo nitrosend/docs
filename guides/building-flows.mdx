@@ -13,18 +13,28 @@ A flow starts with a **trigger** — an event that kicks off the automation. The
 
 ## Creating a flow
 
-1. Go to **Flows > New Flow** ([app.nitrosend.com/my/flows/new](https://app.nitrosend.com/my/flows/new))
+1. Go to **Flows > New flow** ([app.nitrosend.com/my/flows/new](https://app.nitrosend.com/my/flows/new))
 2. Choose a trigger (e.g., "New contact", "Add to list")
 3. Add steps using the visual flow editor
-4. Activate the flow
+4. Choose **Go Live**
+
+## Working on the canvas
+
+- **Add a step**: click a step in **Add steps**, use the **+** between two steps, or drag a step onto any **Drop here** target. Drag a step already on the canvas to move it.
+- **Edit a step**: select it and its settings open in the panel beside the canvas, with **Duplicate** and **Delete step** at the bottom.
+- **Zoom and pan**: use the zoom control at the top right of the canvas (25% to 150%, or **Fit width**), hold Cmd or Ctrl and scroll, or pinch on a trackpad. Drag empty canvas to move around a large flow.
+- **Make room**: hide Add steps or the step panel with their toggles.
+
+On a phone, a flow opens as a summary with **Go Live** and **Edit** on each email step. Steps and timing are edited on a computer.
 
 ## Step types
 
-- **Send Email** — send a template to the contact
-- **Send SMS** — send a text message
+- **Email**: send an email to the contact
+- **SMS** (limited release, not yet on for every account): send a text message
 - **Wait** — pause for a duration (e.g., 2 days)
-- **Condition** — branch based on contact properties or behavior
-- **Emit event** — record a business event
+- **Split**: branch on a condition. It can read contact properties, behavior, or the data on the event that started this run of the flow. Under **Current event**, pick one of the trigger event's fields, such as the order total on an `order_placed` trigger. Contacts who match go down Yes; everyone else goes down No
+- **Emit event**: record a business event. Another flow can use it as its trigger, so one flow can hand off to the next
+- **Webhook**: call an external URL with POST, PUT or PATCH
 - **Categorize reply** — route a received reply into your named paths, plus Other
 - **Random split** (beta, not yet on for every account): send each contact down one of two to six weighted paths at random, and keep them on it if they come back. A flow can have one. Its panel shows each path's people, opens and clicks so far
 - **Reply to email** — send a reply you've written in the original conversation
@@ -34,6 +44,12 @@ A flow starts with a **trigger** — an event that kicks off the automation. The
 
 Use **Test** to send a message to your approved test recipients before activating.
 Testing an email does not enroll a customer or simulate an entire journey.
+
+## Editing a live flow
+
+Saving a change to a live or paused flow publishes it. The flow keeps its status: a live flow stays live, and a paused flow runs the new version when you resume it. People already in the flow finish on the version they started with, and new entrants get your change.
+
+Every save runs the same checks as going live. If a check holds the change back, your edit is saved, the earlier version keeps running, and the flow shows **Change not live** with the reason and the fix. With Safe Mode on, a change saved by an agent waits for the account owner or an admin to publish it.
 
 ## Handle replies
 
@@ -52,7 +68,9 @@ needs repair, fix it and use **Resume follow-ups** to review the retained work.
 Reconnect never releases old follow-ups by itself. See [Replies in flows](/concepts/flows)
 for source selection, costs and recovery.
 
-**Quick preview** opens a centered viewer with desktop and mobile widths. For
+Select an email step to see a live thumbnail of its design. Choose **Preview** to
+open a centered viewer with desktop and mobile widths, and step through the
+flow's emails with Previous and Next. For
 products supplied by an event, expand **Preview event products** and paste the
 event's `data` object, not the full event envelope. The designer uses the same
 sample-data control. Previews do not record events, create orders or enroll

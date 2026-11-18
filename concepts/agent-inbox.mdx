@@ -35,10 +35,10 @@ Archiving stops new mail and replies while preserving history and reserving the 
 
 Every inbound message lands in the action queue in one of four states:
 
-- **Needs you** — a human should look at this. Mail lands here when it needs judgment: a mismatched reply-to address, a provider spam flag, or suspicious content in the body.
-- **Agent ready** — clean mail your agent can answer. Passed the applicable provider spam, authentication and content checks.
-- **Handled** — resolved items, kept as an audit trail.
-- **Quarantine** — mail that failed security checks or arrived on a disabled inbox. Quarantined mail that failed a virus check can never be released to the agent.
+- **Needs review** (`needs_human` in the API): a person should look at this. Mail lands here when it needs judgment: a mismatched reply-to address, a provider spam flag, or suspicious content in the body.
+- **Ready for agent** (`agent_ready`): clean mail your agent can answer. Passed the applicable provider spam, authentication and content checks.
+- **Done** (`handled`): resolved items, kept as an audit trail.
+- **Held** (`quarantine`): mail that failed security checks or arrived on a disabled inbox. Held mail that failed a virus check can never be released to the agent.
 
 Nitrosend uses provider spam and authentication results and checks message content for prompt-injection attempts aimed at your agent. These checks do not certify attachment safety. Flagged content is marked in the queue so a human sees exactly why an item needs attention.
 
