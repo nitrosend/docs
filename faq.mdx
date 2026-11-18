@@ -17,7 +17,7 @@ Ask your agent: "Using Nitrosend, check my account status and tell me whether se
 ```
 
 ### How do I connect Nitrosend in a managed Claude workspace?
-Your workspace administrator controls which connectors are available. If Nitrosend needs approval or Add custom connector is greyed out, ask your administrator to approve the connection or enable custom connectors. Once access is enabled, follow the connection steps again.
+Your workspace administrator controls which connectors are available. If Nitrosend needs approval or Add custom connector is grayed out, ask your administrator to approve the connection or enable custom connectors. Once access is enabled, follow the connection steps again.
 
 ### Do I need to understand MCP?
 No. MCP is just the plug standard that lets your agent talk to Nitrosend. If you can paste a URL, you're qualified.
@@ -53,7 +53,7 @@ Ask your agent: "Using Nitrosend, show me the dashboard steps for [task] and exp
 ```
 
 ### Will my agent send emails without asking me?
-Campaigns and flows your agent builds start as drafts. Safe Mode is off by default, so a connected agent can send a campaign or take a flow live without a separate approval. Turn on Safe Mode in Settings > Account and an agent's email campaign waits for an owner or admin to approve its exact content and audience, and agents can't take flows live. Test sends, transactional messages and inbox email aren't held. Unsubscribes stop all marketing email, and suppressions, trust checks and delivery controls still apply.
+New campaigns and flows your agent builds start as drafts. Safe Mode is off by default, so a connected agent can send a campaign, take a flow live or change a live flow without a person approving it. When an owner or admin turns on Safe Mode in Settings > Account, an agent's email campaign waits for an owner or admin to approve its exact content and audience. Campaigns with merge tags and SMS campaigns are refused, and only a person can take a flow live or publish an agent's changes to one. Test sends, transactional messages, inbox email and anything a person sends in Nitrosend, NitroLLM included, aren't held. Flows already live keep sending, and a campaign scheduled before Safe Mode went on still goes out. Unsubscribes still stop marketing email brand by brand, and suppressions, trust checks and delivery controls still apply.
 
 ## Domains and deliverability
 
