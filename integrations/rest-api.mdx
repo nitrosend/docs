@@ -340,6 +340,8 @@ plan allowance.
 | Quote validation | `POST` | `/validation_operations/quote` |
 | Start or resume validation | `POST` | `/validation_operations` |
 | Get validation operation | `GET` | `/validation_operations/{id}` |
+| Include unconfirmed addresses in sends | `POST` | `/validation_operations/{id}/keep_unconfirmed` |
+| Leave unconfirmed addresses out of sends | `POST` | `/validation_operations/{id}/exclude_unconfirmed` |
 | List validation results | `GET` | `/validation_operations/{id}/items` |
 | **Events** | | |
 | Track a contact event | `POST` | `/events` |

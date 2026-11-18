@@ -18,7 +18,6 @@ These are the top-level areas, in the order they appear.
 | Term | What it is |
 | --- | --- |
 | **Home** | The dashboard landing screen: recent sending, quick stats, and what needs attention. |
-| **Setup** | A checklist that walks you through getting an account ready to send. It shows a percentage, moves down the sidebar as you progress, and disappears once complete. See [Setup Center](#setup-center). |
 | **Campaigns** | One-time sends to a chosen audience — a newsletter, an announcement, a reminder. More in [Campaigns](/concepts/campaigns). |
 | **Flows** | Automated sequences that run on a trigger rather than on a date, like a welcome series. More in [Flows](/concepts/flows). |
 | **Templates** | Reusable email designs you can start a campaign or flow step from. Carries a **New** chip. More in [Templates](/concepts/templates). |
@@ -32,27 +31,25 @@ These are the top-level areas, in the order they appear.
 | **Learning Center** | Guides and walkthroughs inside the app. |
 | **Affiliates** | Your referral dashboard. Only appears if you are on the affiliate program. |
 
-### Brand switcher
+### Account menu and brand switcher
 
-The brand selector in the sidebar footer changes which brand you are working in. Brand-scoped areas — including campaigns, contacts, templates and Settings — follow the brand you have selected.
+The tile at the top right of the dashboard shows the brand you are in. Open it to see your name and plan, every brand you can work in, **Add brand** and **Account settings**. Choosing a brand switches to it and opens that brand's Home. Brand-scoped areas, including campaigns, contacts, templates and Settings, follow the brand you have selected.
 
 ### Setup Center
 
-The **Setup** entry, expanded. Five steps, tracked as a percentage:
+Setup is the full-screen flow a new brand opens on. It has three steps:
 
-- Set up your Brand Kit
-- Verify your sending domain
-- Choose your plan
-- Connect your AI agent
-- Import your subscribers
+- **Brand Kit**: your logo, colors and voice, read from your website
+- **Contacts**: bring in your list
+- **First email**: your first send to real contacts
 
-Setup moves around on purpose: it sits above Home while you are getting started, drops to the bottom of the sidebar once the essentials are done, and disappears once everything is complete.
+Start from your website and Nitrosend builds your Brand Kit, writes a welcome email in your brand and sends it only to you. Or pick your agent under "Already use an AI agent? Start there instead" to connect it and hand it the first job. **Save and exit** leaves at any point, and Home shows a **Finish setup** bar listing what is left until setup is complete.
 
 ## Account, brand, plan
 
 **Account** is the thing that gets billed and that people log into. **Brand** sits inside an account: a separate sending identity with its own logo, colors, sending domain, contacts and campaigns. One account can hold several brands, which is how agencies keep clients apart.
 
-Your **plan** is shown beside your account name: **Free**, **Starter**, **Pro**, **Growth**, **Scale**, or a custom **Enterprise** package. It determines your included usage and account capacity. [Pricing](/pricing) lists current packages; Billing shows your actual price and allowances.
+Your **plan** is shown under your name in the account menu: **Free**, **Starter**, **Pro**, **Growth**, **Scale**, or a custom **Enterprise** package. It determines your included usage and account capacity. [Pricing](/pricing) lists current packages; Billing shows your actual price and allowances.
 
 ## Audiences: contacts, lists, segments and saved views
 
@@ -88,20 +85,22 @@ Both share the same status words:
 - `cancelled` — stopped and not resumable.
 - `archived` — filed away, out of your normal lists.
 
-A flow you have edited but not yet published shows **unpublished changes** next to its status, meaning what is running is not what you are looking at. **Go Live** is the button that publishes and starts it.
+**Go Live** publishes a draft flow and starts it. After that, saving a live or paused flow publishes the change: new entrants get the new version and people already in the flow finish on the version they entered. If a saved change can't be published yet, the flow shows **Change not live** with the reason, and keeps running its previous version until you fix it.
+
+A campaign that closed after reaching only part of its audience shows **Partially sent**, with how many were sent and why. A send that can still be resumed keeps its paused status instead.
 
 Campaign content locks once a campaign has sent, though you can always rename it. [Campaigns](/concepts/campaigns) covers exactly what stays editable at each status.
 
 ### Flow steps
 
-Inside a flow, each box on the canvas is a **step**, added from **Add step**. Steps are grouped under two headings, **Actions** (things that happen) and **Logic** (things that control what happens next).
+Inside a flow, each box on the canvas is a **step**, added from the **Add steps** panel or the **+** between steps. Steps are grouped under two headings, **Actions** (things that happen) and **Logic** (things that control what happens next).
 
 Actions:
 
 | Step | What it does |
 | --- | --- |
 | **Email** | Sends an email. |
-| **SMS** | Sends a text message. Greyed out until the brand has a sending number. |
+| **SMS** | Sends a text message. SMS is in limited release and not yet on for every account; it also needs a sending number on the brand. |
 | **Subscribe** | Opts the contact in. |
 | **Unsubscribe** | Opts the contact out. |
 | **Webhook** | Calls an external URL from the flow. Not the same as [event webhooks](/integrations/webhooks), which Settings manages. |
@@ -230,11 +229,11 @@ The headline numbers:
 
 The [Agent Inbox](/concepts/agent-inbox) sorts incoming replies into five tabs:
 
-- **Needs you** — a human has to answer this.
-- **Agent ready** — your AI agent has drafted a reply and is waiting for you to approve it.
-- **Handled** — dealt with, by you or by the agent.
-- **Quarantine** — held back as suspicious.
-- **All threads** — everything, unfiltered.
+- **Needs review**: a person should look at this before your agent does.
+- **Ready for agent**: clean mail your agent can pick up. You can also reply yourself.
+- **Done**: dealt with, by you or by the agent.
+- **Held**: kept from your agent as suspicious.
+- **All threads**: everything, unfiltered.
 
 An individual item can also carry a **Needs a human** tag, marking that one message as something the agent should not answer on its own.
 

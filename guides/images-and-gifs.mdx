@@ -12,6 +12,18 @@ also use **Use direct URL** if the image is already hosted at a public link.
 Uploads must be under 10 MB, no more than 4,000 pixels on either side, and no
 more than 16 million pixels in total. SVG files are not supported.
 
+In the dashboard, you can also attach up to four images to a NitroLLM message with the paperclip, or paste or drop them in. They are saved to your image library, so you can reuse them in any email.
+
+## Images must be reachable
+
+Nitrosend checks emails before they go out. If that check can't load an image, the send stops, and the message names the image and how to fix it. The usual causes are:
+
+- a broken link, or an image that has since been removed
+- a relative path such as `/assets/logo.png` instead of a full link
+- a file behind a login, or a link that only works inside another app
+
+Upload the image to Nitrosend or use a full public `https://` link, then send again. Your agent gets the same detail from `nitro_send_message`, test sends and flow checks.
+
 ## Animated GIFs
 
 Animated GIFs work everywhere you build email in Nitrosend: in the editor, from

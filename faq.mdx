@@ -10,7 +10,7 @@ Quick answers to what people ask most about Nitrosend. Where an agent prompt hel
 ## Getting connected
 
 ### How do I connect Claude or another agent to Nitrosend?
-In Claude, open Settings, then Connectors, search for Nitrosend and choose Connect. For Claude Code, install the Nitrosend plugin from the marketplace. For ChatGPT, Cursor or a custom connection, follow the instructions in your [Setup Center](https://app.nitrosend.com/my/setup?step=agent). Then ask your agent to check your Nitrosend status.
+In Claude, open Settings, then Connectors, search for Nitrosend and choose Connect. For Claude Code, install the Nitrosend plugin from the marketplace. For ChatGPT, Cursor or a custom connection, follow the instructions on the [agent setup screen](https://app.nitrosend.com/my/setup?step=agent). Then ask your agent to check your Nitrosend status.
 
 ```text
 Ask your agent: "Using Nitrosend, check my account status and tell me whether setup is complete."
@@ -71,7 +71,7 @@ Ask your agent: "Check my Nitrosend sending domain and compare each published DN
 ```
 
 ### What should I do if my domain is already in use?
-A domain can belong to one Nitrosend account, so check whether you previously registered with another email address. Sign in to that account or contact support for help resolving duplicate accounts and domain access. Invite colleagues through the Team page to share the existing account.
+A domain can belong to one Nitrosend account, so check whether you previously registered with another email address. Sign in to that account, or choose **Raise with the team** on the message: it opens the request in NitroLLM, and confirming it there sends it to Nitrosend support. If the domain is on another brand in your own account, switch to that brand instead. Invite colleagues through the Team page to share the existing account.
 
 ### Why can I receive a spam-complaint warning when my dashboard shows few complaints?
 Inbox providers report complaints differently, so the dashboard does not represent every spam report. A low displayed count alone does not establish a healthy sending audience. Focus on subscribed contacts who have engaged recently, hold back never-engaged contacts and make unsubscribing easy.
@@ -88,7 +88,7 @@ Ask your agent: "Using Nitrosend, prepare my sending address with the name [addr
 ```
 
 ### Is there really one-click DNS setup?
-If your DNS is on one of the big hosts, yes. Hit one-click DNS setup, authorise, and we write the records for you. Works with GoDaddy, Namecheap, Cloudflare, Route 53 and more. Anyone else gets the exact records to paste.
+If your DNS is on one of the big hosts, yes. Hit one-click DNS setup, authorize, and we write the records for you. Works with GoDaddy, Namecheap, Cloudflare, Route 53 and more. Anyone else gets the exact records to paste.
 
 ### Should I send from my main domain?
 Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify it under Settings, then Domains, then set your From address under Brand, then Sender. Add the DNS records Nitrosend supplies, including any for your visible From domain, and leave the MX records for your existing inbox provider, such as Google Workspace, Microsoft 365 or Zoho, as they are. Your own domain is better for reaching the inbox: it avoids shared `nitrosend.net` pacing and builds its own sender reputation, while your plan allowance and other sending limits still apply. See [sending domains](/guides/sending-domains#use-your-nitrosend-address).
@@ -105,10 +105,10 @@ Ask your agent: "Using Nitrosend, switch every email step in my live and paused 
 ```
 
 ### Can I email my whole list on day one?
-Start with your most engaged subscribers and build volume gradually over the first few weeks. New accounts have an initial sending allowance while they establish sending history. Ask your agent to plan the rollout around your current allowance.
+Your plan's sending allowance is available from your first send. On a new account's first large send, Nitrosend sends a first batch, checks how it lands, then continues with the rest automatically. Leading with your most engaged subscribers still gives a new sender the best start, so ask your agent to plan the rollout around your current allowance.
 
 ```text
-Ask your agent: "Plan a gradual Nitrosend rollout for my subscribed contacts, starting with the most engaged and staying within my current sending allowance."
+Ask your agent: "Plan my first Nitrosend sends for my subscribed contacts, starting with the most engaged and staying within my current sending allowance."
 ```
 
 ## Security and compliance
@@ -153,7 +153,7 @@ Ask your agent: "Show my Nitrosend suppression list with the reason for each add
 ```
 
 ### How do I delete contacts, or clear out an import?
-In Contacts, filter to the contacts you want, for example by list or tag, then select them; to include every match, tick the header box and choose Select all matching. Choose Delete and confirm the count. Deleting is permanent and removes their list memberships and events, while unsubscribes, bounces and complaints are kept, so those addresses stay blocked if you import them again. Large deletes run in the background, and the account owner gets an email when they finish.
+In Contacts, filter to the contacts you want, for example by list or tag, then select them; to include every match, tick the header box and choose Select all matching. Choose Delete and confirm the count. Deleting is permanent and removes their list memberships and events, while unsubscribes, bounces and complaints are kept, so those addresses stay blocked if you import them again. A contact that is still in use, such as one with an Inbox conversation or a list verification in progress, is kept, and the summary tells you how many were kept. Large deletes run in the background, and the account owner gets an email when they finish.
 
 ```text
 Ask your agent: "Using Nitrosend, delete the contacts in my [list name] list. Tell me how many will be deleted and wait for my confirmation."
@@ -195,7 +195,7 @@ Yes, properly. Campaigns have a full WYSIWYG editor, flows have a visual builder
 Campaigns and flows include an HTML email and a plain-text version, which you can write yourself using custom plain-text mode. For transactional messages, the API accepts a subject and body and sends your words with a minimal HTML version alongside the text version. Use campaigns or flows for marketing emails.
 
 ### Can I use a PO Box as my mailing address?
-Yes, you can use a registered PO Box instead of your home address. Add it to your Brand Kit so Nitrosend includes it in campaign and flow footers. For US CAN-SPAM requirements, use a USPS-registered PO Box or another qualifying address described in the [FTC guidance](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business). Send marketing through campaigns or flows with your sender details and unsubscribe link.
+Yes, you can use a registered PO Box instead of your home address. Add it to your Brand Kit so Nitrosend includes it in campaign and flow footers. If your Brand Kit has no address yet, Nitrosend suggests one it found on your website; nothing is saved until you confirm it. For US CAN-SPAM requirements, use a USPS-registered PO Box or another qualifying address described in the [FTC guidance](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business). Send marketing through campaigns or flows with your sender details and unsubscribe link.
 
 ```text
 Ask your agent: "Set my Nitrosend brand's mailing address to [address], then check my campaign's footer and sending readiness."
@@ -203,6 +203,9 @@ Ask your agent: "Set my Nitrosend brand's mailing address to [address], then che
 
 ### How do I turn off open or click tracking?
 Go to Brand, then Sender, then Engagement tracking, where open and click tracking have separate switches. Turning off open tracking removes the tracking pixel; turning off click tracking leaves links pointing directly to their destinations. The settings apply to emails rendered after you save. Unsubscribe links are never rewritten, and transactional messages skip click tracking. With an API key, you can also update `email_track_opens` and `email_track_clicks` through `PATCH /v1/my/brands/{sid}`.
+
+### Does Nitrosend add UTM tags to my links?
+Yes. Links to your own website in campaign and flow emails carry UTM tags, so Shopify, Google Analytics and other analytics tools credit the visit to your email. Tagging is on for every brand. Links that already have UTM tags are left as you wrote them, and links to other sites, test sends and transactional messages are never tagged. Change the source and medium, choose which domains are tagged, or turn tagging off under Brand, then Sender, then UTM tags. See [UTM tags](/guides/sending-emails#utm-tags).
 
 ### Can I see who opened or clicked my emails?
 Yes. Open any contact to see their activity timeline, with each recorded delivery, open and click and when it happened. To work with those people as a group, build a segment with the Engagement filters, such as everyone who opened in the last 3 days or everyone who clicked, and send to it. The Activity page lists recent campaigns with their sent count and open and click rates, and your agent can report a campaign's opens, clicks, bounces and unsubscribes.
@@ -212,7 +215,7 @@ Ask your agent: "Using Nitrosend, build a segment of contacts who opened an emai
 ```
 
 ### What should I check before a flow sends?
-Check that the flow is live, the contact is subscribed and the event matches its trigger. Each email step must use a From address authorised by a domain verified for that brand. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
+Check that the flow is live, the contact is subscribed and the event matches its trigger. Each email step must use a From address authorized by a domain verified for that brand. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
 
 ```text
 Ask your agent: "Check flow [name] in Nitrosend: its live status, the contact's subscription status, the matching trigger event and the From address on each email step."
@@ -230,7 +233,7 @@ Ask your agent: "Import [file] into the [list name] list in Nitrosend with Start
 ```
 
 ### How do I prepare my email for dark mode?
-Email apps can display colours differently in dark mode, so test your email in the apps and on the devices your audience uses. Choose a logo that remains readable on both light and dark backgrounds. You can set a logo for an individual email in its Header section.
+Email apps can display colors differently in dark mode, so test your email in the apps and on the devices your audience uses. Choose a logo that remains readable on both light and dark backgrounds. You can set a logo for an individual email in its Header section.
 
 ### Can I use GIFs in my emails?
 Yes. Animated GIFs work from the editor, from any connected agent (Claude, ChatGPT, Codex, Cursor and other MCP clients) and through the API, and Nitrosend keeps the animation when it hosts them. A moving hero, like an oversized headline that animates in or a product in motion, is one of the easiest ways to make an email look high end. Give your agent a public GIF link, attach the GIF in your chat, or ask an agent that can run code to make one. Put the key message in the first frame, because a few email apps and settings show only that frame. More in [Images and GIFs](/guides/images-and-gifs).
@@ -249,35 +252,37 @@ Ask your agent: "Using Nitrosend, make a short GIF from [video], use it as my ne
 ## Sends that pause, hold or stall
 
 ### How do I check why a send is waiting?
-Ask your agent to check the send's current status and explain the next step. A send may be waiting for plan allowance, new-account capacity or a review. For "Waiting for plan allowance" and "Waiting for new-account sending capacity", remaining messages continue automatically as capacity becomes available; follow the review instructions for other notices.
+Ask your agent to check the send's current status and explain the next step. A send may be waiting for plan allowance, a first-batch check, pacing or a review. For "Waiting for plan allowance" and "Checking your first batch", remaining messages continue automatically; follow the review instructions for other notices.
 
 ```text
 Ask your agent: "Check why Nitrosend campaign [name] is waiting. Explain the current status, any retry guidance and what action I need to take."
 ```
 
 ### What happens when my email is held for a safety check?
-Nitrosend checks emails before they go out. `email_under_review` means that email hasn't been sent, and the account owner gets a notice explaining what was flagged and what happens next. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or reply to the notice if you think the check got it wrong. After it's cleared, the notice tells you whether sending has started or whether you need to send it again.
+Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means that email hasn't been sent, and the account owner gets a notice explaining what was flagged and what happens next. In the dashboard, a held or refused send shows its reason with two buttons: **Ask the team** opens a ready-made request in NitroLLM, which you confirm there to send it to Nitrosend support, and **Copy the fix for your agent** gives your agent a prompt that explains what to change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or use **Ask the team** if you think the check got it wrong. After it's cleared, the notice tells you whether sending has started or whether you need to send it again. A review that is still undecided after a week can close, and Nitrosend emails you which emails it covered; change the email and send the new version for a fresh check, or reply to the notice to ask for a review.
+
+If the check can't load an image, the send stops, and the message names the image and the fix. The usual causes are a broken link, a relative path such as `/assets/logo.png` or a file behind a login; see [Images must be reachable](/guides/images-and-gifs#images-must-be-reachable).
 
 ```text
 Ask your agent: "Using Nitrosend, check the safety-review status of [email or campaign] and explain the next step before retrying any send."
 ```
 
 ### What does "Waiting for plan allowance" mean?
-Your account has a monthly email allowance and a rolling 24-hour recipient allowance based on your plan and sender standing. When a campaign reaches its rolling allowance, remaining messages continue automatically as capacity becomes available. Ask your agent for your current allowance, or see the [published plan limits](https://nitrosend.com/pricing.md). Paid monthly allowances reset on your billing date, while the Free monthly allowance resets at the start of each calendar month in UTC. Your standing builds from evidence such as a verified sending domain of your own, a verified list and a record of clean sends, and if you're migrating an established list, ask support to review your standing.
+Your account has a monthly email allowance and a daily sending limit, a rolling 24-hour recipient allowance based on your plan and sender standing. When a campaign reaches its rolling allowance, remaining messages continue automatically as capacity becomes available. On a paid plan, the daily limit is lifted once you send from a verified domain of your own and your account has Standard or Trusted standing; your monthly allowance still applies, and sends are still paced to protect your sender reputation. Ask your agent for your current allowance, or see the [published plan limits](https://nitrosend.com/pricing.md). Paid monthly allowances reset on your billing date, while the Free monthly allowance resets at the start of each calendar month in UTC. Your standing builds from evidence such as a verified sending domain of your own, a verified list and a record of clean sends, and if you're migrating an established list, ask support to review your standing.
 
 ```text
 Ask your agent: "Show my remaining Nitrosend monthly and rolling 24-hour allowances, and explain when campaign [name] can continue."
 ```
 
-### What does "New-account sending capacity is in use" mean?
-New accounts share a sending allowance while they build delivery history, so a campaign can go out gradually in batches, and the rest waits until capacity frees up. Campaigns show this as "Waiting for new-account sending capacity", and queued email is retried automatically as capacity becomes available, so don't resend it or create a duplicate campaign. Upgrading or connecting your own email provider doesn't remove this limit. Your account moves past it as your sender standing builds, from evidence such as a verified sending domain of your own, a verified list and clean sends to engaged contacts; see [Waiting for plan allowance](#what-does-waiting-for-plan-allowance-mean) for how standing works.
+### What does "Checking your first batch" mean?
+On a new account's first large send, Nitrosend sends a first batch, checks how it lands, then sends the rest. The pause is short and the campaign continues automatically, so don't resend it or create a duplicate campaign. It doesn't use extra allowance and isn't a sign of a problem. Each account sends against its own plan allowance, new accounts included; see [Waiting for plan allowance](#what-does-waiting-for-plan-allowance-mean) for how your daily limit and standing work.
 
 ```text
 Ask your agent: "Check Nitrosend campaign [name]: how many messages have sent, how many are still queued and what the current status requires."
 ```
 
 ### What should I do when sending is paused for a high bounce rate?
-Nitrosend can pause sending when bounce rates are high to protect your sender reputation. Verify the list you plan to send to next and unsubscribe invalid addresses; hard-bounced addresses are already suppressed. Contacts, then Verify list, uses any verifications your plan includes before prepaid credit and shows the maximum charge before you confirm, or you can supply a NeverBounce or ZeroBounce report. Use mailbox verification rather than relying only on MX, role-address or webmail checks. Once the list is ready, ask support to review your account with the results.
+Nitrosend can pause sending when bounce rates are high to protect your sender reputation. Verify the list you sent to: Contacts, then Verify list, uses any verifications your plan includes before prepaid credit and shows the maximum charge before you confirm. Invalid and disposable addresses are then left out of sends for you, and so are unknown and catch-all addresses unless you choose to include them, so there's nothing to remove by hand. When the verification finishes, a first bounce pause can lift automatically if the list comes back clean and the account is otherwise in good standing. Otherwise a completed verification asks Nitrosend support to review the account for you, and support replies by email. If sending is still paused and you haven't had an email saying a review is under way, ask support to review the account. A campaign that stopped part-way resumes only to contacts with a recent valid result. See [Verifying your list](/guides/verifying-your-list#if-sending-is-paused).
 
 ```text
 Ask your agent: "Show the bounce reasons from my last Nitrosend send and quote verification for the list I plan to send to next. Wait for my approval before any paid verification."
@@ -336,21 +341,21 @@ Ask your agent: "Raise one Nitrosend support ticket about my sending_paused noti
 Open the existing draft in the app's editor to make your changes. For a long email, you can also ask your agent to rebuild the affected section or recreate the email. If you need help, include the draft details and any exact error message in a support request.
 
 ### Can I change my email footer?
-Yes. Every email from a brand ends with the same footer, and you can write it however you like: an authorisation statement, a licence or ABN, why people get your email. Open **Brand Kit** and double-click the footer in the **Footer** card, or double-click the footer of any email in the editor. Either way the change applies to every email from that brand, and **Reset to default** brings back the company name, address and unsubscribe link. Marketing email always carries your address and an unsubscribe link, so if your footer leaves either out it's added underneath.
+Yes. Every email from a brand ends with the same footer, and you can write it however you like: an authorization statement, a license or ABN, why people get your email. Open **Brand Kit** and double-click the footer in the **Footer** card, or double-click the footer of any email in the editor. Either way the change applies to every email from that brand, and **Reset to default** brings back the company name, address and unsubscribe link. Marketing email always carries your address and an unsubscribe link, so if your footer leaves either out it's added underneath.
 
 ### How do I remove the "sent with Nitrosend" badge from my emails?
-On the Free plan your emails carry the Nitrosend badge, whether they come from a Nitrosend address or your own domain. Adding **Remove Nitrosend footer** under Account, then Billing, turns it off for you. On Starter and above the badge stays on until you turn it off in **Brand Kit**, in the **Footer** card, unless you upgraded from a prompt to remove it.
+On the Free plan your emails carry the Nitrosend badge, whether they come from a Nitrosend address or your own domain. Adding **Remove Nitrosend footer** under Account, then Billing, turns it off for you. The badge comes off as soon as the add-on is active, and returns if you cancel it. Every paid plan lets you hide the badge. If it is still showing after you upgrade, turn off the **Nitrosend badge** switch in **Brand Kit**, in the **Footer** card.
 
 ## Teams and agencies
 
 ### Can my team share an account?
-Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats. To accept an invitation, sign out of Nitrosend first, then open the invitation link. Sign in with the email address the invitation was sent to, or choose Create a free account on that page and verify your email.
+Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats. To accept an invitation, open the invitation link. If you're already signed in with the address it was sent to, choose **Accept invite** and the team's account opens. If you're signed in with a different address, choose **Sign out and continue**, then sign in with the invited address or create a free account with it and verify your email.
 
 ### How can an agency set up and hand over a client account?
 Use the Clients page to create the client's account, and ask support if you need access to that page. Build their brand kit, domain and flows before choosing Invite owner to invite them. The client owns and pays for the account and can remove your access at any time. Choose Release when your work ends. Give clients who need their own login a separate account, because team members invited to your agency account can see all its brands.
 
 ### How do I add another brand?
-Open the dashboard's brand switcher and choose Add brand, then enter the website to build its Brand Kit. Once created, your agent can select the brand and configure its domain and sender. A brand API key can manage that brand, but cannot create or manage other brands. To get a key for the new brand, select it in the dashboard and open Settings, then API Keys. See [pricing](https://nitrosend.com/pricing.md) for your plan's brand allowance.
+Open the account menu at the top right of the dashboard and choose Add brand, then enter the website to build its Brand Kit. Once created, your agent can select the brand and configure its domain and sender. A brand API key can manage that brand, but cannot create or manage other brands. To get a key for the new brand, select it in the dashboard and open Settings, then API Keys. See [pricing](https://nitrosend.com/pricing.md) for your plan's brand allowance.
 
 ### Do I need a separate connection per client?
 One MCP connection can access the brands available to your login. Work on one client at a time across chats and scheduled agent tasks using the same login in the same agent app, and select and confirm the intended brand immediately before each task. A campaign already scheduled retains its own brand when you switch to another client.

@@ -5,7 +5,7 @@ description: Direct links for the pages of the Nitrosend dashboard, so you or yo
 
 # Dashboard URLs
 
-The Nitrosend dashboard lives at `https://app.nitrosend.com` and every signed-in page sits under the `/my/` prefix, for example `https://app.nitrosend.com/my/settings/api-keys`. A path without `/my/` (such as `/settings/api-keys`) does not exist and shows a "Page not found" screen. URLs are not account- or brand-scoped: the brand switcher in the sidebar footer decides which brand a page shows.
+The Nitrosend dashboard lives at `https://app.nitrosend.com` and every signed-in page sits under the `/my/` prefix, for example `https://app.nitrosend.com/my/settings/api-keys`. A path without `/my/` (such as `/settings/api-keys`) does not exist and shows a "Page not found" screen. URLs are not account- or brand-scoped: the account menu at the top right of the dashboard decides which brand a page shows.
 
 <Info>
   **For AI agents:** cite dashboard links only from this page. If a page is not listed here, say the link is not documented rather than guessing a path. Pages marked *gated* only appear for accounts with that feature enabled.
@@ -52,6 +52,8 @@ Account settings apply to the whole workspace, not just the current brand.
 | Create an account | [`https://app.nitrosend.com/join`](https://app.nitrosend.com/join) |
 | Log in | [`https://app.nitrosend.com/login`](https://app.nitrosend.com/login) |
 | Forgot password | [`https://app.nitrosend.com/forgot-password`](https://app.nitrosend.com/forgot-password) |
+| Finish signing up (opened from the emailed link) | `https://app.nitrosend.com/verify-email` |
+| Accept a team invitation (opened from the emailed link) | `https://app.nitrosend.com/invite/accept` |
 
 ## Sidebar
 
@@ -60,7 +62,6 @@ The top-level areas, in sidebar order. `https://app.nitrosend.com/my` on its own
 | Sidebar entry | Page | URL |
 | --- | --- | --- |
 | **Home** | Dashboard landing screen | [`https://app.nitrosend.com/my/dashboard`](https://app.nitrosend.com/my/dashboard) |
-| **Setup** | Setup Center checklist | [`https://app.nitrosend.com/my/setup`](https://app.nitrosend.com/my/setup) |
 | **Campaigns** | One-time sends | [`https://app.nitrosend.com/my/campaigns`](https://app.nitrosend.com/my/campaigns) |
 | **Flows** | Automated sequences | [`https://app.nitrosend.com/my/flows`](https://app.nitrosend.com/my/flows) |
 | **Templates** | Reusable email designs | [`https://app.nitrosend.com/my/templates`](https://app.nitrosend.com/my/templates) |
@@ -73,6 +74,17 @@ The top-level areas, in sidebar order. `https://app.nitrosend.com/my` on its own
 | **Settings** | Domains, API Keys, Webhooks, AI Memory, Channels (opens on Domains) | [`https://app.nitrosend.com/my/settings`](https://app.nitrosend.com/my/settings) |
 | **Learning Center** | Guides inside the app | [`https://app.nitrosend.com/my/learn`](https://app.nitrosend.com/my/learn) |
 | **Affiliates** | Referral dashboard (*gated*) | [`https://app.nitrosend.com/my/affiliates`](https://app.nitrosend.com/my/affiliates) |
+
+## Setup
+
+Setup is the full-screen flow a new brand opens on. It is not a sidebar entry: until setup is complete, Home shows a **Finish setup** bar that links to these screens.
+
+| Screen | Page | URL |
+| --- | --- | --- |
+| **Setup** | First-run setup: Brand Kit, contacts, first email | [`https://app.nitrosend.com/my/setup`](https://app.nitrosend.com/my/setup) |
+| **Setup: connect an agent** | Connection steps for Claude, ChatGPT, Cursor and other agents | [`https://app.nitrosend.com/my/setup?step=agent`](https://app.nitrosend.com/my/setup?step=agent) |
+| **Setup: Brand Kit** | Scan your website or describe your business | [`https://app.nitrosend.com/my/setup?step=brand`](https://app.nitrosend.com/my/setup?step=brand) |
+| **Setup: contacts** | Import or connect your contacts | [`https://app.nitrosend.com/my/setup?step=contacts`](https://app.nitrosend.com/my/setup?step=contacts) |
 
 ## Contacts
 
@@ -89,11 +101,12 @@ The top-level areas, in sidebar order. `https://app.nitrosend.com/my` on its own
 
 | Click-path | Page | URL |
 | --- | --- | --- |
-| **Campaigns** | All campaigns; the **New Campaign** button lives here | [`https://app.nitrosend.com/my/campaigns`](https://app.nitrosend.com/my/campaigns) |
-| **Flows > New Flow** | Start a new flow | [`https://app.nitrosend.com/my/flows/new`](https://app.nitrosend.com/my/flows/new) |
-| **Activity** | Sending overview | [`https://app.nitrosend.com/my/activity`](https://app.nitrosend.com/my/activity) |
+| **Campaigns** | All campaigns; the **New campaign** button lives here | [`https://app.nitrosend.com/my/campaigns`](https://app.nitrosend.com/my/campaigns) |
+| **Flows > New flow** | Start a new flow | [`https://app.nitrosend.com/my/flows/new`](https://app.nitrosend.com/my/flows/new) |
+| **Activity > Sending log** | Sending overview | [`https://app.nitrosend.com/my/activity`](https://app.nitrosend.com/my/activity) |
 | **Activity > Send Log** | One row per message | [`https://app.nitrosend.com/my/sends/log`](https://app.nitrosend.com/my/sends/log) |
-| **Activity > Email overview** | Email performance summary | [`https://app.nitrosend.com/my/sends/overview`](https://app.nitrosend.com/my/sends/overview) |
+| **Activity > All email** | Email performance summary | [`https://app.nitrosend.com/my/activity/emails`](https://app.nitrosend.com/my/activity/emails) |
+| **Activity > Agent activity** | What your agents did, by connection | [`https://app.nitrosend.com/my/activity/agents`](https://app.nitrosend.com/my/activity/agents) |
 | **Integrations > Add** | Connect a provider, CRM or store | [`https://app.nitrosend.com/my/integrations/new`](https://app.nitrosend.com/my/integrations/new) |
 | **Clients > API** | Agency API access for managed clients (*gated*) | [`https://app.nitrosend.com/my/clients/api`](https://app.nitrosend.com/my/clients/api) |
 
@@ -111,6 +124,7 @@ Replace `{id}` with the record's ID.
 | Edit contact | `https://app.nitrosend.com/my/contacts/{id}/edit` |
 | Contact list | `https://app.nitrosend.com/my/contact-lists/{id}` |
 | Edit contact list | `https://app.nitrosend.com/my/contact-lists/{id}/edit` |
+| List verification results | `https://app.nitrosend.com/my/contacts/verification/{id}` |
 | Integration | `https://app.nitrosend.com/my/integrations/{id}` |
 | Inbox thread | `https://app.nitrosend.com/my/inbox/{id}` |
 | API key | `https://app.nitrosend.com/my/settings/api-keys/{id}` |
@@ -118,6 +132,6 @@ Replace `{id}` with the record's ID.
 
 ## Older links that still work
 
-Settings used to live under Brand. These paths redirect to the pages above, so a link saved before the move is not broken: `/my/brand/api-keys`, `/my/brand/domains`, `/my/brand/memory`, `/my/brand/channels`, `/my/settings/account`, `/my/settings/team`, `/my/settings/billing`, `/billing` and `/campaigns/{id}`.
+Settings used to live under Brand. These paths redirect to the pages above, so a link saved before the move is not broken: `/my/brand/api-keys`, `/my/brand/domains`, `/my/brand/memory`, `/my/brand/channels`, `/my/settings/account`, `/my/settings/team`, `/my/settings/billing`, `/billing` and `/campaigns/{id}`. `/my/sends` and `/my/sends/overview` now open **Activity** and **Activity > All email**.
 
 See also the [Glossary](/concepts/glossary): what every word in the dashboard means, grouped by where you find it.
