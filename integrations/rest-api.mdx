@@ -270,8 +270,8 @@ Common filters include `email`, `reason`, `source_provider`, and `active=false`
 for expired suppressions.
 
 Each suppression says what it stops in `blocks`. `marketing` is an unsubscribe
-or withheld marketing consent: it stops campaigns, flows and outreach, not
-transactional mail. `all` is every other reason, and stops transactional mail
+or withheld marketing consent: it stops campaigns and flows, not transactional
+mail. `all` is every other reason, and stops transactional mail
 too.
 
 Agents can ask what would stop the connected Brand's mail to one address with
@@ -279,6 +279,26 @@ Agents can ask what would stop the connected Brand's mail to one address with
 `filters: { email: "...", blocking: true }`. It returns the active suppressions
 a send from that Brand meets: Nitrosend-wide ones, the account's, and the
 Brand's own. Another Brand's suppressions are left out.
+
+## Email events
+
+`GET /v1/my/email_events` follows the current Brand's mail without a webhook.
+It returns, oldest first:
+- each email the provider accepted (`email.sent`);
+- its delivery, bounce, complaint or failure (`email.delivered`,
+  `email.bounced`, `email.complained`, `email.failed`);
+- an unsubscribe a flow recorded (`email.unsubscribed`);
+- mail that arrived at the Brand's inboxes (`email.received`), with
+  `auto_submitted` set for out-of-office and other automatic replies.
+
+Call it once without `after` to get a cursor that starts from now. Then pass
+each response's `cursor` as the next `after`. While `more` is true, more events
+are ready, so read again straight away. Each event has one `id`, and a page
+read again returns the same events, so a caller that stops part-way picks up
+from the last cursor it saved. An event appears once it's 30 seconds old.
+
+The suppression list stays the authority on who may be emailed, so check it
+before a send rather than relying on these events alone.
 
 ## Delivery capacity
 
@@ -350,6 +370,7 @@ plan allowance.
 | **Messages** | | |
 | Send a message | `POST` | `/messages` |
 | List messages | `GET` | `/messages` |
+| Follow email events | `GET` | `/email_events` |
 | **Webhooks** | | |
 | List webhooks | `GET` | `/webhooks` |
 | Create webhook | `POST` | `/webhooks` |
