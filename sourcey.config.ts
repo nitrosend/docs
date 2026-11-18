@@ -87,6 +87,7 @@ export default defineConfig({
                 "guides/sending-domains",
                 "guides/microsoft-delivery",
                 "guides/managing-contacts",
+                "guides/verifying-your-list",
                 "guides/website-signup-forms",
                 "guides/building-flows",
                 "guides/creating-campaigns",
