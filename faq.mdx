@@ -132,21 +132,23 @@ Unlimited, on every plan. You pay for sends, not list size.
 ### How do I migrate from Mailchimp / Klaviyo / MailerLite / ActiveCampaign?
 The route depends on where your list lives now.
 
-**Mailchimp, HubSpot, ActiveCampaign, Attio, Shopify or Stripe:** connect it under Integrations and let it sync. Contacts arrive with their lists where the source has them, and you can sync again any time. Mailchimp and ActiveCampaign bring each person's subscribed or unsubscribed status, and Shopify brings marketing consent. HubSpot, Attio and Stripe contacts arrive unsubscribed. See the [Mailchimp](/integrations/mailchimp), [HubSpot](/integrations/hubspot), [Attio](/integrations/attio), [Shopify](/integrations/shopify) and [Stripe](/integrations/stripe) pages for what each one syncs.
+**Mailchimp, HubSpot, ActiveCampaign, Attio, Shopify or Stripe:** connect it under Integrations and let it sync. You can sync again any time. Mailchimp and ActiveCampaign bring each person's subscribed or unsubscribed email status, and Shopify brings email marketing consent. Whatever the source, check subscription status in Contacts before your first send. The [Mailchimp](/integrations/mailchimp), [HubSpot](/integrations/hubspot), [Attio](/integrations/attio), [Shopify](/integrations/shopify) and [Stripe](/integrations/stripe) pages list what each one syncs.
 
-**Klaviyo, Brevo, MailerLite or anything else:** export CSV files from the old platform and import them under Contacts, then Import. Export three things: your subscribed contacts, your unsubscribed list, and your suppressed list (bounces and spam complaints). In Klaviyo, open a list or segment and choose Export to CSV, then go to Audience, Profiles, View suppressed profiles and export that too. Import the unsubscribed and suppressed files first. Under Email subscriptions, choose Unsubscribe all from marketing for the unsubscribed file and Block all email delivery for the suppressed file. Then import your subscribed contacts. Anyone already unsubscribed or blocked stays that way.
+**Klaviyo, Brevo, MailerLite or anything else:** export CSV files from the old platform and import them under Contacts, then Import. You need three files: people subscribed to email, people who unsubscribed, and suppressed addresses (bounces and spam complaints). In Klaviyo, open a list or segment and choose Export to CSV, then go to Audience, Profiles, View suppressed profiles and export that too. If an export mixes unsubscribes with bounces and complaints, split it by reason first.
+
+Import the unsubscribed and suppressed files first. Under Email subscriptions, choose Unsubscribe all from marketing for the unsubscribed file and Block all email delivery for the suppressed file. When both have finished, import your subscribed contacts, one file per list. Anyone already unsubscribed or blocked stays that way, and each import summary shows its subscribed, unsubscribed and blocked counts.
 
 **Moving a big list?** We'll do it with you, free on plans above Starter. [Book a time](https://calendly.com/nitrosend/nitrosend-onboarding).
 
 ```text
-Ask your agent: "Using Nitrosend, import [unsubscribed file] as unsubscribed and [suppressed file] as blocked, then import [subscribed file] into my [list name] list. Start no flows, and show me the subscribed, unsubscribed and blocked counts for each import."
+Ask your agent: "Using Nitrosend, count my subscribed contacts, unsubscribed contacts and suppressed addresses so I can check them against my old platform before I send anything."
 ```
 
 ### What carries over when I migrate?
-Contacts, their lists and their subscription status. A connected source also brings the fields it supports, listed on its integration page. In a file import you map each column to a contact field, tags or a custom field, so anything in the file can come with you. Templates, flows and past campaign reports don't transfer. Your agent can rebuild templates and flows in Nitrosend.
+Contacts and their email subscription status. A connected source also brings the lists and fields it supports; most have an integration page that names them. In a file import you pick the list the file goes into and map each column to a contact field, tags or a custom field. Templates, flows and past campaign reports don't transfer. Your agent can rebuild templates and flows in Nitrosend.
 
 ### How are unsubscribes kept when I migrate?
-A file import always honors an unsubscribe column in the file, and you can import a whole file as unsubscribed or blocked. A connected source only subscribes people it shows as opted in. Once someone is unsubscribed or blocked in Nitrosend, a later import or sync won't resubscribe them, and deleting the contact doesn't lift it either.
+Bring them with you. In a file import, map the file's opt-out column to Unsubscribed, or import the whole file as unsubscribed or blocked. Mailchimp and ActiveCampaign syncs carry opt-outs across, and new Shopify customers who haven't opted in to email marketing arrive unsubscribed. Once an address is unsubscribed or blocked in a brand, a later file import or sync won't resubscribe it, and deleting the contact doesn't lift it either.
 
 ### How long does a big import take?
 It depends on the size of the list. File imports and integration syncs run in the background and show progress, so you can leave the page and come back. A file import starts no flows unless you turn on Start flows. For a big list or a long history, [book a time](https://calendly.com/nitrosend/nitrosend-onboarding) and we'll do it with you.
