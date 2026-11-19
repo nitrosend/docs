@@ -34,7 +34,7 @@ Every key is also listed under **Settings**, then **API Keys**, in the **Public 
 
 FunnelKit and WooCommerce send from your web server, not from a visitor's browser, so their requests name no website origin. A key with **Allowed website origins** set refuses them with a `403`. Use a key with that field blank for FunnelKit and WooCommerce webhooks.
 
-A pasted HTML form runs in the visitor's browser, so it works with allowed origins. If you use both, click **+ New key** in the panel and keep one key for each.
+A pasted HTML form runs in the visitor's browser, so it works with allowed origins. If you use both, keep one key for each: create a second key under **Settings**, then **API Keys**, and copy its **Public Key**.
 
 ## The request
 
@@ -87,7 +87,7 @@ Nitrosend subscribes a new address as soon as it arrives. This endpoint does not
 Only send people who agreed to receive marketing email from you. Placing an order is not agreement, and neither is a box that starts out checked. Set each method up so it fires on the opt-in, not on the purchase:
 
 - **FunnelKit:** start the automation from a contact subscribing, as shown below.
-- **WooCommerce webhook:** it fires for every new customer account. Use it only if creating an account on your store is itself the opt-in, or add the consent check shown in that section.
+- **WooCommerce webhook:** it fires for every new customer account, so its snippet checks a saved opt-in before anything is sent.
 - **HTML form:** say on the form what people are signing up for.
 
 This connection only adds people. An unsubscribe recorded on your WordPress site, in FunnelKit or anywhere else, is not sent to Nitrosend. People who unsubscribe from a Nitrosend email are handled by Nitrosend.
@@ -97,7 +97,7 @@ This connection only adds people. An unsubscribe recorded on your WordPress site
 FunnelKit Automations can send data to any URL with its HTTP Request action. FunnelKit documents it in [Outgoing Webhooks](https://funnelkit.com/docs/autonami-2/webhooks/outgoing-webhooks/) and [Send nested JSON data using HTTP Request](https://funnelkit.com/docs/autonami-2/how-to/send-nested-json-data-to-any-source-using-http-request/).
 
 1. In WordPress, open **FunnelKit Automations**, then **Automations**. Click **Create Automation**, choose **Start from scratch** and name it.
-2. Select the event. To send only people who opted in, choose **Contact subscribes**. FunnelKit's [Checkout Consent](https://funnelkit.com/docs/autonami-2/settings/checkout-consent/) setting adds an opt-in checkbox to checkout: a buyer who checks it is marked Subscribed, and a buyer who does not is marked Unverified. Keep the checkbox turned on and leave it unchecked by default. FunnelKit's page says that with the checkbox turned off, every customer is marked Subscribed, which is not an opt-in.
+2. Select the event. To send only people who opted in, choose **Contact subscribes**. FunnelKit's [Checkout Consent](https://funnelkit.com/docs/autonami-2/settings/checkout-consent/) setting adds an opt-in checkbox to checkout: a buyer who checks it is marked Subscribed, and a buyer who does not is marked Unverified. Keep the checkbox turned on and leave it unchecked by default. FunnelKit's page says that with the checkbox turned off, every customer is marked Subscribed, which is not an opt-in. **Contact subscribes** fires for every way a contact can become Subscribed on your site, so check each one is a real opt-in, including any form set to mark its contacts as subscribed.
 3. Add an **Action** step. On the **Send Data** tab choose **HTTP Request** (shown as **Send Data To Any Source (HTTP Request)** in some versions) and click **Done**.
 4. Set the method to **POST** and the URL to `https://api.nitrosend.com/v1/public/contacts`.
 5. Under **Data**, add one row for each field in the table below.
@@ -138,20 +138,38 @@ Do not add a `Content-Type` header unless FunnelKit's guide for your version tel
 
 WooCommerce can post new customer accounts without FunnelKit. Its built-in webhook sends a fixed JSON body, with no place for your public key or list ID, so this route needs a short code snippet to add them. Shoppers who check out as guests do not get a customer account and are not sent.
 
+<Warning>
+  A new customer account is not consent. The snippet below sends a customer only when your store has saved a marketing opt-in for them. If your store saves no opt-in, do not use this webhook. Use the FunnelKit recipe or the HTML form.
+</Warning>
+
 1. In WordPress, go to **WooCommerce**, then **Settings**, **Advanced**, **Webhooks**, and click **Add webhook**.
 2. Set **Status** to **Paused**, **Topic** to **Customer created** and **Delivery URL** to `https://api.nitrosend.com/v1/public/contacts`. Save.
 3. Note the webhook's ID. It is the number after `edit-webhook=` in the address bar while you edit the webhook.
-4. Add the snippet below to a small plugin or a code snippets plugin. Replace the webhook ID, the key and the list ID.
-5. Set the webhook's **Status** to **Active** and save.
+4. Add the snippet below to a small plugin or a code snippets plugin. Replace the webhook ID in both places, the key, the list ID and the opt-in check.
+5. Only then set the webhook's **Status** to **Active** and save.
 
 ```php
 // 12 is the ID of the Nitrosend webhook.
-add_filter( 'woocommerce_webhook_payload', function ( $payload, $resource, $resource_id, $webhook_id ) {
-    if ( 12 !== (int) $webhook_id || ! is_array( $payload ) || empty( $payload['email'] ) ) {
-        return $payload;
+
+// Send a customer only if they opted in to marketing email.
+add_filter( 'woocommerce_webhook_should_deliver', function ( $should_deliver, $webhook, $customer_id ) {
+    if ( 12 !== (int) $webhook->get_id() ) {
+        return $should_deliver;
     }
 
-    // Send only the fields Nitrosend needs, not the whole customer record.
+    // Placeholder: use the user meta key and the value your opt-in checkbox saves.
+    return $should_deliver && 'yes' === get_user_meta( (int) $customer_id, 'marketing_opt_in', true );
+}, 10, 3 );
+
+// Send only the fields Nitrosend needs, not the whole customer record.
+add_filter( 'woocommerce_webhook_payload', function ( $payload, $resource, $resource_id, $webhook_id ) {
+    if ( 12 !== (int) $webhook_id ) {
+        return $payload;
+    }
+    if ( ! is_array( $payload ) || empty( $payload['email'] ) ) {
+        return array();
+    }
+
     return array(
         'public_key' => 'wpkey_live_…',
         'list_id'    => 123,
@@ -163,23 +181,9 @@ add_filter( 'woocommerce_webhook_payload', function ( $payload, $resource, $reso
 }, 10, 4 );
 ```
 
+WooCommerce does not record marketing consent on its own, so the opt-in check is yours to fill in. `marketing_opt_in` and `yes` are placeholders. Use the user meta key and the exact value your opt-in checkbox saves: some checkouts save `1`, not `yes`. Then test with one account that opted in and one that did not. If your checkout saves the opt-in after the account is created, this check runs too early and sends nobody. Use the FunnelKit recipe in that case.
+
 WooCommerce's customer payload has `email`, `first_name` and `last_name` at the top level, which are the names Nitrosend reads. The snippet replaces the payload with those fields plus your key and list ID, so addresses and other customer details stay on your site.
-
-### Consent check for the webhook
-
-The webhook fires for every new customer account. WooCommerce does not record marketing consent on its own. If your store saves an opt-in on the customer, add a second snippet so only those customers are sent. `marketing_opt_in` here is a placeholder: use the user meta key your opt-in checkbox saves.
-
-```php
-add_filter( 'woocommerce_webhook_should_deliver', function ( $should_deliver, $webhook, $customer_id ) {
-    if ( 12 !== (int) $webhook->get_id() ) {
-        return $should_deliver;
-    }
-
-    return $should_deliver && 'yes' === get_user_meta( (int) $customer_id, 'marketing_opt_in', true );
-}, 10, 3 );
-```
-
-If your store has no saved opt-in to check, do not use this webhook. Use the FunnelKit recipe or the HTML form.
 
 Two things to expect:
 
@@ -190,7 +194,7 @@ Order topics, such as **Order created**, do not work with this endpoint. An orde
 
 ## Pasted HTML form
 
-For a newsletter signup on a WordPress page, paste a plain form into a **Custom HTML** block. It needs no plugin and no script, and it also works in any page builder that accepts form code.
+For a newsletter signup on a WordPress page, paste a plain form into a **Custom HTML** block. It needs no plugin and no script, and it also works in any page builder that accepts form code. Some hosts and user roles strip form code when the page is saved, so test the published page, not the editor preview.
 
 ```html
 <form action="https://api.nitrosend.com/v1/public/contacts" method="post">
@@ -223,7 +227,7 @@ What the visitor sees depends on the key's **Allowed website origins**:
 - **Origins set, but the page holding the form is not on them:** the signup is refused with a `403` and nothing is saved.
 - **No origins set, or a `redirect_url` that is not on them:** the signup is saved and the visitor sees the raw reply `{ "ok": true }`.
 
-A failed signup always shows the error and never redirects.
+A failed signup always shows the error and never redirects. Reaching the thank-you page does not prove a contact was saved, so [check in Nitrosend](#check-it-worked).
 
 If you can add a script to the page, the drop-in form in [Website Signup Forms](/guides/website-signup-forms) shows a message in place and needs no thank-you page.
 
@@ -267,7 +271,7 @@ This test names no website origin, so it works for a key with no allowed origins
 | `422` `invalid_request` | `email` or `list_id` is missing, or `email` is not an address. | Check the merge tag spelling and the field names. |
 | `429` | Too many requests in a short time. | See below. |
 
-The endpoint is rate limited per IP address and per key, and every request a store's server sends comes from the same IP address. It is built for signups as they happen. To bring in customers you already have, [import them](/guides/managing-contacts) instead of replaying them through a webhook.
+The endpoint is rate limited per IP address and per key, and every request a store's server sends comes from the same IP address. A refusal can last for the rest of the day, and signups refused in that time are not saved. It is built for signups as they happen. To bring in customers you already have, [import them](/guides/managing-contacts) instead of replaying them through a webhook.
 
 ## What this does not cover
 
@@ -287,7 +291,7 @@ define( 'NITROSEND_API_KEY', 'nskey_live_…' );
 define( 'NITROSEND_STORE_ID', 'store-au' );
 ```
 
-Then send an event when an order is paid. `_marketing_opt_in` is a placeholder: use the order meta key your checkout opt-in saves.
+Then send an event when an order is paid. `_marketing_opt_in` and `yes` are placeholders: use the order meta key and the exact value your checkout opt-in saves. Order totals are sent with two decimal places, which is the most the Events API accepts.
 
 ```php
 add_action( 'woocommerce_payment_complete', function ( $order_id ) {
@@ -331,9 +335,9 @@ add_action( 'woocommerce_payment_complete', function ( $order_id ) {
 } );
 ```
 
-Give every store a different `NITROSEND_STORE_ID` and never change it. Nitrosend treats a repeated `Idempotency-Key` for the same event name as the same event, so two stores that share an ID would hide each other's orders.
+Give every store a different `NITROSEND_STORE_ID` and never change it. Nitrosend treats a repeated `Idempotency-Key` for the same event name as the same event, so two stores that share an ID would hide each other's orders. On WordPress Multisite every site shares `wp-config.php`, so build the store ID from the site instead, for example with `get_current_blog_id()`.
 
-The example writes failures to the WooCommerce log, under **WooCommerce**, **Status**, **Logs**. It does not retry. To retry a failed order, send it again with the same `Idempotency-Key`.
+The example writes failures to the WooCommerce log, under **WooCommerce**, **Status**, **Logs**. It does not retry, and WooCommerce does not run this hook again for an order that is already paid, so a failed order stays missing until you resend it. Have your developer add a scheduled retry before you rely on this for revenue reports. A resend must use the same `Idempotency-Key`.
 
 `woocommerce_payment_complete` runs when a payment gateway confirms payment. Orders paid offline, such as bank transfer or cash on delivery, do not trigger it.
 
