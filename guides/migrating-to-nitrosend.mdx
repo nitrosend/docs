@@ -11,7 +11,7 @@ This guide takes you from another email tool to Nitrosend, in an order built to 
   **Moving a big list?** We'll do it with you, free on plans above Starter. [Book a time](https://calendly.com/nitrosend/nitrosend-enterprise). It is worth booking if you have more than 100,000 contacts, more than 20 flows, or you send SMS from your old tool.
 </Info>
 
-Working with an AI agent? Give it the migration skill, which follows the same steps as this guide:
+Working with an AI agent? Give it the migration skill, which follows the same order as this guide:
 
 ```text
 Read https://nitrosend.com/skills/migrate.md and move my list from [your old tool] to Nitrosend.
@@ -25,7 +25,7 @@ Read https://nitrosend.com/skills/migrate.md and move my list from [your old too
 | Unsubscribes | Unsubscribed from marketing email |
 | Hard bounces and spam complaints | Blocked from all email in the brand |
 | People who never subscribed or never confirmed | Left out, or imported as unsubscribed |
-| Last open, last click, signup date | Custom fields you can segment on |
+| Last open, last click, signup date | Custom fields you can segment on. Klaviyo and Brevo exports also keep last open and last click as imported engagement history. |
 | Signup forms, flows and templates | Rebuilt in Nitrosend. They do not import. |
 | Campaign reports | Kept as your own files. They do not import. |
 | SMS consent | Handled separately. Leave phone columns out of email imports. |
@@ -80,7 +80,7 @@ Some tools mix the reasons together:
 Check what went in before you bring a single contact:
 
 - Every import finished, and you can account for every failed row. A row that failed is a person this import did not protect.
-- The distinct addresses you imported are within 1% of your old tool's unsubscribes, bounces and complaints together. Someone in two files counts once. With more than one source, check each source on its own.
+- The distinct addresses you imported are within 1% of your old tool's unsubscribes, bounces and complaints together. Someone in two files counts once. With more than one source, check each source on its own. People who never subscribed or never confirmed are not part of this number. They are counted on their own line in Step 3.
 - Ten addresses from each file show the right stop: an unsubscribe that stops marketing email, or a bounce, complaint or block that stops all email. The Contacts screen shows that someone is unsubscribed, but not why or whether all email is blocked, so ask your agent for this one.
 
 ```text
@@ -111,19 +111,21 @@ Imports and syncs run in the background and show progress. You can leave the pag
 
 Before you send anything, compare Nitrosend with your old tool. Count distinct addresses on both sides: a person on three lists is one contact.
 
-| Number | Where to find it in Nitrosend | Should match |
+| Number | Where to find it in Nitrosend | Compare with |
 | --- | --- | --- |
 | Subscribed | Contacts on your migration list who are subscribed to email | Your old tool's subscribed total |
-| Not subscribed | Contacts on your migration list who are not subscribed | Zero, unless you chose to bring people who never subscribed |
-| Unsubscribed and blocked | The rows you imported in Step 1 | Your old tool's unsubscribes, bounces and complaints |
+| Not subscribed | Contacts from this move who are not subscribed and have no unsubscribe or block, plus any never subscribed file you imported as unsubscribed | Your old tool's never subscribed and unconfirmed total if you brought those people, otherwise zero |
+| Suppressed | The unsubscribe, bounce and complaint rows you imported in Step 1 | Your old tool's unsubscribes, bounces and complaints |
 
-Then repeat the check from Step 1: ten addresses from each suppression file must still show their stop. Look at everyone in the not subscribed row, too. Each of them was in a contacts file and did not come out subscribed, so find out why for each one you did not expect.
+Compare each line on its own. Do not add them together, and do not count someone who never subscribed as an unsubscribe: they belong on the not subscribed line on both sides.
+
+Then repeat the check from Step 1: ten addresses from each suppression file must still show their stop. Look at the not subscribed line, too. Anyone there who was in a subscribed contacts file did not come out subscribed, so find out why for each one.
 
 ```text
 Ask your agent: "Using Nitrosend, count the subscribed and not subscribed contacts on my migration list, and check these ten addresses are still unsubscribed or blocked."
 ```
 
-If subscribed or suppressed is off by more than 1%, stop. Do not send, and do not fix it by resubscribing or deleting people. A subscribed count that is higher in Nitrosend than in your old tool is the serious case: it can mean someone without an opt-in came in as a subscriber. [Book a time](https://calendly.com/nitrosend/nitrosend-enterprise) and we will work through it with you.
+If the subscribed count is off by more than 1%, stop. Stop too if the suppressed line no longer matches what you checked in Step 1, or the not subscribed line holds people you cannot explain. Do not send, and do not fix it by resubscribing or deleting people. A subscribed count that is higher in Nitrosend than in your old tool is the serious case: it can mean someone without an opt-in came in as a subscriber. [Book a time](https://calendly.com/nitrosend/nitrosend-enterprise) and we will work through it with you.
 
 ## Step 4: Keep your engagement and history
 
@@ -183,7 +185,7 @@ Do these in order on your cutover date.
 5. **Switch off the old tool's flows.** "Pause" means different things in different tools, and in some a paused flow keeps emailing the people already inside it. [Your source's section](#source-by-source) says which control to use. Switch each remaining Nitrosend flow on only after its old twin is off, so nobody gets both.
 6. **Run both for 14 days.** Your old tool sends nothing new, but keep the account open so its unsubscribe links keep working and it keeps recording unsubscribes, bounces and complaints from mail it already sent.
 7. **Keep bringing late unsubscribes across.** Export and import them every day of these 14 days while a live Nitrosend flow can email the people you migrated, before every Nitrosend campaign, and at day 7 and day 14 whatever happens. Importing an address twice is harmless. If you cannot keep up a daily export, leave the flows that email migrated contacts off until day 14 and run only the flows for new signups.
-8. **Switch off the old tool.** After day 14 and a final export, remove its forms and tracking code from your site and disconnect it from your store or CRM. Do not disconnect the store, CRM or payment connections that feed Nitrosend. Keep the old account on its cheapest plan for as long as its unsubscribe links need to work. Until it is closed, import a fresh suppression export before every campaign, and one at day 30. Then remove its DNS records.
+8. **Switch off the old tool.** After day 14 and a final export, remove its forms and tracking code from your site and disconnect it from your store or CRM. Do not disconnect the store, CRM or payment connections that feed Nitrosend. Keep the old account on its cheapest plan for as long as its unsubscribe links need to work. Until it is closed, import a fresh suppression export before every campaign, and one at day 7 and day 30. Remove its DNS records only once the old account is closed, because its unsubscribe links can depend on them.
 
 ## Day 7 and day 30
 
@@ -319,7 +321,7 @@ Nitrosend holds one email subscription per contact in a brand, with lists on top
 
 HubSpot leaves some bounced addresses out of its hard bounce segments, so [verify the list](/guides/verifying-your-list) in Nitrosend before your first big send. While both tools are running, export each "opted out of a type" segment again along with the three suppression segments, and take those people off that type's list in Nitrosend. At cutover, turn each workflow off.
 
-Want your CRM contacts and lists kept in sync as well? That is what the [HubSpot integration](/integrations/hubspot) is for. Contacts it brings in are not subscribed until you confirm they agreed to marketing email.
+Want your CRM contacts and lists kept in sync as well? That is a separate choice, and it is what the [HubSpot integration](/integrations/hubspot) is for. It is not a way to move your list. New contacts it brings in arrive not subscribed unless you confirm consent on the connection.
 
 ### Shopify
 
@@ -327,7 +329,7 @@ Suppression files first, then connect. This section is for stores that send from
 
 1. **Unsubscribed customers:** Customers > Segments, create a segment with `email_subscription_status = 'UNSUBSCRIBED'`, then More actions > Export as a plain CSV file.
 2. **Bounced and marked as spam:** segments on the Shopify Email events `shopify_email.bounced` and `shopify_email.marked_as_spam`. Export each.
-3. **All customers:** Customers > Export > All customers, plain CSV file, with Customer tags ticked. Split a copy by the Accepts Email Marketing column into the yes rows and the no rows.
+3. **All customers:** Customers > Export > All customers, plain CSV file, with Customer tags ticked. Count the yes rows and the no rows in the Accepts Email Marketing column. You need both numbers in Step 3.
 4. **Connect:** connect [Shopify](/integrations/shopify) under Integrations and sync customers.
 
 | File | What it is | Import as |
@@ -335,12 +337,10 @@ Suppression files first, then connect. This section is for stores that send from
 | Segment: UNSUBSCRIBED | Unsubscribes | Unsubscribe |
 | Segment: bounced | Bounces | Block |
 | Segment: marked as spam | Complaints | Block |
-| All customers: the no rows | Customers who have not opted in | Unsubscribe, before you connect. See the note below. |
+| All customers: the no rows | Customers who have not opted in | Do not import. The sync brings them as not subscribed. Use the count for the not subscribed line in Step 3. |
 | All customers: the yes rows | Your subscribers | The sync brings them. Use the file to check the count. |
 
-Customers who opted in to email marketing in your store arrive subscribed. Everyone else arrives not subscribed.
-
-Importing the no rows as unsubscribed is the cautious choice: none of those customers can be treated as a subscriber. It also records an opt-out for each of them, so if one opts in at your store later, that will not resubscribe them in Nitrosend by itself.
+Customers who opted in to email marketing in your store arrive subscribed. Everyone else arrives not subscribed. That is not an unsubscribe, so if one of them opts in at your store later, they become subscribed in Nitrosend. Do not import the no rows as unsubscribed: that would record an opt-out a later opt-in could not undo.
 
 Shopify's bounce and spam segments reach back 26 months, so [verify the list](/guides/verifying-your-list) before your first big send. Shopify has no export for email templates or campaign reports, so note the results you care about by hand. Order confirmations and shipping notifications stay in Shopify. At cutover, turn off each Shopify marketing automation and switch the Nitrosend flow on right after, and switch off Shopify's own abandoned checkout email just before your Nitrosend abandoned cart flow goes live.
 
