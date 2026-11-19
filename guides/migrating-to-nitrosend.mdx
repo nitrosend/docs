@@ -80,14 +80,14 @@ Some tools mix the reasons together:
 Check what went in before you bring a single contact:
 
 - Every import finished, and you can account for every failed row. A row that failed is a person this import did not protect.
-- The distinct addresses you imported are within 1% of your old tool's unsubscribes, bounces and complaints together. Someone in two files counts once.
-- Ten addresses from each file show the right stop: a marketing stop for an unsubscribe, a stop on all email for a bounce, a complaint or a blocked file. The Contacts screen shows that someone is unsubscribed, but not whether all email is blocked, so ask your agent for this one.
+- The distinct addresses you imported are within 1% of your old tool's unsubscribes, bounces and complaints together. Someone in two files counts once. With more than one source, check each source on its own.
+- Ten addresses from each file show the right stop: an unsubscribe that stops marketing email, or a bounce, complaint or block that stops all email. The Contacts screen shows that someone is unsubscribed, but not why or whether all email is blocked, so ask your agent for this one.
 
 ```text
-Ask your agent: "Using Nitrosend, look up the suppressions for these ten addresses and tell me whether each one blocks marketing email or all email."
+Ask your agent: "Using Nitrosend, look up the suppressions for these ten addresses and tell me the reason for each one and whether it blocks marketing email or all email."
 ```
 
-If your old tool has been sending for months and you imported no unsubscribes or bounces, an export is almost certainly missing. Find it before you go on.
+If a source has been sending for months and you imported no unsubscribes or bounces from it, an export is almost certainly missing. Find it before you go on. Accept zero for a source only when you are sure it has none.
 
 ## Step 2: Bring your contacts
 
@@ -98,7 +98,7 @@ There are two routes, and [your source](#source-by-source) decides which one you
 - A new contact with an email address is imported as subscribed unless its row or its file says otherwise. So a contacts file should hold only people who subscribed.
 - People who never subscribed, or never confirmed a double opt-in, are not subscribers. Leave them out, or import their file with **Unsubscribe all from marketing**.
 - If the file has a status column that uses your old tool's own words (active, pending, non-subscribed), split the file by status and import each part on its own. A blank status is not a yes: keep those rows out of the subscribed part.
-- Map each column to a contact field, tags or a custom field, and read the mapping over before you start the import. Map the opt-in date only if it is an ISO 8601 date. Otherwise keep it as a custom field.
+- Map each column to a contact field, tags or a custom field, and read the mapping over before you start the import. Once a file holds only subscribed rows, skip its status column. Map the opt-in date only if it is a past date written as `YYYY-MM-DD`, or a time with a timezone. Otherwise keep it as a custom field.
 - Files of people who clicked, or who received a flow, are not contacts files. Never import one as it came. Cut it down to people already in a contacts file you imported, then add those contacts to a list.
 - Put every file into a new list, and also into one list named for the move, such as "Migrated from Mailchimp". That list is your record of who came across, and you will use it in Step 6.
 - Leave **Start flows** off. People who joined years ago should not get a welcome email today.
@@ -117,7 +117,7 @@ Before you send anything, compare Nitrosend with your old tool. Count distinct a
 | Not subscribed | Contacts on your migration list who are not subscribed | Zero, unless you chose to bring people who never subscribed |
 | Unsubscribed and blocked | The rows you imported in Step 1 | Your old tool's unsubscribes, bounces and complaints |
 
-Then repeat the check from Step 1: ten addresses from each suppression file must still show their stop. Look at everyone in the not subscribed row, too. Each of them was in a contacts file and is also opted out, so make sure you expected them.
+Then repeat the check from Step 1: ten addresses from each suppression file must still show their stop. Look at everyone in the not subscribed row, too. Each of them was in a contacts file and did not come out subscribed, so find out why for each one you did not expect.
 
 ```text
 Ask your agent: "Using Nitrosend, count the subscribed and not subscribed contacts on my migration list, and check these ten addresses are still unsubscribed or blocked."
@@ -226,7 +226,7 @@ Keep only the rows whose Email Marketing Consent reads Subscribed. Nitrosend [re
 
 Suppression files first, then connect. Only an Owner or Admin can export an audience.
 
-Check one thing before you plan to connect. If an audience has GDPR marketing permission fields switched on, a member can be subscribed without having ticked the email permission. For that audience, do not connect: export a segment of members who ticked the email permission and import that file as your contacts.
+Check one thing before you plan to connect. If an audience has GDPR marketing permission fields switched on, a member can be subscribed without having ticked the email permission. The connection syncs every audience in the account, so if any audience works this way, do not connect at all. Use files for the whole account: for each audience with permission fields, export a segment of members who ticked the email permission, and import that file as your contacts.
 
 1. **Each audience:** Audience > Export audience > Export CSV. The download is a ZIP with one CSV per status: subscribed, unsubscribed, non-subscribed and cleaned. Repeat for every audience.
 2. **Archived contacts:** Audience > More options > Archived contacts, then export. They are not in the normal export.
@@ -276,11 +276,11 @@ At cutover, set each automation to Inactive, not Paused. A paused Brevo automati
 Suppression files first, then connect.
 
 <Warning>
-  Read this before you connect. The ActiveCampaign connection also writes back: a synced contact who has unsubscribed or complained in Nitrosend is unsubscribed on their ActiveCampaign email lists too. After Step 1, that includes people in the unsubscribe files you imported, so someone who left one ActiveCampaign list and stayed on another is taken off both, in ActiveCampaign. If you do not want that, do not connect. Import each email list's Active export as your contacts file.
+  Read this before you connect. The ActiveCampaign connection also writes back: a synced contact who has unsubscribed or complained in Nitrosend is unsubscribed on their ActiveCampaign email lists too, where the address still matches. After Step 1, that includes people in the unsubscribe files you imported, so someone who left one ActiveCampaign list and stayed on another is taken off both, in ActiveCampaign. If you do not want that, do not connect. Import each email list's Active export as your contacts file.
 </Warning>
 
 1. **Unsubscribed and bounced, for every list:** Contacts > Lists, open the list, set Status to Unsubscribed, then Export. Repeat with Status set to Bounced. Download from Contacts > Exports.
-2. **Exclusions:** Contacts > List Exclusions. An exclusion can be one address or a pattern, such as a whole domain. For a pattern, find every address in your list exports that matches it. An exclusion that covers every list is an unsubscribe: add those addresses to your unsubscribed file. An exclusion that covers only some lists is not: take those addresses out of those lists' contacts files and leave them alone elsewhere.
+2. **Exclusions:** Contacts > List Exclusions. An exclusion can be one address or a pattern, such as a whole domain. For a pattern, find every address in your list exports that matches it. An exclusion that covers every list is an unsubscribe: add those addresses to your unsubscribed file. An exclusion that covers only some lists is not: take those addresses out of those lists' contacts files and leave them alone elsewhere. The connection cannot apply an exclusion that covers only some lists, so if you have any, do not connect. Import the filtered Active exports as your contacts files.
 3. **For the count:** export each list once more with Status set to Any.
 4. **Connect:** go to Integrations > ActiveCampaign in Nitrosend, enter your account's API URL and key, and sync contacts.
 
@@ -360,7 +360,7 @@ Export files. You need the Admin role, and each export link works for 24 hours. 
 | All subscribers | Everyone, with a status | Split by status, then Contacts for the Active rows only |
 | Posts | Content | Do not import |
 
-A bounced address can still read Active in beehiiv, so the suppression segment must go in first. Pending subscribers never confirmed and are not subscribers. Decide what to do with Paused and Needs approval rows before you import any. A complaint appears in both the suppression file and the inactive file, so count it once.
+A bounced address can still read Active in beehiiv, so the suppression segment must go in first. Pending subscribers never confirmed and are not subscribers. Decide what to do with Paused and Needs approval rows before you import any. A complaint appears in both the suppression file and the inactive file, so count it once. At cutover, open each automation and use the control your account shows to stop new entries. Do not delete an automation until the 14 days are over.
 
 ### MailerLite
 
@@ -414,9 +414,9 @@ Substack documents no export of people who unsubscribed, bounced or complained, 
 
 - Before you import, look through the subscriber files in the ZIP for a column that marks email as turned off for a subscriber. If there is one, split those rows out, import them as unsubscribes, and keep them out of your contacts file.
 - If there is none, you have no suppression file. People who left your Substack list are not in the export, so they do not come across, and nothing here can stop one of them being emailed if the same address is already in Nitrosend or arrives from another source. If either is true for you, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise).
-- Save a copy of every export. While both are running, export again before every send and compare with the export before it. Anyone missing has left: import them as unsubscribes. Anyone new has signed up since: import them as contacts.
+- Save a copy of every export. While both are running, export again before every send and compare with the export before it. Anyone missing has left, and so has anyone whose row now marks email as turned off: import both as unsubscribes first. Anyone new has signed up since: import them as contacts.
 
-Replacing the forms on your own site does not stop signups on a live Substack publication, so keep comparing exports until you stop publishing there. Substack does not export subscriber names, and it gives you opens but not clicks, so warm up more slowly and verify anyone with no opens in six months.
+Replacing the forms on your own site does not stop signups on a live Substack publication, so keep comparing exports for the whole time both are running, even after you stop publishing there. Substack does not export subscriber names, and it gives you opens but not clicks, so warm up more slowly and verify anyone with no opens in six months.
 
 ### Omnisend
 
