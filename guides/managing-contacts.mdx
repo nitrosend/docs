@@ -71,7 +71,7 @@ Nitrosend recognizes some exports from their column headings, so a renamed file 
 
 A recognized suppression export cannot be imported as subscribed, whatever role you choose. A column mapping you send with a Klaviyo or Brevo export changes ordinary fields only: the email, phone, country and consent columns always come from the file, so you cannot skip the phone column of a recognized export by mapping. A phone number in a recognized export is not subscribed to SMS unless the file says so. In the app, upload Brevo files that use the comma separator.
 
-For Klaviyo profile and Brevo contact exports, last open and last click dates and any sent, open and click counts in the file are kept as imported engagement history on the contact. Importing a newer export replaces those values. It never adds to them.
+For Klaviyo profile and Brevo contact exports, last open and last click dates and any sent, unique open and click counts in the file are kept as imported engagement history on the contact. Importing a newer export replaces the values it carries. It never adds to them.
 
 Any other file imports with the mapping and role you give it.
 
@@ -95,7 +95,7 @@ Once rows have been written, the import record in the API also carries `import_s
 | `not_subscribed` | Rows whose address is not subscribed and has no opt-out or delivery stop |
 | `suppressed` | Rows whose address has opted out or has a delivery stop. Someone who had already opted out in Nitrosend counts here, whatever the file says. |
 | `phone_only` | Rows with a phone number and no usable email address |
-| `suppression_reasons` | Rows where the file itself gave a reason to stop, counted by reason, such as `unsubscribe`, `hard_bounce` and `complaint` |
+| `suppression_reasons` | Rows the file or its `file_role` gave a reason to stop, counted by reason, such as `unsubscribe`, `hard_bounce` and `complaint` |
 
 `success_rows` and `failed_rows` on the same record tell you how many rows were written and how many were not. Look into every failed row in an unsubscribe or bounce file: that import did not protect that address.
 

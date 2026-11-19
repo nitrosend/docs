@@ -31,7 +31,7 @@ To confirm, open Stripe under **Integrations**, find **Marketing consent**, choo
 - **It covers one Stripe account.** Nitrosend records who confirmed and when. Reconnecting to a different Stripe account clears the confirmation.
 - **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
 
-Confirming or withdrawing does not change contacts that were in Nitrosend before the connection began holding new ones. Transactional and account email can use Stripe facts straight away, confirmed or not. A test-mode connection and a live one are confirmed separately.
+Confirming subscribes only the email addresses this connection is holding for this account. It does not change any other address, and withdrawing unsubscribes nobody. Transactional and account email can use Stripe facts straight away, confirmed or not. A test-mode connection and a live one are confirmed separately.
 
 ## Events and flow triggers
 
