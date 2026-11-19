@@ -18,11 +18,24 @@ Customers are imported as contacts only — Shopify sync does not create contact
 
 ## Consent handling
 
-Nitrosend honours the marketing consent recorded in Shopify: customers who opted in to email or SMS marketing in your store are imported as subscribed on that channel; everyone else is imported **unsubscribed by default**.
+Nitrosend follows the marketing consent recorded in Shopify, for email and SMS separately:
+
+| In Shopify | In Nitrosend |
+| --- | --- |
+| Subscribed to email or SMS marketing | Subscribed on that channel |
+| Unsubscribed | Unsubscribed on that channel, including a customer who was subscribed in Nitrosend before |
+| Not subscribed, pending or anything else | Not subscribed. This is not an unsubscribe. |
+
+- **Consent stays in step after the first sync.** Shopify tells Nitrosend when a customer's marketing consent changes, so an unsubscribe in your store reaches Nitrosend without a manual sync.
+- **Buying is not subscribing.** A customer first seen on an order or an abandoned checkout is not subscribed unless Shopify says they opted in. If they opt in at checkout, they become subscribed when Shopify reports it.
+- **The newest choice wins.** An older Shopify unsubscribe does not undo a later opt-in the customer gave you directly in Nitrosend.
+- **Opt-outs hold.** Anyone who unsubscribed or was suppressed in Nitrosend stays that way, whatever Shopify says later.
+
+Moving from Shopify Email? Import your unsubscribed, bounced and spam segments before you connect. The [migration guide](/guides/migrating-to-nitrosend#shopify) has the steps.
 
 ## Store event webhooks
 
-When you connect, Nitrosend automatically registers webhooks on your store for order creation and payment, refunds, product creation/updates/deletion, and customer creation/updates. Every webhook is verified against Shopify's HMAC signature before it is processed. That activity flows into your contacts' event history, where segments and flow triggers can use it. Nitrosend also handles Shopify's mandatory privacy webhooks (customer data requests and redaction).
+When you connect, Nitrosend automatically registers webhooks on your store for order creation and payment, refunds, product creation/updates/deletion, customer creation/updates, and changes to a customer's email or SMS marketing consent. Every webhook is verified against Shopify's HMAC signature before it is processed. That activity flows into your contacts' event history, where segments and flow triggers can use it. Nitrosend also handles Shopify's mandatory privacy webhooks (customer data requests and redaction).
 
 ## Storefront Web Pixel (optional)
 

@@ -22,8 +22,6 @@ Imports start no flows unless you turn on **Start flows** under Destination list
 
 You can also connect Mailchimp from **Integrations** to migrate audiences and members directly into Nitrosend. Mailchimp contacts keep their source metadata, and only Mailchimp members with `subscribed` status are opted in for email in Nitrosend.
 
-Migrating by file from another platform? Import its unsubscribed and suppressed files first. Under **Email subscriptions**, choose **Unsubscribe all from marketing** or **Block all email delivery**, then import your subscribed contacts. The [migration FAQ](/faq#how-do-i-migrate-from-mailchimp-klaviyo-mailerlite-activecampaign) covers each source.
-
 Editing a contact or importing it again preserves its existing subscription. Contacts who have unsubscribed or been suppressed remain protected when an integration syncs again.
 
 You can also add contacts via the API:
@@ -38,6 +36,68 @@ curl -X POST https://api.nitrosend.com/v1/my/contacts \
     "last_name": "Doe"
   }'
 ```
+
+### Importing from another platform
+
+Moving a list from another email tool takes more than one file, and the order matters. Import the files of people who unsubscribed, bounced or complained first, then your subscribed contacts. Anyone already unsubscribed or blocked stays that way when the contacts file arrives. [Migrating to Nitrosend](/guides/migrating-to-nitrosend) walks through the whole move and lists the files for each source.
+
+### File roles
+
+Every file you import has a role: what it says about the people in it. In the app you set it under **Email subscriptions** when you upload. Agents and the API set it in the import's `options`.
+
+| The file holds | In the app | In `options` | What happens |
+| --- | --- | --- | --- |
+| Subscribed contacts | **Keep subscription choices** | nothing, or `file_role: "subscribed"` | New contacts are subscribed unless their row says otherwise. Unsubscribes in the file are always honored. |
+| Unsubscribes | **Unsubscribe all from marketing** | `email_action: "unsubscribe"`, or `file_role: "unsubscribed"` | Every address is unsubscribed from marketing email |
+| Hard bounces | **Block all email delivery** | `email_action: "block"`, or `file_role: "bounced"` | Every address is blocked from all email, recorded as a bounce when you use `file_role` |
+| Spam complaints | **Block all email delivery** | `email_action: "block"`, or `file_role: "complained"` | Every address is blocked from all email, recorded as a complaint when you use `file_role` |
+
+Send `email_action` or `file_role`, not both. These choices apply to this brand only and do not change SMS consent. Unsubscribe, block and suppression-role imports never start flows.
+
+A positive value in a file never resubscribes someone who has opted out. If a contacts file has a status column, Nitrosend reads `subscribed`, `true`, `yes` and `1` as subscribed, and `unsubscribed`, `false`, `no`, `0` and `opted out` as not. If your old tool uses other words, such as `active` or `pending`, split the file by status and import each part with its own role.
+
+### Recognized export files
+
+Nitrosend recognizes some exports from their column headings, so a renamed file still works:
+
+| Export | What Nitrosend does with it |
+| --- | --- |
+| Mailchimp unsubscribed audience export | Imports every row as unsubscribed |
+| Mailchimp cleaned audience export | Imports every row as not subscribed and records a bounce |
+| Klaviyo profile export | Maps the columns for you and reads each row's email consent. Only rows that say Subscribed are subscribed. |
+| Klaviyo suppressed profiles export | Imports the rows as not subscribed, with the reason each row gives |
+| Brevo contact export | Maps the columns for you and reads each row's subscription and blocklist status |
+| Brevo blocklisted export | Imports the rows as not subscribed, with the reason each row gives |
+
+A recognized export decides its own role. You cannot import a Mailchimp unsubscribed file as subscribed by choosing a different role, and a column mapping you send with a Klaviyo or Brevo export changes ordinary fields only: the email, phone and consent columns always come from the file. A phone number in a recognized export is never subscribed to SMS by default. Brevo files can use a comma or a semicolon as the separator.
+
+For Klaviyo and Brevo exports, last open and last click dates and any sent, open and click counts are kept as imported engagement history on the contact. Importing the same export again replaces that history. It never adds to it.
+
+Any other file imports with the mapping and role you give it.
+
+### Import summary
+
+When an import finishes, the app shows how the email addresses in the file came out:
+
+| Count | Meaning |
+| --- | --- |
+| **Subscribed** | Addresses subscribed to email |
+| **Unsubscribed** | Addresses unsubscribed from marketing email |
+| **Blocked** | Addresses blocked from all email in this brand |
+
+Compare these with the totals in your old tool before you send anything.
+
+The import record in the API also carries `import_summary`, which counts the state each row's address ended in:
+
+| Field | Meaning |
+| --- | --- |
+| `subscribed` | Rows whose address is subscribed |
+| `not_subscribed` | Rows whose address is not subscribed and has no opt-out or delivery stop |
+| `suppressed` | Rows whose address has opted out or has a delivery stop. Someone who had already opted out in Nitrosend counts here, whatever the file says. |
+| `phone_only` | Rows with a phone number and no usable email address |
+| `suppression_reasons` | Rows the file itself took out, by reason, such as `unsubscribe`, `hard_bounce` and `complaint` |
+
+`success_rows` and `failed_rows` on the same record tell you how many rows were written and how many were not. Look into every failed row in an unsubscribe or bounce file: a row that failed is a person who can still be emailed.
 
 ## Contact lists
 

@@ -87,6 +87,7 @@ export default defineConfig({
                 "guides/sending-domains",
                 "guides/microsoft-delivery",
                 "guides/managing-contacts",
+                "guides/migrating-to-nitrosend",
                 "guides/verifying-your-list",
                 "guides/website-signup-forms",
                 "guides/building-flows",
