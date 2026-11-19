@@ -28,7 +28,7 @@ Each member's Mailchimp status decides their email subscription in Nitrosend:
 | `subscribed` | Subscribed to email |
 | `unsubscribed` | Unsubscribed from marketing email |
 | `cleaned` | Not subscribed, and the address is blocked from all email in this brand as a hard bounce |
-| `pending`, `transactional`, archived or unknown | Not subscribed. This is not an unsubscribe. |
+| `pending`, `transactional`, archived or unknown | A new contact is not subscribed. This is not an unsubscribe, so a contact who is already subscribed stays subscribed. |
 
 A person can be in several audiences. Nitrosend reads all of them and makes one decision per contact:
 

@@ -23,13 +23,13 @@ A CRM holds many people who never asked for marketing email. So new contacts fro
 
 To confirm, open HubSpot under **Integrations**, find **Marketing consent**, choose **Review and confirm**, tick the statement and choose **Confirm consent**.
 
-- **After you confirm,** new contacts from HubSpot arrive subscribed, and contacts that were held as not subscribed are subscribed in the background.
+- **After you confirm,** new contacts from HubSpot arrive subscribed to email, and contacts this connection was holding as not subscribed are subscribed in the background. Confirming covers email only. It does not subscribe anyone to SMS.
 - **Opt-outs still win.** Anyone who unsubscribed or was suppressed stays not subscribed, whatever you confirm.
-- **HubSpot's own signals are honored.** A contact marked **Unsubscribed from all email** in HubSpot is unsubscribed in Nitrosend. An address HubSpot has seen hard bounce, or has quarantined, is never subscribed.
+- **HubSpot's own signals are honored.** A contact marked **Unsubscribed from all email** in HubSpot is unsubscribed in Nitrosend, including one who was subscribed before. A new address that HubSpot has seen hard bounce, or has quarantined, arrives not subscribed and is not subscribed when you confirm.
 - **It covers one HubSpot account.** Nitrosend records who confirmed and when. Reconnecting to a different HubSpot account clears the confirmation.
 - **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
 
-Contacts that were already in Nitrosend keep the subscription status they have. Until you confirm, you can still use HubSpot contacts in segments and send them transactional email.
+Confirming or withdrawing does not change contacts that were in Nitrosend before the connection began holding new ones. Until you confirm, you can still use HubSpot contacts in segments and send them transactional email.
 
 Moving your marketing email from HubSpot to Nitrosend? Follow the [migration guide](/guides/migrating-to-nitrosend#hubspot), which brings across only the people who opted in.
 

@@ -19,16 +19,16 @@ Attio notes, tasks, deals, and custom objects are not imported.
 
 ## Marketing consent
 
-Attio is a CRM. It does not record who agreed to marketing email. So new contacts from Attio arrive **not subscribed** to email until an account owner or admin confirms that the people in this connection agreed to receive marketing email from you.
+Attio is a CRM, and Nitrosend does not read marketing consent from it. So new contacts from Attio arrive **not subscribed** to email until an account owner or admin confirms that the people in this connection agreed to receive marketing email from you.
 
 To confirm, open Attio under **Integrations**, find **Marketing consent**, choose **Review and confirm**, tick the statement and choose **Confirm consent**.
 
-- **After you confirm,** new contacts from Attio arrive subscribed, and contacts that were held as not subscribed are subscribed in the background.
+- **After you confirm,** new contacts from Attio arrive subscribed to email, and contacts this connection was holding as not subscribed are subscribed in the background. Confirming covers email only. It does not subscribe anyone to SMS.
 - **Opt-outs still win.** Anyone who unsubscribed or was suppressed stays not subscribed, whatever you confirm.
 - **It covers one Attio workspace.** Nitrosend records who confirmed and when. Reconnecting to a different Attio workspace clears the confirmation.
 - **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
 
-Contacts that were already in Nitrosend keep the subscription status they have. Until you confirm, you can still use Attio people in segments and send them transactional email.
+Confirming or withdrawing does not change contacts that were in Nitrosend before the connection began holding new ones. Until you confirm, you can still use Attio people in segments and send them transactional email.
 
 ## Connect Attio
 

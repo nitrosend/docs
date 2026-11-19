@@ -26,12 +26,12 @@ Paying you is not the same as agreeing to marketing email. So new contacts from 
 
 To confirm, open Stripe under **Integrations**, find **Marketing consent**, choose **Review and confirm**, tick the statement and choose **Confirm consent**.
 
-- **After you confirm,** new contacts from Stripe arrive subscribed, and contacts that were held as not subscribed are subscribed in the background.
+- **After you confirm,** new contacts from Stripe arrive subscribed to email, and contacts this connection was holding as not subscribed are subscribed in the background. Confirming covers email only. It does not subscribe anyone to SMS.
 - **Opt-outs still win.** Anyone who unsubscribed or was suppressed stays not subscribed, whatever you confirm.
 - **It covers one Stripe account.** Nitrosend records who confirmed and when. Reconnecting to a different Stripe account clears the confirmation.
 - **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
 
-Contacts that were already in Nitrosend keep the subscription status they have. Transactional and account email can use Stripe facts straight away, confirmed or not. A test-mode connection and a live one are confirmed separately.
+Confirming or withdrawing does not change contacts that were in Nitrosend before the connection began holding new ones. Transactional and account email can use Stripe facts straight away, confirmed or not. A test-mode connection and a live one are confirmed separately.
 
 ## Events and flow triggers
 
