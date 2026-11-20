@@ -132,11 +132,13 @@ Unlimited, on every plan. You pay for sends, not list size.
 ### How do I migrate from Mailchimp / Klaviyo / MailerLite / ActiveCampaign?
 The route depends on where your list lives now. Whichever one you use, the old tool's opt-outs go in first.
 
+The [migration guide](/guides/migrating-to-nitrosend) has the full order and the files for each source.
+
 **First, from every source:** export three files from the old platform: people who unsubscribed, addresses that bounced, and people who marked your email as spam. Import them under Contacts, then Import, before you connect anything or import a single contact. Under Email subscriptions, choose Unsubscribe all from marketing for the unsubscribed file and Block all email delivery for the bounced and spam complaint files. If an export mixes unsubscribes with bounces and complaints, split it by reason first. Klaviyo's suppressed profiles file (Audience, Profiles, View suppressed profiles) mixes them, so split that one.
 
 **Mailchimp, ActiveCampaign or Shopify:** when those imports have finished, connect it under Integrations and let it sync. You can sync again any time. Mailchimp and ActiveCampaign bring each person's subscribed or unsubscribed email status. Connecting ActiveCampaign also sends unsubscribes and spam complaints from Nitrosend back to its email lists. The [Mailchimp](/integrations/mailchimp) and [Shopify](/integrations/shopify) pages list what each one syncs.
 
-**Klaviyo, Brevo, MailerLite, HubSpot or anything else:** export a CSV file of the people who subscribed to email marketing and import it under Contacts, then Import, one file per list. Keep anyone who never subscribed out of it. In Klaviyo, open a list or segment and choose Export to CSV. From HubSpot, export only the contacts who agreed to marketing email, not the whole CRM. Anyone already unsubscribed or blocked stays that way, and each import summary shows its subscribed, unsubscribed and blocked counts.
+**Klaviyo, Brevo, MailerLite, HubSpot or anything else:** export a CSV file of the people who subscribed to email marketing and import it under Contacts, then Import, one file per list. Keep anyone who never subscribed out of it. In Klaviyo, open a list or segment and choose Export to CSV. From HubSpot, export only the contacts who agreed to marketing email, not the whole CRM. Connecting [HubSpot](/integrations/hubspot) is a separate choice, for keeping CRM contacts in sync. Contacts it brings in arrive not subscribed unless you confirm consent on the connection. Anyone already unsubscribed or blocked stays that way, and each import summary shows its subscribed, unsubscribed and blocked counts.
 
 Whatever the source, check subscription status in Contacts before your first send. While the old platform is still in use, export its unsubscribes, bounces and complaints again and import them before every send.
 
