@@ -75,6 +75,7 @@ export default defineConfig({
                 "integrations/attio",
                 "integrations/hubspot",
                 "integrations/shopify",
+                "integrations/woocommerce",
                 "integrations/stripe",
               ],
             },
