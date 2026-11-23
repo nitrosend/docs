@@ -95,6 +95,7 @@ export default defineConfig({
                 "guides/agent-inbox",
                 "guides/inbox-coexist",
                 "guides/inbox-storage",
+                "guides/outreach",
               ],
             },
             {
@@ -109,6 +110,7 @@ export default defineConfig({
                 "concepts/campaigns",
                 "concepts/segments",
                 "concepts/agent-inbox",
+                "concepts/outreach",
               ],
             },
           ],
