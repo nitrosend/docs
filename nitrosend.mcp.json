@@ -592,7 +592,7 @@
     },
     {
       "name": "nitro_import_contacts",
-      "description": "Inline max 100 contacts returns contact_ids. CSV upload/finalize; contact list read-back requires options.list_ids. Limits: status guardrail or GET /v1/my/imports/spec. New contacts with email subscribe both channels; phone-only do not. Existing subscriptions stay unchanged; added email subscribes, added phone does not.",
+      "description": "Inline max 100 returns contact_ids. New email contacts subscribe both channels; phone-only do not. Existing consent stays; added email subscribes, added phone does not. CSV list read-back: options.list_ids. Limits: status guardrail or GET /v1/my/imports/spec.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -682,13 +682,20 @@
           },
           "options": {
             "type": "object",
-            "description": "Import options.",
             "properties": {
               "list_ids": {
                 "type": "array",
                 "items": {
                   "type": "integer"
                 }
+              },
+              "email_action": {
+                "type": "string",
+                "enum": [
+                  "unsubscribe",
+                  "block"
+                ],
+                "description": "Whole CSV via signed_id. unsubscribe stops marketing; block stops all email. start_flows off."
               },
               "start_flows": {
                 "type": "boolean"
