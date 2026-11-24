@@ -5,7 +5,7 @@ description: Every Nitrosend CLI command and global option, generated from the C
 
 # Command reference
 
-This page is generated from the command descriptors of `@nitrosend/cli` 0.3.11. `nitrosend <command> --help` prints the same usage and examples, and `nitrosend describe <command> --json` returns the full descriptor: every flag with its type and allowed values, which are required, the safety class and the idempotency policy.
+This page is generated from the command descriptors of `@nitrosend/cli` 0.3.13. `nitrosend <command> --help` prints the same usage and examples, and `nitrosend describe <command> --json` returns the full descriptor: every flag with its type and allowed values, which are required, the safety class and the idempotency policy.
 
 <Tip>
   In agent runners, prefer `nitrosend describe` over this page. The descriptor returned by the CLI always matches the binary you're running.
@@ -45,6 +45,20 @@ This page is generated from the command descriptors of `@nitrosend/cli` 0.3.11. 
 | Command | Summary |
 |---|---|
 | `nitrosend contacts import <file> --list-id <id> [--json]` | Direct-upload a CSV file and create a contact import. |
+| `nitrosend migrate [provider] [--no-browser] [--json]` | Open the contact import options for a platform. |
+| `nitrosend migrate sources [--json]` | Show available contact migration and sync methods. |
+| `nitrosend migrate prepare --provider <name> [--list-id <id>] [--idempotency-key <key>] [--json]` | Prepare a one-time contact import and get its browser review link. |
+| `nitrosend migrate status <id> [--json]` | Read a migration's progress and results. |
+
+To move contacts from another email platform, see [Move from another email platform](/cli/recipes#move-from-another-email-platform). `migrate prepare` works only for a brand where `migrate sources` reports a one-time import (`move_once`), and `migrate status` reads an import it prepared.
+
+## Integrations
+
+Open an integration's setup screen for the brand your CLI profile uses. You finish the connection in the browser.
+
+| Command | Summary |
+|---|---|
+| `nitrosend connect [provider] [--no-browser] [--json]` | Open a Nitrosend integration for the selected brand. |
 
 ## Data
 
