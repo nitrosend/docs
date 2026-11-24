@@ -110,6 +110,8 @@ Segments are dynamic groups defined by conditions (e.g., "subscribed in the last
 
 The segment builder supports profile, list membership, tag, custom-field, engagement, deliverability, and event-history filters. Tags are one of the available segment filters — use the `contact_tag` filter name with the `cont` (contains) predicate to build tag-based segments, e.g. `{ name: "contact_tag", predicate: "cont", value: "vip" }`.
 
+Using an agent? Add the steps for contacts, lists and segments as a skill: `npx skills add nitrosend/claude --skill contacts-and-segments`
+
 ## Contact activity
 
 Open a contact to review their activity timeline. The timeline brings sends, opens, clicks, unsubscribes, bounces, complaints, list changes, and custom events together so you can understand recent behavior before sending again.

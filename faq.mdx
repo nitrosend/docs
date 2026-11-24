@@ -148,6 +148,8 @@ Attio and Stripe are CRM and billing sources, not email tools, so they are not a
 Ask your agent: "Using Nitrosend, count my subscribed contacts, unsubscribed contacts and suppressed addresses so I can check them against my old platform before I send anything."
 ```
 
+Using an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill klaviyo-migration`. For Mailchimp use `mailchimp-migration`, and for any other platform `email-platform-migration`.
+
 ### What carries over when I migrate?
 Contacts, with the lists and fields a connected source supports; most sources have an integration page that names them. Email subscription status comes across from Mailchimp, ActiveCampaign and file imports. In a file import you pick the list the file goes into and map each column to a contact field, tags or a custom field. Remove phone columns from an email import. Templates, flows and past campaign reports don't transfer. Your agent can rebuild templates and flows in Nitrosend.
 
