@@ -5,6 +5,14 @@ description: Bring Stripe customers, subscriptions and payments into Nitrosend f
 
 # Stripe
 
+<Warning>
+  Stripe can't be connected to Nitrosend yet. The rest of this page describes the integration once it is available.
+
+  Until then, you can still start flows from Stripe events. For a completed Stripe Checkout (`checkout.session.completed`), have your Stripe webhook handler (or any tool that can make an authenticated API request) send a `checkout` event to the [Events API](/integrations/events-api), with the customer's email and the Stripe event ID as the idempotency key. Flows on the **Checkout** trigger then start for that contact.
+
+  An event for an email Nitrosend hasn't seen creates a subscribed contact (unless the address is on your suppression list), and buying isn't consent to marketing. So look the email up first with `GET /v1/my/contacts?search=` and match it exactly. Only when there's no contact, create one with `POST /v1/my/contacts` and `opt_in: false`, then send the event. Never send `opt_in: false` for an existing contact: it unsubscribes that email address.
+</Warning>
+
 Install the Nitrosend app on your Stripe account to import customers with their subscription and payment history, and to trigger flows from billing events as they happen.
 
 This is your own Stripe account's data. It is separate from how Nitrosend bills you; nothing here touches your Nitrosend plan.
@@ -41,6 +49,8 @@ Every trigger carries `event.source`, `event.stripe_event_id`, `event.stripe_eve
 
 ## Connect Stripe
 
+Connecting opens when the integration is available; until then, use the [Events API](/integrations/events-api) as described at the top of this page.
+
 From Nitrosend:
 
 1. Go to **Integrations** in Nitrosend.
@@ -48,7 +58,7 @@ From Nitrosend:
 3. Click **Connect** and approve the Nitrosend app on the Stripe account you want to import.
 4. Return to Nitrosend and run **Sync customers**.
 
-From the Stripe App Marketplace, once the listing is public (until then, connect from Nitrosend as above):
+From the Stripe App Marketplace, once the listing is public:
 
 1. Install Nitrosend from the listing.
 2. If the account email is new to Nitrosend, an account is created for you and you land in the dashboard signed in. If this Stripe account is already connected to a Nitrosend account, you land in that account.
