@@ -92,6 +92,8 @@ nitrosend connect activecampaign         # open the ActiveCampaign connection di
 
 Check subscription status in Contacts before your first send. While the old platform is still in use, export its unsubscribes, bounces and complaints again and import them before every send. The [migration FAQ](/faq#contacts-and-migration) covers what carries over and how to move a big list. `migrate sources` also lists syncs for HubSpot, Attio and Stripe. Those keep a CRM or billing tool connected; they are not a way to move a mailing list.
 
+Using an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill klaviyo-migration`. For Mailchimp use `mailchimp-migration`, and for any other platform `email-platform-migration`.
+
 ### Pipe campaign results into a spreadsheet
 
 ```bash

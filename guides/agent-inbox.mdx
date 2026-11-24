@@ -173,6 +173,8 @@ Sender rules (`set_sender_policy`, or `POST /v1/my/inboxes/:id/sender_policy`) t
 
 Triage verbs (`mark_handled`, `request_human`, `release_to_agent`, `mark_quarantine`, `classify_spam`) act on one item with `action_item_id`, on up to 100 with `action_item_ids`, or on a `filter` (the same keys as `list_queue`) with `expected_count` set to the total the listing reported; a filter that selects more than 100 items is refused, so narrow it or work through it in pages. A batch returns `updated` ids with their new state and `skipped` ids with a reason, never item bodies; if the filtered selection changed since it was listed, the call is refused with the live count so nothing acts on mail you have not seen.
 
+Your agent can load the steps for reading and replying as a skill: `npx skills add nitrosend/claude --skill shared-email-inbox`
+
 ## REST API
 
 Everything the dashboard does is available over REST:
