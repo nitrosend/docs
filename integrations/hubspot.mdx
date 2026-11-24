@@ -17,9 +17,21 @@ The HubSpot connector imports:
 
 HubSpot deals, companies, tickets, and marketing assets are not imported.
 
-## Consent handling
+## Marketing consent
 
-Nitrosend imports HubSpot contacts conservatively: the email channel is **unsubscribed by default**. Keep the CRM record without widening your sendable audience — opt contacts in through your own consent flow before sending marketing email.
+A CRM holds many people who never asked for marketing email. So new contacts from HubSpot arrive **not subscribed** to email until an account owner or admin confirms that the people in this connection agreed to receive marketing email from you.
+
+To confirm, open HubSpot under **Integrations**, find **Marketing consent**, choose **Review and confirm**, tick the statement and choose **Confirm consent**.
+
+- **After you confirm,** new contacts from HubSpot arrive subscribed to email, and contacts this connection was holding as not subscribed are subscribed in the background. Confirming covers email only. It does not subscribe anyone to SMS.
+- **Opt-outs still win.** Anyone who unsubscribed or was suppressed stays not subscribed, whatever you confirm.
+- **HubSpot's own signals are honored.** A contact marked **Unsubscribed from all email** in HubSpot is unsubscribed in Nitrosend, including one who was subscribed before. A new address that HubSpot has seen hard bounce, or has quarantined, arrives not subscribed and is not subscribed when you confirm.
+- **It covers one HubSpot account.** Nitrosend records who confirmed and when. Reconnecting to a different HubSpot account clears the confirmation.
+- **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
+
+Confirming subscribes only the email addresses this connection is holding for this account. It does not change any other address, and withdrawing unsubscribes nobody. Until you confirm, you can still use HubSpot contacts in segments and send them transactional email.
+
+Moving your marketing email from HubSpot to Nitrosend? Follow the [migration guide](/guides/migrating-to-nitrosend#hubspot), which brings across only the people who opted in.
 
 ## Connect HubSpot
 
@@ -28,7 +40,7 @@ Nitrosend imports HubSpot contacts conservatively: the email channel is **unsubs
 3. Click **Connect** and complete the HubSpot OAuth flow.
 4. Return to Nitrosend and run **Sync contacts**.
 
-The sync runs in the background — the sync progress tray keeps you updated anywhere in the dashboard, or return to the integration detail page for details. Run **Sync contacts** again any time to refresh.
+The sync runs in the background. The sync progress tray keeps you updated anywhere in the dashboard, or return to the integration detail page for details. Run **Sync contacts** again any time to refresh.
 
 ## After import
 

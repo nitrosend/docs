@@ -1,0 +1,482 @@
+---
+title: Migrating to Nitrosend
+description: Move your list, unsubscribes, flows and sending from another email tool, step by step
+---
+
+# Migrating to Nitrosend
+
+This guide takes you from another email tool to Nitrosend, in an order built to keep your subscribers and to keep anyone who opted out from being emailed. The order matters: unsubscribes go in first, contacts second, and nothing is sent until the counts match your old tool.
+
+<Info>
+  **Moving a big list?** We'll do it with you, free on plans above Starter. [Book a time](https://calendly.com/nitrosend/nitrosend-enterprise). It is worth booking if you have more than 100,000 contacts, more than 20 flows, or you send SMS from your old tool.
+</Info>
+
+Working with an AI agent? Give it the migration skill, which follows the same order as this guide:
+
+```text
+Read https://nitrosend.com/skills/migrate.md and move my list from [your old tool] to Nitrosend.
+```
+
+## What carries over
+
+| From your old tool | In Nitrosend |
+| --- | --- |
+| Subscribers, with names, tags and custom fields | Contacts, on the lists you choose |
+| Unsubscribes | Unsubscribed from marketing email |
+| Hard bounces and spam complaints | Blocked from all email in the brand |
+| People who never subscribed or never confirmed | Left out, or imported as unsubscribed |
+| Last open, last click, signup date | Custom fields you can segment on. Klaviyo and Brevo exports also keep last open and last click as imported engagement history. |
+| Signup forms, flows and templates | Rebuilt in Nitrosend. They do not import. |
+| Campaign reports | Kept as your own files. They do not import. |
+| SMS consent | Handled separately. Leave phone columns out of email imports. |
+
+A phone number in an import can be read as that contact's SMS number. Unless those people agreed to texts from you, remove phone columns before you upload.
+
+## Before you start
+
+Write down four numbers from your old tool: how many people are subscribed, unsubscribed, bounced and marked as spam. Every check in this guide compares against them.
+
+Also note how many emails you send in a typical month, your biggest single send, how many flows are live, and the date you want to finish. If a launch or a sale cannot slip, work backward from it.
+
+In Nitrosend, check you are in the brand this move is for. Every import lands in the brand you are in. If the brand already holds contacts, note how many are subscribed and not subscribed before you import anything.
+
+Moving from two tools at once? Bring the unsubscribes, bounces and complaints from every source before the contacts from any of them.
+
+Leave your old account open and its DNS records in place until the end. You will go back to it several times.
+
+## Step 1: Bring your unsubscribes first
+
+Export everyone who unsubscribed, bounced or complained and import those files before any contact. Once an address is unsubscribed or blocked in a brand, a later import or sync does not resubscribe it, so doing this first protects everything that follows.
+
+[Source by source](#source-by-source) lists where each tool keeps these files.
+
+Before you upload a file:
+
+- Work on a copy and keep the original.
+- Remove phone columns. A phone number in any import, a suppression file included, can be stored as that contact's SMS number.
+- Remove duplicate addresses and count the distinct addresses. That count is the one you compare.
+- Keep each address exactly as your old tool exported it.
+- Set aside any row whose domain is a misspelling of a mail provider, such as `gmial.com`. A corrected address is not the address that opted in or out, so decide those by hand.
+
+Then go to **Contacts > Import** ([app.nitrosend.com/my/contacts/import](https://app.nitrosend.com/my/contacts/import)), upload the file, and under **Email subscriptions** tell Nitrosend what the file is:
+
+| File | Choose | What it does |
+| --- | --- | --- |
+| Unsubscribes | **Unsubscribe all from marketing** | Stops marketing email to every address in the file |
+| Hard bounces, cleaned or invalid addresses | **Block all email delivery** | Stops every email to those addresses, receipts and other transactional email included |
+| Spam complaints | **Block all email delivery** | The same |
+
+Both choices act on email, in this brand only. If the import asks for a destination list, give each of these files a new list of its own, such as "Mailchimp opt-outs". Never put them on a list you send to.
+
+Nitrosend recognizes some suppression exports from their column headings and imports every row as not subscribed, whatever you choose here. [Managing Contacts](/guides/managing-contacts#recognized-export-files) lists them.
+
+Some tools mix the reasons together:
+
+- If one export marks each row with a reason, split it into a file per reason.
+- If an address appears in two files, import both. The block holds.
+- If a file mixes dead addresses with unsubscribes and cannot tell them apart, import it as blocked. Those people will get no email of any kind from this brand.
+- If your old tool files spam complaints under unsubscribes, you choose: unsubscribing keeps them out of marketing, and blocking also keeps them out of transactional email.
+
+Check what went in before you bring a single contact:
+
+- Every import finished, and you can account for every failed row. A row that failed is a person this import did not protect.
+- The distinct addresses you imported are within 1% of your old tool's unsubscribes, bounces and complaints together. Someone in two files counts once. With more than one source, check each source on its own. People who never subscribed or never confirmed are not part of this number. They are counted on their own line in Step 3.
+- Ten addresses from each file show the right stop: an unsubscribe that stops marketing email, or a bounce, complaint or block that stops all email. The Contacts screen shows that someone is unsubscribed, but not why or whether all email is blocked, so ask your agent for this one.
+
+```text
+Ask your agent: "Using Nitrosend, look up the suppressions for these ten addresses and tell me the reason for each one and whether it blocks marketing email or all email."
+```
+
+If a source has been sending for months and you imported no unsubscribes or bounces from it, an export is almost certainly missing. Find it before you go on. Accept zero for a source only when you are sure it has none.
+
+## Step 2: Bring your contacts
+
+There are two routes, and [your source](#source-by-source) decides which one you use.
+
+**Import a file.** Upload your subscribed contacts under **Contacts > Import**, one file per list.
+
+- A new contact with an email address is imported as subscribed unless its row or its file says otherwise. So a contacts file should hold only people who subscribed.
+- People who never subscribed, or never confirmed a double opt-in, are not subscribers. Leave them out, or import their file with **Unsubscribe all from marketing**.
+- If the file has a status column that uses your old tool's own words (active, pending, non-subscribed), split the file by status and import each part on its own. A blank status is not a yes: keep those rows out of the subscribed part.
+- Map each column to a contact field, tags or a custom field, and read the mapping over before you start the import. Once a file holds only subscribed rows, skip its status column. Map the opt-in date only if it is a past date written as `YYYY-MM-DD`, or a time with a timezone. Otherwise keep it as a custom field.
+- Files of people who clicked, or who received a flow, are not contacts files. Never import one as it came. Cut it down to people already in a contacts file you imported, then add those contacts to a list.
+- Put every file into a new list, and also into one list named for the move, such as "Migrated from Mailchimp". That list is your record of who came across, and you will use it in Step 6.
+- Leave **Start flows** off. People who joined years ago should not get a welcome email today.
+
+**Connect the source.** Mailchimp, ActiveCampaign and Shopify connect under **Integrations** and sync contacts with their email status. Import the suppression files from Step 1 before you connect, so an unsubscribe anywhere in the old account holds. A sync does not fill your migration list, so when it has finished, add the people in the source's subscribed export to that list yourself. Your agent can do it from the file.
+
+Imports and syncs run in the background and show progress. You can leave the page and come back.
+
+## Step 3: Check the counts
+
+Before you send anything, compare Nitrosend with your old tool. Count distinct addresses on both sides: a person on three lists is one contact.
+
+| Number | Where to find it in Nitrosend | Compare with |
+| --- | --- | --- |
+| Subscribed | Contacts on your migration list who are subscribed to email | Your old tool's subscribed total |
+| Not subscribed | Contacts from this move who are not subscribed and have no unsubscribe or block, plus any never subscribed file you imported as unsubscribed | Your old tool's never subscribed and unconfirmed total if you brought those people, otherwise zero |
+| Suppressed | The unsubscribe, bounce and complaint rows you imported in Step 1 | Your old tool's unsubscribes, bounces and complaints |
+
+Compare each line on its own. Do not add them together, and do not count someone who never subscribed as an unsubscribe: they belong on the not subscribed line on both sides.
+
+Then repeat the check from Step 1: ten addresses from each suppression file must still show their stop. Look at the not subscribed line, too. Anyone there who was in a subscribed contacts file did not come out subscribed, so find out why for each one.
+
+```text
+Ask your agent: "Using Nitrosend, count the subscribed and not subscribed contacts on my migration list, and check these ten addresses are still unsubscribed or blocked."
+```
+
+If the subscribed count is off by more than 1%, stop. Stop too if the suppressed line no longer matches what you checked in Step 1, or the not subscribed line holds people you cannot explain. Do not send, and do not fix it by resubscribing or deleting people. A subscribed count that is higher in Nitrosend than in your old tool is the serious case: it can mean someone without an opt-in came in as a subscriber. [Book a time](https://calendly.com/nitrosend/nitrosend-enterprise) and we will work through it with you.
+
+## Step 4: Keep your engagement and history
+
+Take everything your old tool will give you before the account is closed or downgraded.
+
+- **Per contact:** last open, last click, signup source and date. Map these to custom fields when you import, so you can build segments from them. Trust clicks over opens. Opens recorded by another tool are inflated by mail privacy features.
+- **Per campaign and flow:** export the reports and keep them in a folder you control.
+- **Content:** save the HTML of the templates you still use, the copy of every flow email, and each form's fields and what it promises.
+
+Write down your old tool's bounce, complaint, unsubscribe and click rates for the last 90 days. You will compare against them after the move.
+
+## Step 5: Set up your sending domain
+
+Mail from Nitrosend should be authenticated on your own domain before you send to a list.
+
+1. Add a sending subdomain under **Settings > Domains**, and add the DNS records Nitrosend shows. [Sending Domains](/guides/sending-domains) has the full steps.
+2. Wait for the domain to show **Verified**, then make an address on it your From address, with a From name people will recognize and a reply-to inbox someone reads.
+3. Check your domain has exactly one DMARC record and that no SPF record was duplicated. Gmail and Yahoo expect DMARC from bulk senders.
+4. Leave your old tool's DNS records where they are. Both tools send for a short while in Step 8.
+
+Add only the records Nitrosend lists, and do not replace the MX records your inbox uses.
+
+## Step 6: Rebuild your forms, flows and templates
+
+Nothing from your old tool's builders imports as a working object. You rebuild from what you saved in Step 4, and your agent can do most of it.
+
+1. **Forms.** Copy the Nitrosend form snippet from the list's **Website signup form** panel. Have it ready, and do not publish it until Step 8. If your old form made people confirm by email before they were subscribed, note that a Nitrosend form subscribes on submit, and decide how you want to handle it before you swap. See [Website Signup Forms](/guides/website-signup-forms).
+2. **Flows.** Rebuild each live flow as a draft, starting with the ones that earn or protect the most. A draft sends nothing. See [Building Flows](/guides/building-flows).
+3. **Nobody gets a second welcome.** For flows a person goes through once, such as a welcome or onboarding series, exclude everyone on your migration list. New signups are not on that list, so they still get their welcome. If your old tool can export who went through a flow, you can exclude just those people: cut the file down to contacts you imported and put them on a list of their own. Do not exclude people from flows that repeat, such as abandoned cart. Those are kept from doubling up in Step 8.
+4. **Templates.** Rebuild the ones you still use from your Brand Kit.
+5. **Test every email.** Send each one to your own address and check every link, merge field, image and discount code.
+
+```text
+Ask your agent: "Rebuild my welcome flow in Nitrosend as a draft from this copy, exclude everyone on my 'Migrated from Mailchimp' list, and send me a test of each email."
+```
+
+## Step 7: Warm up
+
+A new sending domain has no reputation yet. Build it with the people most likely to open and click.
+
+1. Check your current sending allowance. Ask your agent, or see [how sending capacity grows](/guides/sending-domains#how-sending-capacity-grows).
+2. Rank your subscribers from most to least engaged: clicked in the last 30 days, then 60, then 90, then opened in the last 90, then everyone else.
+3. [Verify](/guides/verifying-your-list) anyone with no engagement in about a year, and any list that has not been emailed in about 90 days, before they get mail.
+4. Plan your sends day by day. Start inside your allowance with the most engaged group, and never send to more than double the day before.
+5. Put each day's audience, and nobody you have already mailed, on its own list, so the send cannot grow past what you planned. Check the recipient count before you send.
+6. Before every send, export your old tool's unsubscribes, bounces and complaints again and import them as in Step 1. People keep unsubscribing there while it is still in use.
+7. After every send, check the campaign's results. Keep bounces under 2% and spam complaints under 0.1%. If either is crossed, or the results look incomplete, stop the next send and find out why before you go on.
+
+## Step 8: Switch over
+
+Do these in order on your cutover date.
+
+1. **List everything your old tool will still send:** scheduled campaigns, and people partway through each flow. Cancel anything you do not want to go out.
+2. **Switch on the Nitrosend flows your new forms start.** A flow that is live before its form is published cannot miss the first signup.
+3. **Swap your signup forms.** Replace each old form on your site with the Nitrosend form. Submit a real signup and confirm the contact lands on the right list and the first email arrives.
+4. **Bring the lists level.** Now that nobody can join at the old tool, export its unsubscribes, bounces and complaints again and import them. Then export everyone who subscribed since your first contacts export and import them too.
+5. **Switch off the old tool's flows.** "Pause" means different things in different tools, and in some a paused flow keeps emailing the people already inside it. [Your source's section](#source-by-source) says which control to use. Switch each remaining Nitrosend flow on only after its old twin is off, so nobody gets both.
+6. **Run both for 14 days.** Your old tool sends nothing new, but keep the account open so its unsubscribe links keep working and it keeps recording unsubscribes, bounces and complaints from mail it already sent.
+7. **Keep bringing late unsubscribes across.** Export and import them every day of these 14 days while a live Nitrosend flow can email the people you migrated, before every Nitrosend campaign, and at day 7 and day 14 whatever happens. Importing an address twice is harmless. If you cannot keep up a daily export, leave the flows that email migrated contacts off until day 14 and run only the flows for new signups.
+8. **Switch off the old tool.** After day 14 and a final export, remove its forms and tracking code from your site and disconnect it from your store or CRM. Do not disconnect the store, CRM or payment connections that feed Nitrosend. Keep the old account on its cheapest plan for as long as its unsubscribe links need to work. Until it is closed, import a fresh suppression export before every campaign, and one at day 7 and day 30. Remove its DNS records only once the old account is closed, because its unsubscribe links can depend on them.
+
+## Day 7 and day 30
+
+Count both from your cutover date.
+
+**Day 7:** compare your bounce, complaint, unsubscribe and click rates with the numbers from Step 4. Confirm every flow that should be live has sent, and that new signups are reaching their list and their welcome flow. Check the counts from Step 3 still add up, allowing for new signups and unsubscribes.
+
+**Day 30:** compare the same rates again. By now your full subscribed list should be receiving mail, or you should have a dated plan for the rest.
+
+If bounces are not under 2%, complaints are not under 0.1%, or any rate is clearly worse than it was at your old tool, pause new sends and [book a time](https://calendly.com/nitrosend/nitrosend-enterprise).
+
+## Source by source
+
+Each section says whether the source connects or exports, where to find each file, and what each file is for. In the tables, **Unsubscribe** means import with **Unsubscribe all from marketing**, **Block** means import with **Block all email delivery**, and **Contacts** means import as subscribed contacts into a list.
+
+Menu names are your old tool's and can change. If one has moved, search that tool's help center for "export".
+
+### Klaviyo
+
+Export files. You need an Owner, Admin or Analyst role.
+
+1. **Suppressed profiles:** Audience > Profiles > View suppressed profiles, clear any reason filter, then Export CSV.
+2. **One file per reason:** create a segment with "cannot receive email marketing" and the filter "because person" set to Unsubscribed. Open it and choose Manage segment > Export to CSV. Repeat for Hard bounced, Invalid email and Manually suppressed.
+3. **Subscribed profiles:** create a segment with "can receive email marketing" and export it. On the Export Review screen tick Email, the name fields, Email Marketing Consent and its timestamp, Profile Created On, First Active, Last Active, Last Open, Last Click, and your custom properties. Repeat for each list you want to keep as a list.
+4. **Results and templates:** Campaigns > Options > Export analytics, the same under Flows, and export each template's HTML from Content > Templates.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Segment: Unsubscribed | Unsubscribes | Unsubscribe |
+| Segment: Hard bounced | Bounces | Block |
+| Segment: Invalid email | Bounces | Block |
+| Segment: Manually suppressed | People you took out by hand | Unsubscribe |
+| Suppressed profiles | Catch-all, so nobody is missed | Unsubscribe, after the reason files |
+| Subscribed profiles | Your subscribers | Contacts |
+| Campaign and flow analytics | History | Do not import |
+
+Keep only the rows whose Email Marketing Consent reads Subscribed. Nitrosend [recognizes Klaviyo exports](/guides/managing-contacts#recognized-export-files), maps their columns and subscribes a row only where the file says so, but a file you have filtered yourself is easier to reconcile. Klaviyo can email a profile that reads Never subscribed, so your subscribed count in Nitrosend can be lower than the number Klaviyo could email. Klaviyo files spam complaints under unsubscribes. If your account does not use global unsubscribe, export each list's suppressions too. At cutover, set each flow's status to Draft and delete any scheduled status change that could switch it back on.
+
+### Mailchimp
+
+Suppression files first, then connect. Only an Owner or Admin can export an audience.
+
+Check one thing before you plan to connect. If an audience has GDPR marketing permission fields switched on, a member can be subscribed without having ticked the email permission. The connection syncs every audience in the account, so if any audience works this way, do not connect at all. Use files for the whole account: for each audience with permission fields, export a segment of members who ticked the email permission, and import that file as your contacts.
+
+1. **Each audience:** Audience > Export audience > Export CSV. The download is a ZIP with one CSV per status: subscribed, unsubscribed, non-subscribed and cleaned. Repeat for every audience.
+2. **Archived contacts:** Audience > More options > Archived contacts, then export. They are not in the normal export.
+3. **History and content:** Account > Settings > Manage my data, tick Emails, Reports and Templates.
+4. **Connect:** when the unsubscribed and cleaned files are in, connect [Mailchimp](/integrations/mailchimp) under Integrations.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| `unsubscribed` CSV | Unsubscribes, spam complaints included | Unsubscribe |
+| Complaints, collected from campaign reports | People who marked an email as spam | Block |
+| `cleaned` CSV | Addresses that bounced | Block |
+| `non-subscribed` CSV | People who never opted in | Leave out, or Unsubscribe |
+| `subscribed` CSV | Your subscribers | The sync brings them. Use the file to check the count, or as your contacts file if you do not connect. |
+| Archived contacts | Not subscribers | Leave out |
+| Account backup | History and content | Do not import |
+
+Mailchimp's unsubscribed and cleaned files have no status column, so make the choice under Email subscriptions for each one. Nitrosend also [recognizes these two files](/guides/managing-contacts#recognized-export-files) from their columns and imports every row as not subscribed. Never import the whole ZIP as contacts. Someone unsubscribed in one audience can be subscribed in another, which is why every audience's files go in before you connect.
+
+Mailchimp has no separate complaint export, but each campaign's report lists the people who complained. Collect those addresses into a file of their own and import it as blocked. At cutover, pause each automation flow, and use Pause All Emails on classic automations. A paused classic automation keeps a queue, so do not restart one later.
+
+### Brevo
+
+Export files.
+
+1. **Blocklisted contacts, one file per reason:** CRM > Contacts > Add filter > Email > Email campaigns subscriptions > Blocklisted. Pick one reason (unsubscribed, marked as spam, hard bounce, manually blocklisted), select all contacts, then More actions > Export. Repeat for each reason.
+2. **Transactional blocks:** Settings > Transactional emails > Blocked or Unsubscribed contacts. This is a separate list. Put every address on it into its own file.
+3. **All contacts:** CRM > Contacts with no list, segment or filter loaded. Select all, More actions > Export. Tick the attributes you use, tick List ID under System data, tick the email subscription status under Subscriptions, and choose the comma separator.
+4. **Campaign reports:** Marketing > Emails, then Export report on each campaign.
+5. **Engagement:** per contact opens and clicks are not in the contact export. Build segments of people who clicked in the last 30, 60 and 90 days and export each for your warmup.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Blocklisted: unsubscribed | Unsubscribes | Unsubscribe |
+| Blocklisted: marked as spam | Complaints | Block |
+| Blocklisted: hard bounce | Bounces | Block |
+| Blocklisted: manually blocklisted | People you took out by hand | Unsubscribe |
+| Transactional blocked or unsubscribed | Bounces and blocks | Block |
+| All contacts | Everyone, with a subscription status | Split by status, then Contacts for the subscribed rows only |
+| Campaign reports | History | Do not import |
+
+Nitrosend [recognizes Brevo exports](/guides/managing-contacts#recognized-export-files) and reads each row's subscription and blocklist status. Subscription status and List ID are left out of the export unless you tick them. If your file has no subscription status column, export it again. Do not import it as subscribed. A loaded filter narrows "all contacts" without saying so, so check the row count against your dashboard total.
+
+At cutover, set each automation to Inactive, not Paused. A paused Brevo automation stops new entries, but people already inside it keep receiving its emails.
+
+### ActiveCampaign
+
+Suppression files first, then connect.
+
+<Warning>
+  Read this before you connect. The ActiveCampaign connection also writes back: a synced contact who has unsubscribed or complained in Nitrosend is unsubscribed on their ActiveCampaign email lists too, where the address still matches. After Step 1, that includes people in the unsubscribe files you imported, so someone who left one ActiveCampaign list and stayed on another is taken off both, in ActiveCampaign. If you do not want that, do not connect. Import each email list's Active export as your contacts file.
+</Warning>
+
+1. **Unsubscribed and bounced, for every list:** Contacts > Lists, open the list, set Status to Unsubscribed, then Export. Repeat with Status set to Bounced. Download from Contacts > Exports.
+2. **Exclusions:** Contacts > List Exclusions. An exclusion can be one address or a pattern, such as a whole domain. For a pattern, find every address in your list exports that matches it. An exclusion that covers every list is an unsubscribe: add those addresses to your unsubscribed file. An exclusion that covers only some lists is not: take those addresses out of those lists' contacts files and leave them alone elsewhere. The connection cannot apply an exclusion that covers only some lists, so if you have any, do not connect. Import the filtered Active exports as your contacts files.
+3. **For the count:** export each list once more with Status set to Any.
+4. **Connect:** go to Integrations > ActiveCampaign in Nitrosend, enter your account's API URL and key, and sync contacts.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Each list, Status: Unsubscribed | Unsubscribes, spam complaints included | Unsubscribe |
+| Each list, Status: Bounced | Bounces | Block |
+| List Exclusions that cover every list | People excluded from all email | Unsubscribe |
+| Each list, Status: Any | The totals to check against | Do not import |
+| Each email list, Status: Active | Your subscribers | Contacts, only if you do not connect |
+
+The sync brings contacts, lists and tags with each contact's email status. In ActiveCampaign, status belongs to a list, not a person. Importing every list's unsubscribed file first is what makes an unsubscribe from any one list take that person out of marketing email in Nitrosend. If you need a choice per list, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise).
+
+Leave SMS lists out: being active on an SMS list is not an email opt-in. At cutover, set each automation to Inactive.
+
+### HubSpot
+
+Export files. Your CRM holds many people who never asked for marketing email, so bring across only the ones who did.
+
+1. **Unsubscribes:** CRM > Segments, create a segment with "Unsubscribed from all email" is true, then More > Export with Select all properties.
+2. **Hard bounces:** Marketing > Email > Email tools > Create segment of hard-bounced contacts. Leave every reason ticked except Spam and pick the widest timeframe. Export it.
+3. **Spam reports:** the same dialog with only Spam ticked.
+4. **Opted-in contacts:** for each subscription type you will keep sending, create a segment of contacts who opted in to it and export it. Also export a segment of contacts who opted out of that type.
+5. **For the count:** CRM > Contacts > Export, with All properties on records and Include all email addresses ticked.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Segment: Unsubscribed from all email | Unsubscribes | Unsubscribe |
+| Segment: hard-bounced contacts | Bounces | Block |
+| Segment: Spam reason only | Complaints | Block |
+| Segment: opted in to a type | Your subscribers for that type | Contacts, one list per type |
+| Segment: opted out of a type | People to keep off that type's list | Remove these addresses from that type's contacts file |
+| All contacts export | The totals to check against | Do not import |
+
+Nitrosend holds one email subscription per contact in a brand, with lists on top. Someone who opted in to one HubSpot type and out of another comes across subscribed, on the first type's list only, so send each kind of email to its own list. A contact who has not unsubscribed has not necessarily subscribed. If you cannot say who opted in, or you send more than two subscription types, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise) before you import.
+
+HubSpot leaves some bounced addresses out of its hard bounce segments, so [verify the list](/guides/verifying-your-list) in Nitrosend before your first big send. While both tools are running, export each "opted out of a type" segment again along with the three suppression segments, and take those people off that type's list in Nitrosend. At cutover, turn each workflow off.
+
+Want your CRM contacts and lists kept in sync as well? That is a separate choice, and it is what the [HubSpot integration](/integrations/hubspot) is for. It is not a way to move your list. New contacts it brings in arrive not subscribed unless you confirm consent on the connection.
+
+### Shopify
+
+Suppression files first, then connect. This section is for stores that send from Shopify Email. If your store sends from another tool, use that tool's section for the list and connect Shopify for the store data.
+
+1. **Unsubscribed customers:** Customers > Segments, create a segment with `email_subscription_status = 'UNSUBSCRIBED'`, then More actions > Export as a plain CSV file.
+2. **Bounced and marked as spam:** segments on the Shopify Email events `shopify_email.bounced` and `shopify_email.marked_as_spam`. Export each.
+3. **All customers:** Customers > Export > All customers, plain CSV file, with Customer tags ticked. Count the yes rows and the no rows in the Accepts Email Marketing column. You need both numbers in Step 3.
+4. **Connect:** connect [Shopify](/integrations/shopify) under Integrations and sync customers.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Segment: UNSUBSCRIBED | Unsubscribes | Unsubscribe |
+| Segment: bounced | Bounces | Block |
+| Segment: marked as spam | Complaints | Block |
+| All customers: the no rows | Customers who have not opted in | Do not import. The sync brings them as not subscribed. Use the count for the not subscribed line in Step 3. |
+| All customers: the yes rows | Your subscribers | The sync brings them. Use the file to check the count. |
+
+Customers who opted in to email marketing in your store arrive subscribed. Everyone else arrives not subscribed. That is not an unsubscribe, so if one of them opts in at your store later, they become subscribed in Nitrosend. Do not import the no rows as unsubscribed: that would record an opt-out a later opt-in could not undo.
+
+Shopify's bounce and spam segments reach back 26 months, so [verify the list](/guides/verifying-your-list) before your first big send. Shopify has no export for email templates or campaign reports, so note the results you care about by hand. Order confirmations and shipping notifications stay in Shopify. At cutover, turn off each Shopify marketing automation and switch the Nitrosend flow on right after, and switch off Shopify's own abandoned checkout email just before your Nitrosend abandoned cart flow goes live.
+
+### beehiiv
+
+Export files. You need the Admin role, and each export link works for 24 hours. If you have paid subscribers, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise) before anything else.
+
+1. **Suppressed addresses:** create a segment with Subscriber data > Attribute > Suppression > exists. Open it and choose Full Export.
+2. **Unsubscribed:** a segment with Status set to Inactive, exported the same way.
+3. **All subscribers:** Settings > Export Data > Export Subscribers > Export All Subscribers.
+4. **Posts:** Settings > Export Data > Export Posts.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Segment: Suppression exists | Bounces and complaints | Block |
+| Segment: Status Inactive | Unsubscribes, and complaints | Unsubscribe |
+| All subscribers | Everyone, with a status | Split by status, then Contacts for the Active rows only |
+| Posts | Content | Do not import |
+
+A bounced address can still read Active in beehiiv, so the suppression segment must go in first. Pending subscribers never confirmed and are not subscribers. Decide what to do with Paused and Needs approval rows before you import any. A complaint appears in both the suppression file and the inactive file, so count it once. At cutover, open each automation and use the control your account shows to stop new entries. Do not delete an automation until the 14 days are over.
+
+### MailerLite
+
+Export files. Only an account administrator can export. MailerLite exports one status at a time and only the columns showing in the list, so use Set columns to show every field you use, and tick Groups, before you start. These steps are for the current MailerLite. MailerLite Classic has a different layout.
+
+For each status, open Subscribers, pick the status from the dropdown, select everyone in the list (not only the page in view), then Actions > CSV file. Do them in this order: Unsubscribed, Bounced, Spam Complaints, Unconfirmed, then Active.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Unsubscribed | Unsubscribes | Unsubscribe |
+| Bounced | Bounces | Block |
+| Spam Complaints | Complaints | Block |
+| Unconfirmed | People who never confirmed | Leave out, or Unsubscribe |
+| Active | Your subscribers | Contacts, with groups as tags |
+| Campaign "clicked" exports | Engagement for your warmup | Do not import as contacts. Use them to build your warmup lists. |
+| Automation activity: completed and queued | Who has already had that flow | Do not import as contacts. Use them for the exclusion in Step 6. |
+| Campaign reports | History | Do not import |
+
+At cutover, pause each automation and do not restart it after the move.
+
+### Kit
+
+Export files. Kit used to be called ConvertKit. Export one status at a time: open Subscribers, pick the status, tick the checkbox at the top and choose Select all, then Export from the three dot menu. Do them in this order: Unsubscribed, Complained, Bounced, Blocked, Unconfirmed, Cold, then Confirmed.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Unsubscribed | Unsubscribes | Unsubscribe |
+| Complained | Complaints | Block |
+| Bounced | Bounces | Block |
+| Blocked | Blocked addresses | Block |
+| Unconfirmed | People who never confirmed | Leave out, or Unsubscribe |
+| Confirmed | Your subscribers | Contacts |
+| Cold | Confirmed subscribers who have gone quiet | Do not import as contacts. They are already in the Confirmed file. Put them on a list of their own, verify them, and send to them last. |
+| Sequence subscribers | Who has already had that sequence | Do not import as contacts. Use them for the exclusion in Step 6. |
+
+The default filter is Confirmed, so a default export leaves out everyone who unsubscribed, bounced or complained. Sequences have no export: copy each email's subject and body. At cutover, set Visual Automations and sequences to Inactive. A paused Visual Automation still lets new subscribers enter and wait.
+
+### Substack
+
+Export files. If you have paid subscribers, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise) before anything else.
+
+1. **Subscriber list:** Subscribers > All subscribers, the three dots above the list, Export, and choose all columns.
+2. **Full export:** Settings > Exports > Create new export. This is a ZIP with your posts, subscriber list and statistics.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Subscriber list, all columns | Your current subscribers | Contacts, with free and paid as separate lists |
+| Posts, from the ZIP | Content | Do not import |
+
+Substack documents no export of people who unsubscribed, bounced or complained, so Step 1 works differently here:
+
+- Before you import, look through the subscriber files in the ZIP for a column that marks email as turned off for a subscriber. If there is one, split those rows out, import them as unsubscribes, and keep them out of your contacts file.
+- If there is none, you have no suppression file. People who left your Substack list are not in the export, so they do not come across, and nothing here can stop one of them being emailed if the same address is already in Nitrosend or arrives from another source. If either is true for you, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise).
+- Save a copy of every export. While both are running, export again before every send and compare with the export before it. Anyone missing has left, and so has anyone whose row now marks email as turned off: import both as unsubscribes first. Anyone new has signed up since: import them as contacts.
+
+Replacing the forms on your own site does not stop signups on a live Substack publication, so keep comparing exports for the whole time both are running, even after you stop publishing there. Substack does not export subscriber names, and it gives you opens but not clicks, so warm up more slowly and verify anyone with no opens in six months.
+
+### Omnisend
+
+Export files. Only an Owner, Admin or Analyst can export. If your store runs on Shopify, connect the store as well.
+
+1. **Bounced:** Audience > Segments, create a segment with Opted out > Reason set to Bounced, then Export.
+2. **Reported as spam:** the same, with the reason Reported as spam.
+3. **Unsubscribed:** Audience > Export > New Export > Unsubscribed from email.
+4. **All contacts:** Audience > Export > New Export, all contacts.
+5. **Engagement:** Omnisend does not export engagement. Build segments of people who clicked in the last 30, 60 and 90 days and export each.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Segment: Bounced | Bounces | Block |
+| Segment: Reported as spam | Complaints | Block |
+| Unsubscribed from email | Unsubscribes | Unsubscribe |
+| All contacts | Everyone, with a status | Split by status, then Contacts for the Subscribed rows only |
+| Clicked in 30, 60, 90 days | Engagement for your warmup | Do not import as contacts. Use them to build your warmup lists. |
+
+Non-subscribed people never opted in and are not subscribers. At cutover, Omnisend asks whether people partway through a workflow finish it or exit. Choose exit if nothing more should go out from Omnisend.
+
+### GoHighLevel
+
+Export files. Only an Admin can export, and each sub-account is exported on its own, into the Nitrosend brand that matches it. GoHighLevel exports only the columns showing in the Contacts table, so use Manage Fields to show every field you use, including the DND fields.
+
+1. **Do-not-email contacts:** filter the Smart List to contacts whose email DND is on, select all, then More > Export.
+2. **All contacts:** clear the filter, select all, then More > Export.
+
+| File | What it is | Import as |
+| --- | --- | --- |
+| Contacts with email DND on | Unsubscribes, bounces and complaints together | Block |
+| All contacts | Everyone in the CRM | Remove the DND rows, keep only people who opted in to email, then Contacts |
+
+Email DND does not say why, so the whole file is blocked. If your account offers no way to filter or export email DND, stop and [book a time](https://calendly.com/nitrosend/nitrosend-enterprise). Do not import the contacts. At cutover, move each published workflow to draft. Many contacts in a CRM are leads who never subscribed to email. If you cannot say who opted in, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise) before you import.
+
+### Any other tool
+
+Export files. This covers Constant Contact, AWeber, Drip, Campaign Monitor and anything not listed above. Every migration needs the same four exports:
+
+| Export | Look for | Import as |
+| --- | --- | --- |
+| Unsubscribed | A status filter, tab or segment named unsubscribed or opted out | Unsubscribe |
+| Bounced | Bounced, cleaned, undeliverable or invalid | Block |
+| Spam complaints | Complained, marked as spam, abuse or junk | Block |
+| Subscribed | Active, subscribed or confirmed, with every field | Contacts |
+
+Some tools also keep one account-wide suppression list, blocklist or do not contact list. Export that too. If it gives a reason per address, split it by reason. If it does not, import it as blocked.
+
+A few tools need extra care:
+
+- **Constant Contact:** filter Contacts by email status and export the unsubscribed contacts as their own file. Bounces are per email: under Reporting, click the number under Bounce and use the Recommended for removal view. Check the export has a permission status column before you rely on it.
+- **AWeber:** exports follow the filter and are per list. The default view shows current subscribers only, so change the filter to export unsubscribed subscribers, and use the Undeliverable filter for bounces.
+- **Drip:** the people export has a `status` column that reads active or unsubscribed, so split it. Export undeliverable people as their own file. Inactive people are a separate tab and a separate export.
+- **Campaign Monitor:** export the suppression list under Lists & subscribers > Suppressions, and also export every list with All Subscribers. The suppression list can miss people who unsubscribed from one list only. Treat anyone who is unsubscribed, bounced or deleted in any list as out.
+
+People marked unconfirmed, pending or never subscribed are not subscribers. If your tool has no export for unsubscribes at all, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise) before you import anyone.
+
+## Related
+
+- [Managing Contacts](/guides/managing-contacts) for imports, lists and segments
+- [Sending Domains](/guides/sending-domains)
+- [Verifying Your List](/guides/verifying-your-list)
+- [Migration FAQ](/faq#how-do-i-migrate-from-mailchimp-klaviyo-mailerlite-activecampaign)

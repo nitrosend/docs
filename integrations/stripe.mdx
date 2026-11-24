@@ -28,9 +28,18 @@ The Stripe connector imports:
 
 Customers are imported as contacts only. Use [segments](/concepts/segments) to build audiences from subscription status, plan, MRR and payment activity.
 
-## Consent handling
+## Marketing consent
 
-Stripe customers have not opted in to marketing email by installing an app, so they are imported **unsubscribed by default**. Opt contacts in through your own consent flow before sending marketing email; transactional and account email can use the facts straight away.
+Paying you is not the same as agreeing to marketing email. So new contacts from Stripe arrive **not subscribed** to email until an account owner or admin confirms that the people in this connection agreed to receive marketing email from you.
+
+To confirm, open Stripe under **Integrations**, find **Marketing consent**, choose **Review and confirm**, tick the statement and choose **Confirm consent**.
+
+- **After you confirm,** new contacts from Stripe arrive subscribed to email, and contacts this connection was holding as not subscribed are subscribed in the background. Confirming covers email only. It does not subscribe anyone to SMS.
+- **Opt-outs still win.** Anyone who unsubscribed or was suppressed stays not subscribed, whatever you confirm.
+- **It covers one Stripe account.** Nitrosend records who confirmed and when. Reconnecting to a different Stripe account clears the confirmation.
+- **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
+
+Confirming subscribes only the email addresses this connection is holding for this account. It does not change any other address, and withdrawing unsubscribes nobody. Transactional and account email can use Stripe facts straight away, confirmed or not. A test-mode connection and a live one are confirmed separately.
 
 ## Events and flow triggers
 

@@ -17,9 +17,18 @@ The Attio connector imports:
 
 Attio notes, tasks, deals, and custom objects are not imported.
 
-## Consent handling
+## Marketing consent
 
-Attio is a CRM, not a marketing-consent system, so Nitrosend imports Attio people conservatively: email and phone channels are **unsubscribed by default**. Keep the contact data without widening your sendable audience — opt contacts in through your own consent flow before sending marketing email.
+Attio is a CRM, and Nitrosend does not read marketing consent from it. So new contacts from Attio arrive **not subscribed** to email until an account owner or admin confirms that the people in this connection agreed to receive marketing email from you.
+
+To confirm, open Attio under **Integrations**, find **Marketing consent**, choose **Review and confirm**, tick the statement and choose **Confirm consent**.
+
+- **After you confirm,** new contacts from Attio arrive subscribed to email, and contacts this connection was holding as not subscribed are subscribed in the background. Confirming covers email only. It does not subscribe anyone to SMS.
+- **Opt-outs still win.** Anyone who unsubscribed or was suppressed stays not subscribed, whatever you confirm.
+- **It covers one Attio workspace.** Nitrosend records who confirmed and when. Reconnecting to a different Attio workspace clears the confirmation.
+- **You can withdraw it.** Withdrawing only affects contacts that arrive afterward. Anyone already subscribed stays subscribed.
+
+Confirming subscribes only the email addresses this connection is holding for this workspace. It does not change any other address, and withdrawing unsubscribes nobody. Until you confirm, you can still use Attio people in segments and send them transactional email.
 
 ## Connect Attio
 
@@ -28,7 +37,7 @@ Attio is a CRM, not a marketing-consent system, so Nitrosend imports Attio peopl
 3. Click **Connect** and complete the Attio OAuth flow.
 4. Return to Nitrosend and run **Sync contacts**.
 
-The sync runs in the background — the sync progress tray keeps you updated anywhere in the dashboard, or return to the integration detail page for details. Run **Sync contacts** again any time to refresh.
+The sync runs in the background. The sync progress tray keeps you updated anywhere in the dashboard, or return to the integration detail page for details. Run **Sync contacts** again any time to refresh.
 
 ## After import
 

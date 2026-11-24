@@ -21,12 +21,24 @@ Mailchimp campaign history, templates, and reports are not migrated.
 
 ## Consent handling
 
-Nitrosend preserves Mailchimp email consent conservatively:
+Each member's Mailchimp status decides their email subscription in Nitrosend:
 
-- Mailchimp members with `subscribed` status are imported as subscribed to email.
-- Members with `unsubscribed`, `cleaned`, `pending`, archived, or unknown status are imported without email opt-in.
+| Mailchimp status | In Nitrosend |
+| --- | --- |
+| `subscribed` | Subscribed to email |
+| `unsubscribed` | Unsubscribed from marketing email |
+| `cleaned` | Not subscribed, and the address is blocked from all email in this brand as a hard bounce |
+| `pending`, `transactional`, archived or unknown | A new contact is not subscribed. This is not an unsubscribe, so a contact who is already subscribed stays subscribed. |
 
-This lets you keep the contact record and source data without accidentally widening your sendable audience.
+A person can be in several audiences. Nitrosend reads all of them and makes one decision per contact:
+
+- An unsubscribe in any audience wins. The contact is unsubscribed in Nitrosend, even if another audience has them as `subscribed`.
+- A `pending`, `transactional` or archived status in one audience does not unsubscribe someone who is `subscribed` in another.
+- Someone who was `pending` and later confirms in Mailchimp becomes subscribed on a later sync, as long as they have not opted out or been suppressed in Nitrosend.
+
+Anyone already unsubscribed or blocked in Nitrosend stays that way when Mailchimp syncs again.
+
+Moving off Mailchimp for good? Import each audience's unsubscribed and cleaned export files before you connect. The [migration guide](/guides/migrating-to-nitrosend#mailchimp) has the steps.
 
 ## Connect Mailchimp
 
