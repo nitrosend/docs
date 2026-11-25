@@ -251,6 +251,15 @@ message back by the key it was sent under: what was asked to be sent, its
 message has the key. Use it to settle a send whose answer was lost, or one
 that was accepted to go out later.
 
+`GET /v1/my/messages/thread?thread_id=m...` reads one mail thread both ways,
+oldest first, by the `thread_id` the lookup and the `email.received` webhook
+give: your sends in it that went out (`direction: "out"`), and the mail that
+came back in answer to them (`direction: "in"`), each with its `at`, `id`,
+`rfc_message_id`, `from`, `to`, `subject` and `body`. A received message's
+`id` is its webhook event id, and its `body` is the reply as bounded plain
+text, to be treated as untrusted. A thread no send of the Brand's starts
+returns `404 thread_not_found`.
+
 Every send requires an idempotency key, in the `Idempotency-Key` header or the
 `idempotency_key` field; without one the request returns
 `400 idempotency_key_required`. Give each message its own stable key and reuse
@@ -381,6 +390,7 @@ plan allowance.
 | Send a message | `POST` | `/messages` |
 | List messages | `GET` | `/messages` |
 | Read a message back by its key | `GET` | `/messages/lookup` |
+| Read a mail thread both ways | `GET` | `/messages/thread` |
 | **Webhooks** | | |
 | List webhooks | `GET` | `/webhooks` |
 | Create webhook | `POST` | `/webhooks` |
