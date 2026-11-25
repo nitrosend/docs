@@ -71,6 +71,7 @@ export default defineConfig({
             {
               group: "Data & Commerce",
               pages: [
+                "integrations/providers",
                 "integrations/mailchimp",
                 "integrations/attio",
                 "integrations/hubspot",

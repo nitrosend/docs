@@ -1,0 +1,53 @@
+---
+title: Connect providers and import contacts
+description: Find the available import and sync methods, provider names, and CLI commands for Nitrosend integrations
+---
+
+# Connect providers and import contacts
+
+Select a brand in Nitrosend. Open **Integrations** to connect a provider, or **Contacts → Import** to bring in a list. Both are available from the CLI.
+
+## Contact imports and sync
+
+| Provider | CLI name | Connected sync | One-time import |
+| --- | --- | --- | --- |
+| ActiveCampaign | `activecampaign` | API URL and key | CSV |
+| [Attio](/integrations/attio) | `attio` | OAuth | Generic CSV |
+| [HubSpot](/integrations/hubspot) | `hubspot` | OAuth | Generic CSV |
+| [Mailchimp](/integrations/mailchimp) | `mailchimp` | OAuth | **Import once** via OAuth for enabled brands, or CSV |
+| [Shopify](/integrations/shopify) | `shopify` | Nitrosend app install in Shopify | Generic CSV |
+| [Stripe](/integrations/stripe) | `stripe` | Stripe app rollout pending. Use the [Events API](/integrations/events-api) for Stripe-triggered flows. | Generic CSV |
+| Brevo | `brevo` | — | Guided CSV |
+| Klaviyo | `klaviyo` | — | Guided CSV |
+| MailerLite | `mailerlite` | — | Guided CSV |
+
+For a generic CSV, export the contacts from your provider, then open [Contacts → Import](https://app.nitrosend.com/my/contacts/import) and click **Choose file**. Use **Paste contacts** to paste rows from a spreadsheet or CSV. Bring over [unsubscribes, bounces, and complaints](/faq#how-are-unsubscribes-kept-when-i-migrate) before importing subscribers. A CRM or billing connection can bring in contacts or customers. Use recorded marketing consent when choosing who to email.
+
+## Other integrations
+
+| Provider | CLI name | Used for |
+| --- | --- | --- |
+| Gmail / Google Workspace | `gmail` | Mailbox sending via OAuth |
+| Microsoft 365 | `microsoft365` | Mailbox sending via OAuth |
+| SMTP & IMAP | `smtp` | Mailbox connection with server credentials |
+| [Amazon SES](/integrations/ses) | `ses` | Email delivery |
+| [Mailgun](/integrations/mailgun) | `mailgun` | Email delivery |
+| [Postmark](/integrations/postmark) | `postmark` | Email delivery |
+| [Resend](/integrations/resend) | `resend` | Email delivery |
+| [SendGrid](/integrations/sendgrid) | `sendgrid` | Email delivery |
+| Apollo | `apollo` | Professional profile data for lead search |
+
+## Open setup from the CLI
+
+`nitrosend connect <name>` opens provider setup. `nitrosend migrate <name>` opens the provider's contact import options. Both use the brand selected by your CLI profile. Complete provider authorization or enter credentials in the browser.
+
+```bash
+nitrosend connect                     # Open the integrations directory
+nitrosend connect activecampaign      # Open ActiveCampaign setup
+nitrosend migrate                     # Open the contact import chooser
+nitrosend migrate mailchimp           # Open Mailchimp's available import options
+nitrosend migrate klaviyo             # Open Klaviyo's guided CSV import
+nitrosend migrate sources             # List provider import and sync methods
+```
+
+For setup links, use `--no-browser` to print the link or `--json` for a structured result. These commands require CLI 0.3.13 or later. See [Install & sign in](/cli/install) to get started.

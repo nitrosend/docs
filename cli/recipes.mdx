@@ -83,6 +83,8 @@ Bring the old platform's opt-outs across before anything else. Export three file
 
 `nitrosend migrate <platform>` opens the import options for the platform you're leaving, for the brand your CLI profile uses. For a platform `migrate sources` doesn't list, run `nitrosend migrate` on its own and choose Upload a file. You pick the route and finish it in the browser, so the old platform's login never passes through the terminal. `migrate` and `connect` need CLI 0.3.13 or later; `nitrosend version` shows yours and `nitrosend update` says how to upgrade.
 
+See the [provider catalog](/integrations/providers) for CLI names and the import, sync, and connection options each provider supports.
+
 ```bash
 nitrosend migrate sources                # the import and sync methods this brand has
 nitrosend migrate mailchimp              # open the import options for Mailchimp
@@ -90,7 +92,7 @@ nitrosend migrate klaviyo --no-browser   # print the link instead of opening it
 nitrosend connect activecampaign         # open the ActiveCampaign connection directly
 ```
 
-Check subscription status in Contacts before your first send. While the old platform is still in use, export its unsubscribes, bounces and complaints again and import them before every send. The [migration FAQ](/faq#contacts-and-migration) covers what carries over and how to move a big list. `migrate sources` also lists syncs for HubSpot, Attio and Stripe. Those keep a CRM or billing tool connected; they are not a way to move a mailing list.
+Check subscription status in Contacts before your first send. While the old platform is still in use, export its unsubscribes, bounces and complaints again and import them before every send. The [migration FAQ](/faq#contacts-and-migration) covers what carries over and how to move a big list.
 
 Using an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill klaviyo-migration`. For Mailchimp use `mailchimp-migration`, and for any other platform `email-platform-migration`.
 

@@ -132,6 +132,8 @@ Unlimited, on every plan. You pay for sends, not list size.
 ### How do I migrate from Mailchimp / Klaviyo / MailerLite / ActiveCampaign?
 The route depends on where your list lives now. Whichever one you use, the old tool's opt-outs go in first.
 
+See [Connect providers and import contacts](/integrations/providers#contact-imports-and-sync) for available import and sync methods by provider.
+
 **First, from every source:** export three files from the old platform: people who unsubscribed, addresses that bounced, and people who marked your email as spam. Import them under Contacts, then Import, before you connect anything or import a single contact. Under Email subscriptions, choose Unsubscribe all from marketing for the unsubscribed file and Block all email delivery for the bounced and spam complaint files. If an export mixes unsubscribes with bounces and complaints, split it by reason first. Klaviyo's suppressed profiles file (Audience, Profiles, View suppressed profiles) mixes them, so split that one.
 
 **Mailchimp, ActiveCampaign or Shopify:** when those imports have finished, connect it under Integrations and let it sync. You can sync again any time. Mailchimp and ActiveCampaign bring each person's subscribed or unsubscribed email status. Connecting ActiveCampaign also sends unsubscribes and spam complaints from Nitrosend back to its email lists. The [Mailchimp](/integrations/mailchimp) and [Shopify](/integrations/shopify) pages list what each one syncs.
