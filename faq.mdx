@@ -249,7 +249,7 @@ Ask your agent: "Using Nitrosend, build a segment of contacts who opened an emai
 Nitrosend filters clicks it recognizes as coming from scanners, including Proofpoint, Mimecast, Barracuda and Microsoft Safe Links. Recognized scanner opens can appear in a contact's activity timeline, but they don't increase reported opens or the contact's engagement. A gateway using an ordinary browser can still look like a person clicking, for example several links clicked within seconds of delivery. For segments and analysis, lean on people who click in more than one email.
 
 ### What should I check before a flow sends?
-Check that the flow is live, the contact is subscribed and the event matches its trigger. Check that the selected sender is ready and authorizes the From address each email step uses. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
+Check that the flow is live and the event matches its trigger. For a marketing email, also check that the contact is subscribed. For each email step, check that its From address is authorized and its sender is ready. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
 
 ```text
 Ask your agent: "Check flow [name] in Nitrosend: its live status, the contact's subscription status, the matching trigger event and the From address on each email step."
@@ -300,7 +300,7 @@ Ask your agent: "Check why Nitrosend campaign [name] is waiting. Explain the cur
 ```
 
 ### What happens when my email is held for a safety check?
-Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means the email is waiting for review. Check the dashboard notice and any email sent to the account owner. If **Ask the team** appears, use it to prepare a support request and confirm it in NitroLLM. If **Copy the fix for your agent** appears, it copies the suggested change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or use **Ask the team** if you think the check got it wrong. A campaign or flow email that reads like an unsolicited sales pitch can be held even when the recipients know you. If you ask for review, explain how they signed up and what they expected to receive. After it's cleared, the notice tells you whether sending has started or whether you need to send it again. A review that is still undecided after a week can close, and Nitrosend emails you which emails it covered; change the email and send the new version for a fresh check, or reply to the notice to ask for a review.
+Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means the email is waiting for review. Check the dashboard notice and any email sent to the account owner. If **Ask the team** appears, use it to prepare a support request and confirm it in NitroLLM. If **Copy the fix for your agent** appears, it copies the suggested change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If the email is blocked, follow the guidance shown. If you think the decision is wrong, contact support. A campaign or flow email that reads like an unsolicited sales pitch can be held even when the recipients know you. If you ask for review, explain how they signed up and what they expected to receive. After approval, check the send status to see whether sending has started or you need to send again. A review that is still undecided after a week can close. You can edit the email and submit the new version for a fresh check. If you receive a closure email, you can also reply to it to ask for review.
 
 If the check can't load an image, the send stops, and the message names the image and the fix. The usual causes are a broken link, a relative path such as `/assets/logo.png` or a file behind a login; see [Images must be reachable](/guides/images-and-gifs#images-must-be-reachable).
 
@@ -365,10 +365,10 @@ Ask your agent: "Check the current approval status of [flow ID] in Nitrosend. If
 ```
 
 ### What should I check before moving from a test email to a campaign or flow?
-Check that the selected sender is ready and authorizes the From address used by the email. Test emails help check the setup, while live sends also need to meet the account's sending requirements. If a test or live send cannot proceed, include the exact message in a support request.
+Check that the email's From address is authorized and its sender is ready. Test emails help check the setup, while live sends also need to meet the account's sending requirements. If a test or live send cannot proceed, include the exact message in a support request.
 
 ```text
-Ask your agent: "Check the From address and verified domain for Nitrosend [campaign or flow], then explain any remaining sending requirements."
+Ask your agent: "Check the From address used by Nitrosend [campaign or flow], whether its sender is ready, and any remaining sending requirements."
 ```
 
 ### What should I do when Nitrosend says sending is paused for an account review?
