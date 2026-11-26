@@ -76,6 +76,8 @@ name and idempotency key for the brand returns the existing event with `200 OK`.
 Use an immutable source event ID for the key; do not reuse a key for changed
 data.
 
+Using an agent? Add the steps for connecting your apps and sending events as a skill: `npx skills add nitrosend/claude --skill email-integrations`
+
 ## Use event data in a flow
 
 A flow with the `order_paid` trigger can read the payload under `event`:

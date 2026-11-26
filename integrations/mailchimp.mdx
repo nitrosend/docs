@@ -5,7 +5,7 @@ description: Import Mailchimp audiences into Nitrosend
 
 # Mailchimp
 
-Connect Mailchimp to migrate your existing audiences and members into Nitrosend.
+Connect Mailchimp to migrate your existing audiences and members into Nitrosend. Before you connect it, import Mailchimp's unsubscribed, cleaned and spam complaint contacts as the [migration FAQ](/faq#contacts-and-migration) describes, so every opt-out is in place first.
 
 ## What syncs
 
@@ -48,3 +48,5 @@ After the sync completes:
 <Warning>
   Mailchimp sync is a contact and audience migration path. It does not automatically send campaigns or activate automations.
 </Warning>
+
+Using an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill mailchimp-migration`

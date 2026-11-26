@@ -74,6 +74,28 @@ nitrosend mcp resources read nitro://account
 nitrosend mcp tools call nitro_get_insights --args '{"scope":"account"}'
 ```
 
+### Move from another email platform
+
+Bring the old platform's opt-outs across before anything else. Export three files from it: people who unsubscribed, addresses that bounced, and people who marked your email as spam. If an export mixes them, as Klaviyo's suppressed profiles file does, split it by reason; anything suppressed for another reason goes in with the bounced file. Remove any phone columns, then import them in the app under Contacts, then Import, choosing **Unsubscribe all from marketing** for the unsubscribed file and **Block all email delivery** for the bounced and spam complaint files. `nitrosend contacts import` has neither option, so don't use it for these files. When those imports have finished, move the contacts:
+
+- **Mailchimp, ActiveCampaign or Shopify:** connect it and let it sync.
+- **Klaviyo, Brevo, MailerLite, HubSpot or anything else:** import a CSV file of only the people who subscribed to email marketing, one file per list plus one for subscribers on no list, with phone columns removed and any status or consent column kept. `nitrosend contacts import <file> --list-id <id>` works for these files. From HubSpot, export only the contacts who agreed to marketing email, and upload that file under Contacts, then Import, because HubSpot's import options offer only a sync.
+
+`nitrosend migrate <platform>` opens the import options for the platform you're leaving, for the brand your CLI profile uses. For a platform `migrate sources` doesn't list, run `nitrosend migrate` on its own and choose Upload a file. You pick the route and finish it in the browser, so the old platform's login never passes through the terminal. `migrate` and `connect` need CLI 0.3.13 or later; `nitrosend version` shows yours and `nitrosend update` says how to upgrade.
+
+See the [provider catalog](/integrations/providers) for CLI names and the import, sync, and connection options each provider supports.
+
+```bash
+nitrosend migrate sources                # the import and sync methods this brand has
+nitrosend migrate mailchimp              # open the import options for Mailchimp
+nitrosend migrate klaviyo --no-browser   # print the link instead of opening it
+nitrosend connect activecampaign         # open the ActiveCampaign connection directly
+```
+
+Check subscription status in Contacts before your first send. While the old platform is still in use, export its unsubscribes, bounces and complaints again and import them before every send. The [migration FAQ](/faq#contacts-and-migration) covers what carries over and how to move a big list.
+
+Using an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill klaviyo-migration`. For Mailchimp use `mailchimp-migration`, and for any other platform `email-platform-migration`.
+
 ### Pipe campaign results into a spreadsheet
 
 ```bash

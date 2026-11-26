@@ -5,7 +5,7 @@ description: Sync Shopify customers into Nitrosend and receive store commerce ev
 
 # Shopify
 
-Connect your Shopify store to import customers into Nitrosend and receive commerce activity you can use in segments and automation flows.
+Connect your Shopify store to import customers into Nitrosend and receive commerce activity you can use in segments and automation flows. If the store is moving from another email tool, import that tool's opt-outs first, as the [migration FAQ](/faq#contacts-and-migration) describes.
 
 ## Customer import
 
@@ -57,3 +57,5 @@ The sync runs in the background — the sync progress tray keeps you updated any
 <Warning>
   Shopify sync imports customers and receives store events. It does not migrate your Shopify email templates or discount codes, and it does not write data back to Shopify.
 </Warning>
+
+Using an agent? Add the store email and abandoned cart steps as skills: `npx skills add nitrosend/claude --skill shopify-email-marketing abandoned-cart-emails`

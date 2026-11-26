@@ -71,6 +71,7 @@ export default defineConfig({
             {
               group: "Data & Commerce",
               pages: [
+                "integrations/providers",
                 "integrations/mailchimp",
                 "integrations/attio",
                 "integrations/hubspot",
@@ -95,6 +96,7 @@ export default defineConfig({
                 "guides/agent-inbox",
                 "guides/inbox-coexist",
                 "guides/inbox-storage",
+                "guides/outreach",
               ],
             },
             {
@@ -109,6 +111,7 @@ export default defineConfig({
                 "concepts/campaigns",
                 "concepts/segments",
                 "concepts/agent-inbox",
+                "concepts/outreach",
               ],
             },
           ],

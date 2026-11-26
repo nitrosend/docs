@@ -17,7 +17,7 @@ Ask your agent: "Using Nitrosend, check my account status and tell me whether se
 ```
 
 ### How do I connect Nitrosend in a managed Claude workspace?
-Your workspace administrator controls which connectors are available. If Nitrosend needs approval or Add custom connector is greyed out, ask your administrator to approve the connection or enable custom connectors. Once access is enabled, follow the connection steps again.
+Your workspace administrator controls which connectors are available. If Nitrosend needs approval or Add custom connector is grayed out, ask your administrator to approve the connection or enable custom connectors. Once access is enabled, follow the connection steps again.
 
 ### Do I need to understand MCP?
 No. MCP is just the plug standard that lets your agent talk to Nitrosend. If you can paste a URL, you're qualified.
@@ -53,7 +53,7 @@ Ask your agent: "Using Nitrosend, show me the dashboard steps for [task] and exp
 ```
 
 ### Will my agent send emails without asking me?
-By default, campaigns and flows are created for review, and new flows land as drafts. An agent can send without another prompt only when an account owner has granted explicit, revocable authority within the account's limits. Suppressions, unsubscribes, trust checks and delivery controls still apply to every send.
+New campaigns and flows your agent builds start as drafts. Safe Mode is off by default, so a connected agent can send a campaign, take a flow live or change a live flow without a person approving it. When an owner or admin turns on Safe Mode in Settings > Account, an agent's email campaign waits for an owner or admin to approve its exact content and audience. Campaigns with merge tags and SMS campaigns are refused, and only a person can take a flow live or publish an agent's changes to one. Test sends, transactional messages, inbox email and anything a person sends in Nitrosend, NitroLLM included, aren't held. Flows already live keep sending, and a campaign scheduled before Safe Mode went on still goes out. Unsubscribes still stop marketing email brand by brand, and suppressions, trust checks and delivery controls still apply.
 
 ## Domains and deliverability
 
@@ -130,11 +130,36 @@ Use Nitrosend only for email that does not involve protected health information 
 Unlimited, on every plan. You pay for sends, not list size.
 
 ### How do I migrate from Mailchimp / Klaviyo / MailerLite / ActiveCampaign?
-Create API keys at your existing platform and in Nitrosend under Settings, then API Keys, and connect your agent to both. Ask it to migrate contacts, lists and custom fields, then use the old platform's suppression records to mark opted-out contacts unsubscribed in Nitrosend before any sending or flow activation. Have it confirm subscription status after migration. It can also recreate your templates and flows. For Mailchimp, the audience-migration connector under Integrations transfers the audience and its opt-out state.
+The route depends on where your list lives now. Whichever one you use, the old tool's opt-outs go in first.
+
+See [Connect providers and import contacts](/integrations/providers#contact-imports-and-sync) for available import and sync methods by provider.
+
+**First, from every source:** export three files from the old platform: people who unsubscribed, addresses that bounced, and people who marked your email as spam. Import them under Contacts, then Import, before you connect anything or import a single contact. Under Email subscriptions, choose Unsubscribe all from marketing for the unsubscribed file and Block all email delivery for the bounced and spam complaint files. If an export mixes unsubscribes with bounces and complaints, split it by reason first. Klaviyo's suppressed profiles file (Audience, Profiles, View suppressed profiles) mixes them, so split that one.
+
+**Mailchimp, ActiveCampaign or Shopify:** when those imports have finished, connect it under Integrations and let it sync. You can sync again any time. Mailchimp and ActiveCampaign bring each person's subscribed or unsubscribed email status. Connecting ActiveCampaign also sends unsubscribes and spam complaints from Nitrosend back to its email lists. The [Mailchimp](/integrations/mailchimp) and [Shopify](/integrations/shopify) pages list what each one syncs.
+
+**Klaviyo, Brevo, MailerLite, HubSpot or anything else:** export a CSV file of the people who subscribed to email marketing and import it under Contacts, then Import, one file per list. Keep anyone who never subscribed out of it. In Klaviyo, open a list or segment and choose Export to CSV. From HubSpot, export only the contacts who agreed to marketing email, not the whole CRM. Anyone already unsubscribed or blocked stays that way, and each import summary shows its subscribed, unsubscribed and blocked counts.
+
+Whatever the source, check subscription status in Contacts before your first send. While the old platform is still in use, export its unsubscribes, bounces and complaints again and import them before every send.
+
+Attio and Stripe are CRM and billing sources, not email tools, so they are not a way to move a mailing list.
+
+**Moving a big list?** We'll do it with you, free on plans above Starter. [Book a time](https://calendly.com/nitrosend/nitrosend-enterprise).
 
 ```text
-Ask your agent: "Migrate my contacts, lists and custom fields to Nitrosend. Apply the old platform's opt-outs and confirm subscription status before sending anything or activating flows."
+Ask your agent: "Using Nitrosend, count my subscribed contacts, unsubscribed contacts and suppressed addresses so I can check them against my old platform before I send anything."
 ```
+
+Using an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill klaviyo-migration`. For Mailchimp use `mailchimp-migration`, and for any other platform `email-platform-migration`.
+
+### What carries over when I migrate?
+Contacts, with the lists and fields a connected source supports; most sources have an integration page that names them. Email subscription status comes across from Mailchimp, ActiveCampaign and file imports. In a file import you pick the list the file goes into and map each column to a contact field, tags or a custom field. Remove phone columns from an email import. Templates, flows and past campaign reports don't transfer. Your agent can rebuild templates and flows in Nitrosend.
+
+### How are unsubscribes kept when I migrate?
+Bring them with you. Import the old platform's unsubscribed file as unsubscribed and its bounced and spam complaint files as blocked, before you connect a source or import contacts. Mailchimp and ActiveCampaign syncs carry opt-outs across as well. Once an address is unsubscribed or blocked in a brand, a later file import or sync won't resubscribe it, and deleting the contact doesn't lift it either.
+
+### How long does a big import take?
+It depends on the size of the list. File imports and integration syncs run in the background and show progress, so you can leave the page and come back. A file import starts no flows unless you turn on Start flows. For a big list or a long history, [book a time](https://calendly.com/nitrosend/nitrosend-enterprise) and we'll do it with you.
 
 ### How do I get a signup form on my website?
 Ask your agent: "create a Nitrosend signup form for my [Newsletter] list and give me the embed snippet for my site." Paste the snippet, and new subscribers flow straight into the list (and any welcome flow attached to it).

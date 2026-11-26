@@ -22,7 +22,9 @@ Imports start no flows unless you turn on **Start flows** under Destination list
 
 You can also connect Mailchimp from **Integrations** to migrate audiences and members directly into Nitrosend. Mailchimp contacts keep their source metadata, and only Mailchimp members with `subscribed` status are opted in for email in Nitrosend.
 
-When you import another tool's export, Nitrosend reads its subscription column for you. Contacts marked unsubscribed, cleaned, suppressed, bounced or never subscribed come in unsubscribed, with no column mapping needed. That column can only keep someone out; it never opts anyone in.
+Migrating by file from another platform? Import its unsubscribed and suppressed files first. Under **Email subscriptions**, choose **Unsubscribe all from marketing** or **Block all email delivery**, then import your subscribed contacts. See the [provider catalog](/integrations/providers#contact-imports-and-sync) for available import and sync methods.
+
+When you import another tool's export, Nitrosend maps its subscription column when it recognizes the header, and contacts marked unsubscribed, cleaned, suppressed, bounced or never subscribed come in unsubscribed. If a column that looks like consent isn't mapped, the mapping step names it: map it to **Email subscription** or **Unsubscribed** to apply its values. That column can only keep someone out; it never opts anyone in.
 
 Editing a contact or importing it again preserves its existing subscription. Contacts who have unsubscribed or been suppressed remain protected when an integration syncs again.
 
@@ -109,6 +111,8 @@ See [Example Workflows](/guides/mcp-examples#example-4-bulk-tag-contacts) for a 
 Segments are dynamic groups defined by conditions (e.g., "subscribed in the last 30 days" or "opened an email this week"). Unlike lists, segments update automatically as contacts match or stop matching the criteria.
 
 The segment builder supports profile, list membership, tag, custom-field, engagement, deliverability, and event-history filters. Tags are one of the available segment filters — use the `contact_tag` filter name with the `cont` (contains) predicate to build tag-based segments, e.g. `{ name: "contact_tag", predicate: "cont", value: "vip" }`.
+
+Using an agent? Add the steps for contacts, lists and segments as a skill: `npx skills add nitrosend/claude --skill contacts-and-segments`
 
 ## Contact activity
 

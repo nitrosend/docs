@@ -26,7 +26,7 @@ campaigns or flows. SMS and test sends do not emit email events.
 | `email.opened` | The first time it was opened. Security scanners and bots do not count. |
 | `email.clicked` | The first human click of each link in it. |
 | `email.failed` | It failed for good. A failure Nitrosend is still retrying is not reported, and a send whose provider outcome is unknown reports once that outcome is known. |
-| `email.received` | A message reached one of the brand's inboxes and was not quarantined: a reply, an automatic reply, or new mail to the inbox address. See [Replies](#replies). |
+| `email.received` | A message reached one of the brand's inboxes and was not quarantined (a reply, an automatic reply, or new mail to the inbox address), or a reply to one of your emails came back into the connected mailbox it was sent from. See [Replies](#replies). |
 
 Opens and clicks come from Nitrosend's own tracking, so a brand that
 [turns open or click tracking off](/guides/sending-emails#open-and-click-tracking)
@@ -102,6 +102,8 @@ webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
     "subject": "Reset your password",
     "idempotency_key": "reset-8841",
     "tags": { "user_id": "42" },
+    "thread_id": "m48213",
+    "rfc_message_id": "<48213.reset@mail.yourbrand.com>",
     "bounce": { "type": "hard", "subtype": "NoEmail" }
   }
 }
@@ -111,6 +113,10 @@ webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
 - `idempotency_key` is the `Idempotency-Key` you sent the message with. It is
   left out when you sent none.
 - `tags` are the tags you sent the message with.
+- `thread_id` is the email's thread: `m` and the id of its first message, as
+  `GET /v1/my/messages/lookup` reports it. A follow-up sent with `in_reply_to`
+  is in the thread of the email it follows.
+- `rfc_message_id` is the email's `Message-ID`, or `null` until it is sent.
 - `timestamp` is when the event happened.
 - Some events add detail, such as `bounce` on `email.bounced` or `failure`
   on `email.failed`. The [API Reference](/api) lists every event's fields.
@@ -120,6 +126,11 @@ webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
 `email.received` reports mail that reaches one of your brand's inboxes. Inboxes
 are part of the [Agent Inbox](/guides/agent-inbox). A reply reaches Nitrosend when it is sent to an inbox address, so send
 with that address as `reply_to` (or `from`) when you want replies reported.
+
+It also reports a reply to one of your emails that comes back into the
+connected mailbox the email was sent from, when that mailbox's connection
+reads replies. Nitrosend records only replies to your own sends from a
+connected mailbox, never its other mail.
 
 ```json
 {
@@ -152,14 +163,17 @@ with that address as `reply_to` (or `from`) when you want replies reported.
       }
     ],
     "conversation_id": 9021,
-    "conversation_message_id": 55410
+    "conversation_message_id": 55410,
+    "thread_id": "m48213",
+    "rfc_message_id": "<CAF4x9q@mail.example.com>"
   }
 }
 ```
 
 - When the message answers one of your sends, `message_id`, `idempotency_key`
-  and `tags` identify that send, as they do on every other event. Otherwise
-  `message_id` is `null` and `tags` is empty.
+  and `tags` identify that send, as they do on every other event, and
+  `thread_id` is that send's thread. Otherwise `message_id` and `thread_id` are
+  `null` and `tags` is empty. `rfc_message_id` is the reply's own `Message-ID`.
 - `text` and `html` are each capped at 64 KiB; `truncated` is `true` when
   either was cut. The full message stays in the inbox.
 - `attachments` lists every file the message carried, without their contents,
@@ -269,6 +283,39 @@ When deliveries to an endpoint have failed continuously for 3 days, the next
 failed attempt turns the endpoint off and emails the account owner. Events that occur while an endpoint
 is off are not sent, including after you turn it back on.
 
+## Read events without an endpoint
+
+`GET /v1/my/webhooks/events` returns the same events by cursor, oldest first,
+for an application that polls instead of receiving webhooks, or that catches up
+after its endpoint was down. It covers `email.received`, `email.delivered`,
+`email.bounced` and `email.complained`. Each event is the body its webhook
+receives, plus its `id`, which is the `webhook-id` its delivery carries, so an
+application that takes both sees each event once.
+
+```bash
+curl "https://api.nitrosend.com/v1/my/webhooks/events?events=email.received,email.bounced" \
+  -H "Authorization: Bearer $NITROSEND_API_KEY"
+```
+
+```json
+{
+  "events": [
+    { "id": "evt_6f1c2a5e-3b9d-5c47-8e21-0d4f7a9b3c12", "type": "email.received", "timestamp": "2026-09-30T10:04:12.000Z", "data": { "from": "ada@example.com", "thread_id": "m48213" } }
+  ],
+  "cursor": "1790741052000000.0.55410",
+  "more": false
+}
+```
+
+The `data` above is shortened. Call it once without `after` to get a cursor
+that starts from now, or with `from=start` to read from the beginning. Then pass
+each response's `cursor` as the next `after`, and read again straight away
+while `more` is `true`. A page read again returns the same events, so an
+application that stops part-way picks up from the last cursor it saved. An
+event appears once it is 30 seconds old. `events` narrows the read, and
+`payload=agent` returns a form made for AI agents instead: every field bounded,
+and a reply's text sanitized, with no HTML.
+
 ## Test and inspect
 
 Choose **Send test event** from the webhook's menu, or call
@@ -292,5 +339,6 @@ code and attempt count. See them in the webhook's edit dialog, or with
 | Delete a webhook and its delivery history | `DELETE` | `/v1/my/webhooks/{id}` |
 | Send a test event | `POST` | `/v1/my/webhooks/{id}/test` |
 | List recent deliveries | `GET` | `/v1/my/webhooks/{id}/deliveries` |
+| Read events by cursor | `GET` | `/v1/my/webhooks/events` |
 
 See the [API Reference](/api) for request and response schemas.
