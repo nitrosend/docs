@@ -97,6 +97,9 @@ Use a dedicated sending subdomain such as `send.yourdomain.com`. Add and verify 
 Ask your agent: "Using Nitrosend, check the setup for [sending subdomain] and show me the DNS records and sender settings I need."
 ```
 
+### Why does my email show my main domain instead of my sending subdomain?
+When your sending subdomain, such as `send.yourdomain.com`, is paired with your verified main domain, Nitrosend sends from the main domain: an email set to come from `hello@send.yourdomain.com` goes out as `hello@yourdomain.com`. Brand, then Sender shows a note when this happens. To keep the subdomain in your From address, contact support.
+
 ### How do I move from my Nitrosend address to my own domain?
 Verify your domain under Settings, then Domains, then move any live or paused flows that use your current sender: in each email step's delivery settings, choose the new domain under From domain and save the flow, or ask your agent to switch the steps to your new address. Saving publishes the change once the flow's checks pass; if the flow says your latest change isn't live yet, follow the steps it shows. People already in a flow finish with the previous sender, while new entrants get the new one. Once those changes are published and any active campaigns or outstanding emails from the old address have finished, set the new From address under Brand, then Sender. Tracked links in new emails use the sending domain once its tracking DNS and HTTPS checks pass.
 
@@ -263,6 +266,13 @@ To put people you've already imported into a flow, give it an **Add to list** tr
 Ask your agent: "Import [file] into the [list name] list in Nitrosend with Start flows on."
 ```
 
+### Can I add new leads to a list every day without restarting my flow?
+Yes. Import each day's file into the list with **Start flows** on. Contacts already on the list stay where they are in the flow, and only people new to the list enter its Add to list flows; existing contacts keep their subscription status. To automate it, have your agent or a tool such as Zapier or Make add each new lead through the API.
+
+```text
+Ask your agent: "Using Nitrosend, import [file] into my [list name] list with Start flows on, then tell me how many contacts were new to the list and how many entered the flow."
+```
+
 ### How do I prepare my email for dark mode?
 Email apps can display colors differently in dark mode, so test your email in the apps and on the devices your audience uses. Choose a logo that remains readable on both light and dark backgrounds. You can set a logo for an individual email in its Header section.
 
@@ -290,7 +300,7 @@ Ask your agent: "Check why Nitrosend campaign [name] is waiting. Explain the cur
 ```
 
 ### What happens when my email is held for a safety check?
-Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means that email hasn't been sent, and the account owner gets a notice explaining what was flagged and what happens next. In the dashboard, a held or refused send shows its reason with two buttons: **Ask the team** opens a ready-made request in NitroLLM, which you confirm there to send it to Nitrosend support, and **Copy the fix for your agent** gives your agent a prompt that explains what to change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or use **Ask the team** if you think the check got it wrong. After it's cleared, the notice tells you whether sending has started or whether you need to send it again. A review that is still undecided after a week can close, and Nitrosend emails you which emails it covered; change the email and send the new version for a fresh check, or reply to the notice to ask for a review.
+Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means that email hasn't been sent, and the account owner gets a notice explaining what was flagged and what happens next. In the dashboard, a held or refused send shows its reason with two buttons: **Ask the team** opens a ready-made request in NitroLLM, which you confirm there to send it to Nitrosend support, and **Copy the fix for your agent** gives your agent a prompt that explains what to change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or use **Ask the team** if you think the check got it wrong. An email that reads like cold outreach is held even when the people on your list know you, so when you ask, say how they came to be on it. After it's cleared, the notice tells you whether sending has started or whether you need to send it again. A review that is still undecided after a week can close, and Nitrosend emails you which emails it covered; change the email and send the new version for a fresh check, or reply to the notice to ask for a review.
 
 If the check can't load an image, the send stops, and the message names the image and the fix. The usual causes are a broken link, a relative path such as `/assets/logo.png` or a file behind a login; see [Images must be reachable](/guides/images-and-gifs#images-must-be-reachable).
 
@@ -348,7 +358,7 @@ Ask your agent: "Check the Nitrosend delivery status for [campaign or message ID
 ```
 
 ### What should I do if approval returns "content_vetting_degraded"?
-This status means the content review has not produced a decision; it does not establish that the content was rejected. Ask support to check the flow or campaign before making further approval attempts, including its ID, revision and the exact message.
+In the app this shows as "We could not check an email in this flow right now." It means the content review has not produced a decision; it does not establish that the content was rejected. Ask support to check the flow or campaign before making further approval attempts, including its ID, revision and the exact message.
 
 ```text
 Ask your agent: "Raise a Nitrosend support ticket for content_vetting_degraded on [flow or campaign ID]. Include the revision and exact message, and do not keep retrying approval."
@@ -380,7 +390,7 @@ On the Free plan your emails carry the Nitrosend badge, whether they come from a
 ## Teams and agencies
 
 ### Can my team share an account?
-Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats. To accept an invitation, open the invitation link. If you're already signed in with the address it was sent to, choose **Accept invite** and the team's account opens. If you're signed in with a different address, choose **Sign out and continue**, then sign in with the invited address or create a free account with it and verify your email.
+Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats. To accept an invitation, open the invitation link. If you're already signed in with the address it was sent to, choose **Accept invite** and the team's account opens. If you're signed in with a different address, choose **Sign out and continue**, then sign in with the invited address or create a free account with it and verify your email. An invitation works only for the address it was sent to, so for someone who signs in with Google, invite the address their Google account uses.
 
 ### How can an agency set up and hand over a client account?
 Use the Clients page to create the client's account, and ask support if you need access to that page. Build their brand kit, domain and flows before choosing Invite owner to invite them. The client owns and pays for the account and can remove your access at any time. Choose Release when your work ends. Give clients who need their own login a separate account, because team members invited to your agency account can see all its brands. Start client accounts from the Clients page rather than signing up for them yourself: an account you sign up for stays with the login that created it, and the Clients page shows only the accounts it created.
@@ -410,7 +420,7 @@ Ask your agent: "Raise a Nitrosend support ticket to add these billing details t
 ## Help
 
 ### Where do I get help?
-Three places, fastest first: ask NitroLLM (the chat in the app's right rail), ask your own agent (it can search our docs and raise a support ticket for you), or email us. And join the Slack, the team and other customers are in there daily.
+Three places, fastest first: ask NitroLLM (the chat in the app's right rail), ask your own agent (it can search our docs and raise a support ticket for you), or email [contact@nitrosend.com](mailto:contact@nitrosend.com). A support ticket raised from NitroLLM or your agent reaches the same team, and a person replies by email. And join the Slack, the team and other customers are in there daily.
 
 ```text
 Ask your agent: "Search the Nitrosend docs for [topic] and if you can't solve it, raise a support ticket describing what we tried."
