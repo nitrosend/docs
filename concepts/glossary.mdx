@@ -85,7 +85,7 @@ Both share the same status words:
 - `cancelled` — stopped and not resumable.
 - `archived` — filed away, out of your normal lists.
 
-**Go Live** publishes a draft flow and starts it. After that, saving a live or paused flow publishes the change: new entrants get the new version and people already in the flow finish on the version they entered. If a saved change can't be published yet, the flow shows **Change not live** with the reason, and keeps running its previous version until you fix it.
+**Go Live** publishes a draft flow and starts it. After that, saving a live or paused flow attempts to publish the change: new entrants get the new version and people already in the flow finish on the version they entered. If a check or permission holds it, **Change not live** shows what needs attention, and the previous published version remains in place: a live flow keeps running and a paused flow stays paused.
 
 A campaign that closed after reaching only part of its audience shows **Partially sent**, with how many were sent and why. A send that can still be resumed keeps its paused status instead.
 

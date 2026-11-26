@@ -24,9 +24,9 @@ You can also connect Mailchimp from **Integrations** to migrate audiences and me
 
 Migrating by file from another platform? Import its unsubscribed and suppressed files first. Under **Email subscriptions**, choose **Unsubscribe all from marketing** or **Block all email delivery**, then import your subscribed contacts. See the [provider catalog](/integrations/providers#contact-imports-and-sync) for available import and sync methods.
 
-When you import another tool's export, Nitrosend maps its subscription column when it recognizes the header, and contacts marked unsubscribed, cleaned, suppressed, bounced or never subscribed come in unsubscribed. If a column that looks like consent isn't mapped, the mapping step names it: map it to **Email subscription** or **Unsubscribed** to apply its values. That column can only keep someone out; it never opts anyone in.
+When you import another tool's export, Nitrosend maps its subscription column when it recognizes the header, and contacts marked unsubscribed, cleaned, suppressed, bounced or never subscribed come in unsubscribed. If a column that looks like consent isn't mapped, the mapping step names it: map it to **Email subscription** or **Unsubscribed** to apply its values. For a regular CSV import, a recognized opt-out also unsubscribes an existing address. A positive value does not resubscribe someone who previously opted out.
 
-Editing a contact or importing it again preserves its existing subscription. Contacts who have unsubscribed or been suppressed remain protected when an integration syncs again.
+Editing a contact preserves its existing subscription. Contacts who have unsubscribed or been suppressed remain protected when an integration syncs again.
 
 You can also add contacts via the API:
 

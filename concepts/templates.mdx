@@ -32,11 +32,11 @@ Values are HTML-escaped in the HTML version of the email, so a field can't add m
 
 ## Reuse a template inside an email
 
-In any campaign or flow email, open the insert panel and choose a design from **Your templates**. It arrives as a linked copy, which suits a shared header, footer or promo strip: edit the template once and every email that uses it picks up the change. Emails in live and paused flows publish the change when the flow's checks and permissions allow it; with Safe Mode on, a change already waiting to be published, or a random split in the flow, the update is saved as a draft for you to publish. Draft campaigns update, and campaigns already approved or scheduled keep the content they were approved with.
+In the visual editor for a campaign or flow email, choose a design from **Your templates** to insert a linked copy. The source must be a standalone designed template in the same brand. This suits a shared header, footer or promo strip: editing the source template updates eligible drafts and flows. Emails in live and paused flows publish the change when the flow's checks and permissions allow it; with Safe Mode on, a change already waiting to be published, or a random split in the flow, the update is saved as a draft for you to publish. Draft campaigns update, and campaigns already approved or scheduled keep the content they were approved with.
 
 The template's editor shows how many emails use it and asks before a save updates them. A linked copy is locked inside the email. Choose **Unlink** to turn it into ordinary sections you can edit there.
 
-Through the API, a section links a template with `block.template_id`, and `GET /v1/my/templates/{id}` returns `block_usage`.
+Through the API, link a section with `block.template_id`. To see where a library template is used, request that template with `GET /v1/my/templates/{id}` and read `block_usage`.
 
 ## MJML rendering
 

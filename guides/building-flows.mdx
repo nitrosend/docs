@@ -21,11 +21,11 @@ A flow starts with a **trigger** — an event that kicks off the automation. The
 ## Working on the canvas
 
 - **Add a step**: click a step in **Add steps**, use the **+** between two steps, or drag a step onto any **Drop here** target. Drag a step already on the canvas to move it.
-- **Edit a step**: select it and its settings open in a panel over the canvas, with **Duplicate** and **Delete step** at the bottom. Close the panel to put it away.
-- **Zoom and pan**: use the zoom control at the top right of the canvas (25% to 150%, or **Fit width**), hold Cmd or Ctrl and scroll, or pinch on a trackpad. Drag empty canvas to move around a large flow.
-- **Make room**: on a wide screen, hide Add steps with its toggle. On a laptop it shows as a row of icons that opens the full list when you point at it.
+- **Edit a step**: select a step to open its settings over the canvas. Most steps have **Duplicate** and **Delete step** at the bottom. Branch steps can be deleted, and the trigger stays in place.
+- **Zoom and pan**: use the zoom controls at the top of the canvas (25% to 150%, or **Fit width**), hold Cmd or Ctrl and scroll, or pinch on a trackpad. Drag empty canvas to move around a large flow.
+- **Make room**: on wide screens you can hide **Add steps**. On narrower screens with a mouse or trackpad, hover over the vertical icon rail or move keyboard focus into it to expand the list.
 
-On a phone, the same canvas opens: add steps with the **+** between steps, and a selected step's settings open in a sheet at the bottom of the screen.
+On a phone, choose an action under **Add your first step**, then use **+** to insert more steps. Tap a step to open its settings in the bottom sheet.
 
 Building a welcome series with an agent? Add the steps as a skill: `npx skills add nitrosend/claude --skill welcome-email-series`
 
@@ -35,8 +35,8 @@ Building a welcome series with an agent? Add the steps as a skill: `npx skills a
 - **SMS** (limited release, not yet on for every account): send a text message
 - **Wait** — pause for a duration (e.g., 2 days)
 - **Split**: branch on a condition. It can read contact properties, behavior, or the data on the event that started this run of the flow. Under **Current event**, pick one of the trigger event's fields, such as the order total on an `order_placed` trigger. Contacts who match go down Yes; everyone else goes down No
-- **Emit event**: record a business event. Another flow can use it as its trigger, so one flow can hand off to the next
-- **Webhook**: call an external URL with POST, PUT or PATCH
+- **Emit Event**: record a business event. Another flow can use it as its trigger, so one flow can hand off to the next
+- **Send Webhook**: call an external URL with POST, PUT or PATCH
 - **Categorize reply** — route a received reply into your named paths, plus Other
 - **Random split** (beta, not yet on for every account): send each contact down one of two to six weighted paths at random, and keep them on it if they come back. A flow can have one. Its panel shows each path's people, opens and clicks so far
 - **Reply to email** — send a reply you've written in the original conversation
@@ -49,9 +49,9 @@ Testing an email does not enroll a customer or simulate an entire journey.
 
 ## Editing a live flow
 
-Saving a change to a live or paused flow publishes it. The flow keeps its status: a live flow stays live, and a paused flow runs the new version when you resume it. People already in the flow finish on the version they started with, and new entrants get your change.
+Saving a change to a live or paused flow attempts to publish it. The flow keeps its status: a live flow stays live, and a paused flow runs the new version when you resume it. People already in the flow finish on the version they started with, and new entrants get your change.
 
-Every save runs the same checks as going live. If a check holds the change back, your edit is saved, the earlier version keeps running, and the flow shows **Change not live** with the reason and the fix. With Safe Mode on, a change saved by an agent waits for the account owner or an admin to publish it.
+Every save runs the same checks as going live. If a check or permission holds the change back, your edit is saved, **Change not live** shows what needs attention, and the previous published version remains in place: a live flow keeps running it and a paused flow stays paused. With Safe Mode on, a change saved by an agent waits for the account owner or an admin to publish it.
 
 ## Handle replies
 

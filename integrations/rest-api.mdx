@@ -176,7 +176,7 @@ puts result
 
 ## Transactional messages
 
-`POST /v1/my/messages` queues a single transactional email or SMS and returns
+`POST /v1/my/messages` queues a single transactional email (or, for accounts with SMS access, a text message; SMS is in limited release) and returns
 the message resource. Delivery happens through Nitrosend's normal background
 sender, so the response means "accepted for sending", not "delivered".
 

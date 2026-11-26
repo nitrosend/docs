@@ -36,7 +36,7 @@ curl https://api.nitrosend.com/v1/my/account \
 
 ## Email verification and account signup
 
-Signing up takes an email address and a password. Nitrosend then emails a verification link that lasts 24 hours: opened in the browser you signed up in, it signs you straight in, and anywhere else it asks for the password you chose. Google and GitHub sign-up are also available. Agents and the CLI follow the same steps over the API: [Headless onboarding](/agent-onboarding#headless-path-no-dashboard-no-mcp-client) describes the pending → proof → activation exchange. Only a completed signup receives a session and can create API keys. Existing customers can continue signing in without a retroactive email-verification requirement.
+Enter your email address and open the verification link Nitrosend sends you. The link lasts 24 hours. Choose a password to finish signing up and sign in. You can also sign up with Google or GitHub. Agents and the CLI follow the same steps over the API: [Headless onboarding](/agent-onboarding#headless-path-no-dashboard-no-mcp-client) describes the pending → proof → activation exchange. Only a completed signup receives a session and can create API keys. Existing customers can continue signing in without a retroactive email-verification requirement.
 
 When changing your profile email, the current email remains your sign-in address until you explicitly confirm the link sent to the new address. Confirming an email change does not issue another session or change your password.
 

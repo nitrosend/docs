@@ -85,14 +85,14 @@ Opens and clicks recorded before you turned tracking off stay in Activity and se
 
 ## UTM tags
 
-Nitrosend tags links to your own site so Shopify, Google Analytics and other analytics tools credit the visit to your email. Each tagged link in a campaign or flow email gets:
+UTM tagging is on by default for campaign and marketing flow emails, so Shopify, Google Analytics and other analytics tools credit the visit to your email. Each tagged link gets:
 
 - `utm_source`: `nitrosend` by default
 - `utm_medium`: `email` by default
 - `utm_campaign`: the campaign or flow
-- `utm_content`: the email
+- `utm_content`: based on the email subject when available
 
-Tagging is on for every brand. Links that already have UTM tags are left as you wrote them, links to other sites are not tagged, and test sends and transactional messages are never tagged.
+Nitrosend tags eligible links to the domains listed under **Tagged domains**, including their subdomains. Existing UTM tags are preserved. Unsubscribe links, Nitrosend tracking links, test sends, transactional emails and Outreach emails are excluded.
 
 Change the source and medium, or turn tagging off, under **Brand > Sender > UTM tags** ([app.nitrosend.com/my/brand/sender](https://app.nitrosend.com/my/brand/sender)). **Tagged domains** lists the sites that get tags: by default your website and your verified sending domains, with subdomains included. Choose **Edit** to list your own, or **Use automatic** to go back.
 
