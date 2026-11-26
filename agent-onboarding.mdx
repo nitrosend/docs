@@ -58,7 +58,7 @@ Request bodies on this path are top-level JSON fields; only signup nests its fie
   </Step>
 </Steps>
 
-Links expire in 30 minutes and are used once. `POST /v1/signup/resend` with `{ "email": "you@example.com" }` returns a generic `202`; it is limited to three requests per address per UTC day and a one-minute cooldown, with a global daily mail budget. Resending preserves an unexpired link. If proof succeeded but activation or client storage failed, `POST /v1/signup/activate` with `{ "email": "you@example.com", "password": "final-password" }` returns the active session without creating another account. Respect `Retry-After` on `429`; keep working credentials until completion. An existing address gets the same signup response; established users can sign in normally.
+Sign-up links last 24 hours and can be used once. Request another verification email with `POST /v1/signup/resend` and `{ "email": "you@example.com" }`. A successful request returns a generic `202`. Resending preserves an unexpired link. If proof succeeded but activation or client storage failed, `POST /v1/signup/activate` with `{ "email": "you@example.com", "password": "final-password" }` returns the active session without creating another account. Respect `Retry-After` on `429`; keep working credentials until completion. An existing address gets the same signup response; established users can sign in normally.
 
 To drive the [CLI](/cli/overview) from a runner with no browser, export the key as `NITROSEND_API_KEY` or store it with `nitrosend login --api-key <key>`. Plain `nitrosend login` opens a browser for OAuth.
 

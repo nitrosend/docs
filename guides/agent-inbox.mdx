@@ -55,7 +55,7 @@ To archive an inbox, select it in **Add or manage inboxes** and choose **Archive
 
 ## Triage the queue
 
-Open **Inbox** in the dashboard. Tabs split the queue by state: **Needs you**, **Agent ready**, **Handled**, **Quarantine**, and **All threads**.
+Open **Inbox** in the dashboard. Tabs split the queue by state: **All threads**, **Needs review**, **Ready for agent**, **Done** and **Held**. The API and your agent's tools call the same states `needs_human`, `agent_ready`, `handled` and `quarantine`.
 
 The whole queue works from the keyboard:
 
@@ -63,12 +63,12 @@ The whole queue works from the keyboard:
 |---|---|
 | `j` / `k` | Move down / up the list |
 | `Enter` | Open the thread |
-| `e` | Mark handled |
+| `e` | Mark done |
 | `r` | Reply to the open thread |
 | `c` | Compose a new message |
 | `Esc` | Close the thread |
 
-Each thread shows the conversation timeline, the item's state, and the available actions: **Mark handled**, **Needs human**, **Release to agent**, and **Quarantine**. Virus-flagged mail never offers release to agent.
+Each thread shows the conversation timeline, the item's state, and the available actions: **Mark done**, **Hand to agent**, **Needs review** and **Hold message**. Virus-flagged mail never offers **Hand to agent**.
 
 ## Compose a new message
 
@@ -165,7 +165,7 @@ nitro_inbox_action  send_reply | send_reply_test | mark_handled | request_human 
 
 A typical loop: `list_queue` with `state: "agent_ready"`, `get_item` for the thread, follow `get_thread_page` or `get_message_body` when the response provides those continuation calls, `validate_reply` to check the draft, `send_reply_test` to verify an explicit test recipient when needed, `send_reply` to answer, and `request_human` for anything the agent should not decide alone. An accepted `send_reply` marks its item handled on its own; use `mark_handled` for items you close without replying.
 
-`send_reply` answers any item outside quarantine. Needs you holds mail a person should look at first, which is why an unattended loop lists `agent_ready`; when you drive the agent yourself, it can answer a Needs you item without releasing it. Quarantined mail has to leave quarantine before anyone replies.
+`send_reply` answers any item outside quarantine. Needs review holds mail a person should look at first, which is why an unattended loop lists `agent_ready`; when you drive the agent yourself, it can answer a Needs review item without releasing it. Quarantined mail has to leave quarantine before anyone replies.
 
 `list_queue` and `list_mailbox` return compact rows by default (id, state, reason codes, sender, subject, timing) and take `view: "full"` for previews and contact context. The queue filters by `state`, `inbox_id`, `reason_code`, `sender`, `query`, `since`, and `sort`; page 1 carries the state counts. Reads that will not reply can pass `purpose: "read"` to `get_thread` and skip the reply context. When a read returns a `brand_context_ref`, pass it on the next read so the brand packet is reused rather than re-sent.
 

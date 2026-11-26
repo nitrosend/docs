@@ -20,8 +20,9 @@ custom-domain allowance, so you can start now and connect your domain later.
 - **DNS:** your own domain needs DNS records, which can take from a few minutes
   to a couple of days to take effect. You can leave while they do. We keep
   checking and email you when the domain is ready to send from.
-- **The Nitrosend footer:** on the Free plan your emails carry the footer from a
-  Nitrosend address and from your own domain alike.
+- **The Nitrosend footer:** on the Free plan, campaign and marketing flow emails
+  carry the Nitrosend badge by default, whether you use a Nitrosend address or
+  your own domain.
   [How to remove it](/faq#how-do-i-remove-the-sent-with-nitrosend-badge-from-my-emails).
 
 ## Use your Nitrosend address
@@ -37,11 +38,17 @@ Open it and select **Use this address** to make it your default.
 The shared `nitrosend.net` sender is paced, so larger sends go out gradually.
 Small bursts are allowed, and individual flow and transactional messages go
 ahead of campaigns. Queued mail continues automatically, and this pacing is
-separate from your plan's rolling 24-hour allowance.
+separate from your plan's rolling 24-hour allowance. When you send from a shared
+`nitrosend.net` address, the standard limit is 10,000 billable recipients per
+account in a rolling 24 hours, or your plan's lower limit. Each distinct To, CC
+or BCC recipient counts on campaign, flow and transactional emails. Test sends
+are excluded. If Nitrosend has approved a temporary allowance for your account,
+that allowance applies.
 
 For sustained campaign volume, connect your own sending subdomain. It does
 not use the shared-domain rate pool; your plan allowance and other provider
-and safety limits still apply. Upgrading alone does not remove shared-domain pacing.
+and safety limits still apply. Upgrading alone does not remove shared-domain pacing
+or raise the shared-domain limit.
 
 ## Change your Nitrosend address
 
@@ -192,6 +199,16 @@ verification, domain strength and account signals together. Strong evidence can
 earn a higher standing on day one; payment alone cannot. Trusted receives the
 full plan allowance immediately, without a second volume ramp. See
 [Pricing](/pricing) for the plan-and-standing allowances.
+
+Paid plans that send from their own verified domain with Standard or Trusted
+standing have no rolling 24-hour recipient limit. Free plans, accounts in
+Probation and accounts without their own domain keep their daily allowance.
+Monthly allowances and sender pacing still apply.
+
+When an account in Probation starts bulk sending, the campaign may show
+**Checking your first batch**. Nitrosend sends an initial group and briefly
+pauses before continuing automatically, provided no other sending restriction
+applies. You can leave the campaign running.
 
 Each effective sending identity still owns its own delivery and reputation
 history. History is not copied between domains, and changing sender context

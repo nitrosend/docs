@@ -176,7 +176,7 @@ puts result
 
 ## Transactional messages
 
-`POST /v1/my/messages` queues a single transactional email or SMS and returns
+`POST /v1/my/messages` queues a single transactional email (or, for accounts with SMS access, a text message; SMS is in limited release) and returns
 the message resource. Delivery happens through Nitrosend's normal background
 sender, so the response means "accepted for sending", not "delivered".
 
@@ -407,6 +407,8 @@ plan allowance.
 | Quote validation | `POST` | `/validation_operations/quote` |
 | Start or resume validation | `POST` | `/validation_operations` |
 | Get validation operation | `GET` | `/validation_operations/{id}` |
+| Include unconfirmed addresses in sends | `POST` | `/validation_operations/{id}/keep_unconfirmed` |
+| Leave unconfirmed addresses out of sends | `POST` | `/validation_operations/{id}/exclude_unconfirmed` |
 | List validation results | `GET` | `/validation_operations/{id}/items` |
 | **Events** | | |
 | Track a contact event | `POST` | `/events` |

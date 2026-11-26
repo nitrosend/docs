@@ -83,11 +83,26 @@ The change applies to emails rendered after you save it. A campaign already send
 
 Opens and clicks recorded before you turned tracking off stay in Activity and segments. To delete them, email [contact@nitrosend.com](mailto:contact@nitrosend.com): support deletes the recorded events for the tracking you turned off, segment engagement is rebuilt without them, and aggregate counts stay.
 
+## UTM tags
+
+UTM tagging is on by default for campaign and marketing flow emails, so Shopify, Google Analytics and other analytics tools credit the visit to your email. Each tagged link gets:
+
+- `utm_source`: `nitrosend` by default
+- `utm_medium`: `email` by default
+- `utm_campaign`: the campaign or flow
+- `utm_content`: based on the email subject when available
+
+Nitrosend tags eligible links to the domains listed under **Tagged domains**, including their subdomains. Existing UTM tags are preserved. Unsubscribe links, Nitrosend tracking links, test sends, transactional emails and Outreach emails are excluded.
+
+Change the source and medium, or turn tagging off, under **Brand > Sender > UTM tags** ([app.nitrosend.com/my/brand/sender](https://app.nitrosend.com/my/brand/sender)). **Tagged domains** shows which sites get tags. The automatic list uses the base domain of your brand website and each verified sending domain you own. Links to subdomains of a listed domain are eligible for tagging. The automatic list leaves out Nitrosend-hosted sending domains and recognized social-profile sites such as Instagram. Choose **Edit** to list your own domains or **Use automatic** to restore the defaults.
+
+Through the API, set `email_utm_tagging`, `email_utm_source`, `email_utm_medium` or `email_utm_domains` on `PATCH /v1/my/brands/{sid}`.
+
 ## View in browser
 
 Emails sent from Nitrosend can include a view-in-browser snapshot. This gives recipients a stable web version of the email and gives your team a reliable way to inspect what was sent after delivery.
 
-Turn the link on for a brand under **Brand > Sender > View in browser link** ([app.nitrosend.com/my/brand/sender](https://app.nitrosend.com/my/brand/sender)) and choose where it goes:
+New brands have the link on, beside Unsubscribe in the footer. Brands created earlier keep the setting they had. Turn it on or off for a brand under **Brand > Sender > View in browser link** ([app.nitrosend.com/my/brand/sender](https://app.nitrosend.com/my/brand/sender)) and choose where it goes:
 
 - **At the top**: a small link above the email.
 - **Beside Unsubscribe**: "View in browser | Unsubscribe" in the footer, in the same style as the Unsubscribe link.

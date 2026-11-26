@@ -1945,7 +1945,7 @@
     },
     {
       "name": "nitro_review_delivery",
-      "description": "Read-only content and readiness review with validation, spam/SMS analysis, preflight, and previews. Review either one account entity or bounded inline email content; this never approves or sends.",
+      "description": "Read-only validation and previews for an entity or inline email. Never approves or sends.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",

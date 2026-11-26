@@ -25,9 +25,18 @@ Lifetime spend: {{ data.shopify.customers.amount_spent }}
 - **Custom fields**: `data.<key>` reads a field from the contact's `data` object (see [custom fields](/concepts/contacts#custom-fields)). Use dots for nested fields, for example `data.preferences.locale`.
 - **Integration fields**: synced fields live under the integration's name, for example `data.shopify.customers.amount_spent`. They render in campaigns and flows; transactional messages render contact and custom fields only.
 - **Fallbacks**: in campaigns and flows, a field the contact doesn't have renders empty. `{{ data.plan | default: "free" }}` renders `free` instead. Other filters include `upcase`, `capitalize`, `number`, `currency` and `date`.
+- **Links**: in campaigns and flows, a link built from a field the contact doesn't have is removed and its text stays, so nobody gets a broken link.
 - **Transactional sends**: every `data` field without a default must come from the send's `data` or the recipient's contact. A send missing one is refused when you make it, naming each missing field, and a dry run reports the same.
 
 Values are HTML-escaped in the HTML version of the email, so a field can't add markup.
+
+## Reuse a template inside an email
+
+In the visual editor for a campaign or flow email, choose a design from **Your templates** to insert a linked copy. The source must be a standalone designed template in the same brand. This suits a shared header, footer or promo strip: editing the source template updates eligible drafts and flows. Emails in live and paused flows publish the change when the flow's checks and permissions allow it; with Safe Mode on, a change already waiting to be published, or a random split in the flow, the update is saved as a draft for you to publish. Draft campaigns update, and campaigns already approved or scheduled keep the content they were approved with.
+
+The template's editor shows how many emails use it and asks before a save updates them. A linked copy is locked inside the email. Choose **Unlink** to turn it into ordinary sections you can edit there.
+
+Through the API, link a section with `block.template_id`. To see where a library template is used, request that template with `GET /v1/my/templates/{id}` and read `block_usage`.
 
 ## MJML rendering
 
