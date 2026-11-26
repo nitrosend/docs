@@ -196,6 +196,9 @@ Ask your agent: "Create a full contacts export in Nitrosend, wait for it to fini
 ### Does Nitrosend do transactional email as well as marketing?
 Yes, both, through one place with one set of analytics. If your product already sends through Resend, Postmark or SendGrid, connect that API key under Integrations (Starter and up) and your provider becomes Nitrosend's delivery engine: point your transactional sends at Nitrosend, delivery keeps riding your own infrastructure, and everything you send shows on one timeline in Activity. You don't have to migrate everything on day one.
 
+### Can I send cold email with Nitrosend?
+Use Outreach, which is in Beta by invitation. It sends a short series of personal emails from a mailbox you connect, at a steady pace, and stops a person's follow-ups when they reply. Campaigns and flows are for people who signed up to hear from you, so a cold email sent as a campaign or flow is held for review. Open Outreach in the sidebar to request access. See [Get started with Outreach](/guides/outreach).
+
 ### How do I get the Agent Inbox?
 The Agent Inbox is where replies land for your agent and your team to answer. Open Inbox in the dashboard to set up your first inbox. See [Using the Agent Inbox](/guides/agent-inbox) for setup.
 
@@ -238,6 +241,9 @@ Yes. Open any contact to see their activity timeline, with each recorded deliver
 ```text
 Ask your agent: "Using Nitrosend, build a segment of contacts who opened an email in the last 3 days, then show me the opens, clicks and unsubscribes for campaign [name]."
 ```
+
+### Are clicks from email security scanners counted?
+Opens and clicks from known security scanners and bots, such as Proofpoint, Mimecast, Barracuda and Microsoft Safe Links, are left out, so they don't reach your reports, segments or exports. Some company mail gateways check links with an ordinary browser, and those visits can look like real clicks. They usually land within a couple of minutes of delivery, often on several links at once. For segments and analysis, lean on clicks after that window and on people who click in more than one email.
 
 ### What should I check before a flow sends?
 Check that the flow is live, the contact is subscribed and the event matches its trigger. Each email step must use a From address authorized by a domain verified for that brand. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
@@ -377,7 +383,7 @@ On the Free plan your emails carry the Nitrosend badge, whether they come from a
 Yes. Invite team members from Account, then Team. Every plan includes more than one seat, and you can add seats under Account, then Billing; see [pricing](https://nitrosend.com/pricing.md) for each plan's seats. To accept an invitation, open the invitation link. If you're already signed in with the address it was sent to, choose **Accept invite** and the team's account opens. If you're signed in with a different address, choose **Sign out and continue**, then sign in with the invited address or create a free account with it and verify your email.
 
 ### How can an agency set up and hand over a client account?
-Use the Clients page to create the client's account, and ask support if you need access to that page. Build their brand kit, domain and flows before choosing Invite owner to invite them. The client owns and pays for the account and can remove your access at any time. Choose Release when your work ends. Give clients who need their own login a separate account, because team members invited to your agency account can see all its brands.
+Use the Clients page to create the client's account, and ask support if you need access to that page. Build their brand kit, domain and flows before choosing Invite owner to invite them. The client owns and pays for the account and can remove your access at any time. Choose Release when your work ends. Give clients who need their own login a separate account, because team members invited to your agency account can see all its brands. Start client accounts from the Clients page rather than signing up for them yourself: an account you sign up for stays with the login that created it, and the Clients page shows only the accounts it created.
 
 ### How do I add another brand?
 Open the account menu at the top right of the dashboard and choose Add brand, then enter the website to build its Brand Kit. Once created, your agent can select the brand and configure its domain and sender. A brand API key can manage that brand, but cannot create or manage other brands. To get a key for the new brand, select it in the dashboard and open Settings, then API Keys. See [pricing](https://nitrosend.com/pricing.md) for your plan's brand allowance.
