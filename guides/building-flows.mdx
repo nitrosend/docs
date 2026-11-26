@@ -31,8 +31,8 @@ Building a welcome series with an agent? Add the steps as a skill: `npx skills a
 
 ## Step types
 
-- **Email**: send an email to the contact
-- **SMS** (limited release, not yet on for every account): send a text message
+- **Send email**: send an email to the contact
+- **Send SMS message** (limited release, not yet on for every account): send a text message
 - **Wait** — pause for a duration (e.g., 2 days)
 - **Split**: branch on a condition. It can read contact properties, behavior, or the data on the event that started this run of the flow. Under **Current event**, pick one of the trigger event's fields, such as the order total on an `order_placed` trigger. Contacts who match go down Yes; everyone else goes down No
 - **Emit Event**: record a business event. Another flow can use it as its trigger, so one flow can hand off to the next

@@ -98,7 +98,7 @@ Ask your agent: "Using Nitrosend, check the setup for [sending subdomain] and sh
 ```
 
 ### Why does my email show my main domain instead of my sending subdomain?
-When your sending subdomain, such as `send.yourdomain.com`, is paired with your verified main domain, Nitrosend sends from the main domain: an email set to come from `hello@send.yourdomain.com` goes out as `hello@yourdomain.com`. Brand, then Sender shows a note when this happens. To keep the subdomain in your From address, contact support.
+Nitrosend can use your verified main domain as the From address for a paired sending subdomain. For example, `hello@send.yourdomain.com` can appear as `hello@yourdomain.com`. When this applies to your brand sender, Brand, then Sender shows the address recipients see and explains why. Contact support if you want to keep the subdomain in your From address.
 
 ### How do I move from my Nitrosend address to my own domain?
 Verify your domain under Settings, then Domains, then move any live or paused flows that use your current sender: in each email step's delivery settings, choose the new domain under From domain and save the flow, or ask your agent to switch the steps to your new address. Saving publishes the change once the flow's checks pass; if the flow says your latest change isn't live yet, follow the steps it shows. People already in a flow finish with the previous sender, while new entrants get the new one. Once those changes are published and any active campaigns or outstanding emails from the old address have finished, set the new From address under Brand, then Sender. Tracked links in new emails use the sending domain once its tracking DNS and HTTPS checks pass.
@@ -249,7 +249,7 @@ Ask your agent: "Using Nitrosend, build a segment of contacts who opened an emai
 Nitrosend filters clicks it recognizes as coming from scanners, including Proofpoint, Mimecast, Barracuda and Microsoft Safe Links. Recognized scanner opens can appear in a contact's activity timeline, but they don't increase reported opens or the contact's engagement. A gateway using an ordinary browser can still look like a person clicking, for example several links clicked within seconds of delivery. For segments and analysis, lean on people who click in more than one email.
 
 ### What should I check before a flow sends?
-Check that the flow is live, the contact is subscribed and the event matches its trigger. Each email step must use a From address authorized by a domain verified for that brand. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
+Check that the flow is live, the contact is subscribed and the event matches its trigger. Check that the selected sender is ready and authorizes the From address each email step uses. Update any mismatched sender and save the flow; if it says your latest change isn't live yet, follow the steps it shows.
 
 ```text
 Ask your agent: "Check flow [name] in Nitrosend: its live status, the contact's subscription status, the matching trigger event and the From address on each email step."
@@ -267,10 +267,10 @@ Ask your agent: "Import [file] into the [list name] list in Nitrosend with Start
 ```
 
 ### Can I add new leads to a list every day without restarting my flow?
-Yes. Import each day's file into the list with **Start flows** on. Contacts already on the list stay where they are in the flow, and only people new to the list enter its Add to list flows; existing contacts keep their subscription status. To automate it, have your agent or a tool such as Zapier or Make add each new lead through the API.
+Yes. Import each day's file into the same list with **Start flows** on. People already on the list keep their place. New list members enter the list's live **Add to list** flows when they match the trigger. A mapped opt-out unsubscribes an existing address, and importing it again with a positive value does not resubscribe it. To automate this, have your agent, Zapier or Make add each opted-in contact through `POST /v1/my/contacts` with the destination list in `list_ids`. A new list membership starts the same matching flows.
 
 ```text
-Ask your agent: "Using Nitrosend, import [file] into my [list name] list with Start flows on, then tell me how many contacts were new to the list and how many entered the flow."
+Ask your agent: "Using Nitrosend, import [file] into [list name] with Start flows on. When it finishes, report successful and failed rows, then check whether [flow name] is live and uses this list."
 ```
 
 ### How do I prepare my email for dark mode?
@@ -300,7 +300,7 @@ Ask your agent: "Check why Nitrosend campaign [name] is waiting. Explain the cur
 ```
 
 ### What happens when my email is held for a safety check?
-Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means that email hasn't been sent, and the account owner gets a notice explaining what was flagged and what happens next. In the dashboard, a held or refused send shows its reason with two buttons: **Ask the team** opens a ready-made request in NitroLLM, which you confirm there to send it to Nitrosend support, and **Copy the fix for your agent** gives your agent a prompt that explains what to change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or use **Ask the team** if you think the check got it wrong. An email that reads like cold outreach is held even when the people on your list know you, so when you ask, say how they came to be on it. After it's cleared, the notice tells you whether sending has started or whether you need to send it again. A review that is still undecided after a week can close, and Nitrosend emails you which emails it covered; change the email and send the new version for a fresh check, or reply to the notice to ask for a review.
+Nitrosend checks emails before they go out, and a test send can be checked too. `email_under_review` means the email is waiting for review. Check the dashboard notice and any email sent to the account owner. If **Ask the team** appears, use it to prepare a support request and confirm it in NitroLLM. If **Copy the fix for your agent** appears, it copies the suggested change. While the team reviews it you don't need to send it again, or you can edit the email and send the new version, which is checked automatically. If it's blocked, change it and send it again, or use **Ask the team** if you think the check got it wrong. A campaign or flow email that reads like an unsolicited sales pitch can be held even when the recipients know you. If you ask for review, explain how they signed up and what they expected to receive. After it's cleared, the notice tells you whether sending has started or whether you need to send it again. A review that is still undecided after a week can close, and Nitrosend emails you which emails it covered; change the email and send the new version for a fresh check, or reply to the notice to ask for a review.
 
 If the check can't load an image, the send stops, and the message names the image and the fix. The usual causes are a broken link, a relative path such as `/assets/logo.png` or a file behind a login; see [Images must be reachable](/guides/images-and-gifs#images-must-be-reachable).
 
@@ -323,7 +323,7 @@ Ask your agent: "Check Nitrosend campaign [name]: how many messages have sent, h
 ```
 
 ### What should I do when sending is paused for a high bounce rate?
-Nitrosend can pause sending when bounce rates are high to protect your sender reputation. Verify the list you sent to: Contacts, then Verify list, uses any verifications your plan includes before prepaid credit and shows the maximum charge before you confirm. Invalid and disposable addresses are then left out of sends for you, and so are unknown and catch-all addresses unless you choose to include them, so there's nothing to remove by hand. After a first bounce pause, sending can resume automatically when recent checks confirm nearly all the addresses the account can send to and the account is otherwise eligible. If sending stays paused, completing verification during the bounce pause requests a support review automatically, even if no addresses were confirmed as valid, and support replies by email. Verifying doesn't restart a campaign that stopped part-way: once sending is available, choose Resume, and every remaining address needs a recent valid result. See [Verifying your list](/guides/verifying-your-list#if-sending-is-paused).
+Nitrosend can pause sending when bounce rates are high to protect your sender reputation. Verify the list you sent to: Contacts, then Verify list, uses any verifications your plan includes before prepaid credit and shows the maximum charge before you confirm. Invalid and disposable addresses are then left out of sends for you, and so are unknown and catch-all addresses unless you choose to include them, so there's nothing to remove by hand. After a first bounce pause, sending can resume automatically when recent checks confirm nearly all the addresses the account can send to and the account is otherwise eligible. If sending stays paused, completing verification during the bounce pause requests a support review automatically, even if no addresses were confirmed as valid, and support replies by email. Verifying doesn't restart a campaign that stopped part-way: once sending is available, choose Resume, and every remaining address that would receive the email needs a recent valid result. See [Verifying your list](/guides/verifying-your-list#if-sending-is-paused).
 
 ```text
 Ask your agent: "Show the bounce reasons from my last Nitrosend send and quote verification for the list I plan to send to next. Wait for my approval before any paid verification."
@@ -358,24 +358,24 @@ Ask your agent: "Check the Nitrosend delivery status for [campaign or message ID
 ```
 
 ### What should I do if approval returns "content_vetting_degraded"?
-In the app this shows as "We could not check an email in this flow right now." It means the content review has not produced a decision; it does not establish that the content was rejected. Ask support to check the flow or campaign before making further approval attempts, including its ID, revision and the exact message.
+For a flow, the app says "We could not check an email in this flow right now. Try again shortly." The check has not reached a decision; it does not mean the content was rejected. Wait briefly and try approval again. If the message persists, contact support with the flow or campaign ID, revision and exact message.
 
 ```text
-Ask your agent: "Raise a Nitrosend support ticket for content_vetting_degraded on [flow or campaign ID]. Include the revision and exact message, and do not keep retrying approval."
+Ask your agent: "Check the current approval status of [flow ID] in Nitrosend. If the content check is still unavailable after a retry, raise a support ticket with the revision and exact message."
 ```
 
 ### What should I check before moving from a test email to a campaign or flow?
-Confirm that your sending domain is verified and that the campaign or flow uses a matching From address. Test emails help check the setup, while live sends also need to meet the account's sending requirements. If a test or live send cannot proceed, include the exact message in a support request.
+Check that the selected sender is ready and authorizes the From address used by the email. Test emails help check the setup, while live sends also need to meet the account's sending requirements. If a test or live send cannot proceed, include the exact message in a support request.
 
 ```text
 Ask your agent: "Check the From address and verified domain for Nitrosend [campaign or flow], then explain any remaining sending requirements."
 ```
 
 ### What should I do when Nitrosend says sending is paused for an account review?
-This can happen on a new account before its first send, or after a send draws bounces or complaints. Raise one support request saying what you send, who receives it, how they agreed to hear from you and whether the messages are transactional or marketing. For a new account, include your business website, if you have one, and the domain you plan to send from. The team replies on that request, and repeating domain verification or sending follow-ups won't speed up the review. Campaigns and flows are for contacts who agreed to receive your emails. If the notice mentions bounces or complaints, verify the affected list: completing the verification requests the review for you. If a review is already open, reply to that request with any additional details rather than raising another.
+This can happen on a new account before its first send, or after a send draws bounces or complaints. For a pause that isn't about bounces or complaints, follow the notice; if it asks you to contact support, raise one request saying what you send, who receives it, how they agreed to hear from you and whether the messages are transactional or marketing. For a new account, include your business website, if you have one, and the domain you plan to send from. The team replies on that request, and repeating domain verification or sending follow-ups won't speed up the review. Campaigns and flows are for contacts who agreed to receive your emails. If the notice mentions bounces or complaints, verify the affected list first: if sending stays paused, completing verification requests a review automatically. Reply to an open request with any additional details.
 
 ```text
-Ask your agent: "Check my Nitrosend sending_paused notice and whether a review is already open. If none is, raise one support ticket with the exact notice, my business website if I have one, the domain I plan to send from, my intended audience, how those contacts opted in and whether the messages are transactional or marketing."
+Ask your agent: "Check my Nitrosend sending-pause notice. If it mentions bounces or complaints, show me which list to verify and whether a review is already open. Otherwise, tell me what the notice asks me to do."
 ```
 
 ### How can I finish editing an email?
@@ -385,7 +385,7 @@ Open the existing draft in the app's editor to make your changes. For a long ema
 Yes. You can edit the shared footer for your brand's marketing emails, and write it however you like: an authorization statement, a license or ABN, why people get your email. Open **Brand Kit** and double-click the footer in the **Footer** card, or double-click the footer of any email in the editor. Either way the change applies to marketing emails that use the brand footer, and **Reset to default** restores the company name, address and unsubscribe link. Marketing email always carries your address and an unsubscribe link, so if your footer leaves either out it's added underneath.
 
 ### How do I remove the "sent with Nitrosend" badge from my emails?
-On the Free plan your emails carry the Nitrosend badge, whether they come from a Nitrosend address or your own domain. Adding **Remove Nitrosend footer** under Account, then Billing, turns it off for you. The badge comes off as soon as the add-on is active, and returns if you cancel it. Every paid plan lets you hide the badge. If it is still showing after you upgrade, turn off the **Nitrosend badge** switch in **Brand Kit**, in the **Footer** card.
+On the Free plan, campaign and marketing flow emails carry the Nitrosend badge by default, whether you use a Nitrosend address or your own domain. Adding **Remove Nitrosend footer** under Account, then Billing, turns it off for you. The badge comes off as soon as the add-on is active, and returns if you cancel it. Every paid plan lets you hide the badge. If it is still showing after you upgrade, turn off the **Nitrosend badge** switch in **Brand Kit**, in the **Footer** card.
 
 ## Teams and agencies
 

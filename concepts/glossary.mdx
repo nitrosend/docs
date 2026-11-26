@@ -93,24 +93,23 @@ Campaign content locks once a campaign has sent, though you can always rename it
 
 ### Flow steps
 
-Inside a flow, each box on the canvas is a **step**, added from the **Add steps** panel or the **+** between steps. Steps are grouped under two headings, **Actions** (things that happen) and **Logic** (things that control what happens next).
+Inside a flow, each box on the canvas is a **step**, added from the **Add steps** panel or the **+** between steps. Every flow starts with a trigger. Choose additional steps from **Actions** (things that happen) or **Logic** (things that control what happens next).
 
 Actions:
 
 | Step | What it does |
 | --- | --- |
-| **Email** | Sends an email. |
-| **SMS** | Sends a text message. SMS is in limited release and not yet on for every account; it also needs a sending number on the brand. |
+| **Send email** | Sends an email. |
+| **Send SMS message** | Sends a text message. SMS is in limited release and not yet on for every account; it also needs a sending number on the brand. |
 | **Subscribe** | Opts the contact in. |
 | **Unsubscribe** | Opts the contact out. |
-| **Webhook** | Calls an external URL from the flow. Not the same as [event webhooks](/integrations/webhooks), which Settings manages. |
+| **Send Webhook** | Calls an external URL from the flow. Not the same as [event webhooks](/integrations/webhooks), which Settings manages. |
 
 
 Logic:
 
 | Step | What it does |
 | --- | --- |
-| **Trigger** | What starts the flow for a contact. Every flow begins with one. |
 | **Wait** | Pauses before the next step. |
 | **Split** | Branches down different paths depending on a condition. |
 | **Emit Event** | Records an event you can trigger other things from. |
